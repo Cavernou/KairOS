@@ -498,46 +498,57 @@
             <div class="modal-body">
                 <div class="help-section">
                     <h3>DASHBOARD</h3>
-                    <p><strong>DEVICES:</strong> View connected KairOS devices and their status.</p>
-                    <p><strong>ADMIN CODE:</strong> Registration code for activating new devices. Click REFRESH CODE to generate a new code.</p>
-                    <p><strong>SYSTEM STATUS:</strong> Overview of system statistics including devices, contacts, messages, files, and admin codes.</p>
-                    <p><strong>NETWORK:</strong> Network configuration including tailnet name and listening ports.</p>
-                    <p><strong>CLOCK:</strong> System clock display with 12-hour, 24-hour, and UTC modes.</p>
+                    <p><strong>DEVICES:</strong> View connected KairOS devices and their status. Shows device name, K-number, connection status, and last activity timestamp. Devices are automatically detected when they connect to the tailnet.</p>
+                    <p><strong>ADMIN CODE:</strong> Registration code for activating new devices. Each code is valid for a limited time (default: 1 hour). Click REFRESH CODE to generate a new code. New devices must enter this code during activation to join the network.</p>
+                    <p><strong>SYSTEM STATUS:</strong> Overview of system statistics including total devices, total contacts, pending messages, queued files, and active admin codes. Updates automatically every 5 seconds.</p>
+                    <p><strong>NETWORK:</strong> Network configuration including tailnet name, listening address, Tailscale connection status, and reachability. Shows whether Tailscale is enabled and connected.</p>
+                    <p><strong>CLOCK:</strong> System clock display with 12-hour, 24-hour, and UTC modes. Click on the clock to toggle between modes. Shows current time and date.</p>
+                    <p><strong>LIVE STATISTICS:</strong> Real-time system metrics including CPU usage, memory usage, goroutine count, and uptime. Updates automatically every 5 seconds using Go runtime statistics.</p>
+                    <p><strong>NEWS BANNER:</strong> Displays broadcast messages from the node administrator. Shows message content, priority (high/medium/low), and expiration time. Click X to dismiss the banner.</p>
                 </div>
 
                 <div class="help-section">
                     <h3>DEVICES</h3>
-                    <p><strong>DEVICES:</strong> View and manage connected KairOS devices.</p>
-                    <p><strong>CONTACTS:</strong> Manage contact list with K-numbers and display names.</p>
+                    <p><strong>DEVICES:</strong> View and manage connected KairOS devices. Each device shows K-number, display name, status (online/offline), and last interaction time. Devices can be deleted from the network by clicking DELETE.</p>
+                    <p><strong>CONTACTS:</strong> Manage contact list with K-numbers, display names, real phone numbers, notes, trust status (trusted/pending/unknown), and last interaction time. Contacts can be added, viewed, and deleted. Trust status indicates whether the contact is verified.</p>
                 </div>
 
                 <div class="help-section">
                     <h3>COMMUNICATIONS</h3>
-                    <p><strong>CALLING:</strong> Initiate and manage voice calls to other KairOS devices.</p>
-                    <p><strong>FILTERING:</strong> Set up message filtering rules to block or allow content based on keywords.</p>
+                    <p><strong>CALLING:</strong> Initiate and manage voice calls to other KairOS devices. Select a contact from the dropdown and click CALL to initiate. Active calls show duration and can be ended by clicking END CALL.</p>
+                    <p><strong>FILTERING:</strong> Set up message filtering rules to block or allow content based on keywords. Add filters by entering keywords and selecting action (block/allow). Filters are applied to incoming messages. Click DELETE to remove a filter.</p>
+                    <p><strong>MESSAGES:</strong> View message queue status. Shows queued messages, delivery attempts, and retry status. Messages are automatically retried with exponential backoff if delivery fails.</p>
+                </div>
+
+                <div class="help-section">
+                    <h3>BROADCAST</h3>
+                    <p><strong>BROADCAST NEWS:</strong> Send broadcast messages to all connected devices. Enter message text, select priority (high/medium/low), and set expiration time (1 hour to 7 days). Broadcasts appear as a banner on the dashboard and are stored on the node.</p>
+                    <p><strong>ACTIVE BROADCASTS:</strong> View currently active broadcast messages. Shows message content, priority level, expiration date/time, and status (active/expired). Only one broadcast is active at a time.</p>
                 </div>
 
                 <div class="help-section">
                     <h3>FILES</h3>
-                    <p><strong>FILE TRANSFER:</strong> Send files to connected KairOS devices.</p>
-                    <p><strong>MEDIA:</strong> Upload and manage image, audio, and video files.</p>
-                    <p><strong>STORAGE:</strong> View disk usage statistics. CLEANUP OLD FILES deletes telemetry events older than 30 days and media files older than 90 days to free up storage space.</p>
-                    <p><strong>NOTES:</strong> Create, view, and delete text notes.</p>
-                    <p><strong>CALENDAR:</strong> Create, view, and delete calendar events.</p>
-                    <p><strong>TASKS:</strong> Create, view, and delete tasks with priorities and due dates.</p>
-                    <p><strong>TELEMETRY:</strong> View system activity logs and export them.</p>
+                    <p><strong>FILE BROWSER:</strong> Navigate the node's file system. Use breadcrumbs to navigate to parent directories. Click on directories to enter them. Click on files to view their contents. Use the search box to filter files by name. Click REFRESH to reload the current directory. Click ROOT to go to the top-level directory. Click UP to go to the parent directory.</p>
+                    <p><strong>FILE VIEWER:</strong> View the contents of text files. Shows file path and content in a scrollable viewer. Click CLOSE to return to the file browser.</p>
+                    <p><strong>FILE TRANSFER:</strong> Send files to connected KairOS devices. Select a file from your computer, choose a target device from the dropdown, and click SEND FILE to initiate transfer.</p>
+                    <p><strong>MEDIA:</strong> Upload and manage image, audio, and video files. Shows file name, type, and size. Click DELETE to remove media files. Media files are stored in the node's media directory.</p>
+                    <p><strong>STORAGE:</strong> View disk usage statistics including total capacity, used space, free space, and breakdown by category (files, messages, media). Click CLEANUP OLD FILES to delete telemetry events older than 30 days and media files older than 90 days to free up storage space.</p>
+                    <p><strong>NOTES:</strong> Create, view, and delete text notes. Enter title and content, then click ADD NOTE to save. Notes are stored in the database and can be deleted by clicking DELETE.</p>
+                    <p><strong>CALENDAR:</strong> Create, view, and delete calendar events. Enter title, description, start time, end time, location, and attendees. Click ADD EVENT to save. Events can be deleted by clicking DELETE.</p>
+                    <p><strong>TASKS:</strong> Create, view, and delete tasks with priorities and due dates. Enter title, description, due date, and priority (high/medium/low). Click ADD TASK to save. Tasks can be deleted by clicking DELETE. Tasks are sorted by priority and due date.</p>
+                    <p><strong>TELEMETRY:</strong> View system activity logs including event type, details, device ID, and timestamp. Click EXPORT LOG to download the full telemetry log as a JSON file.</p>
                 </div>
 
                 <div class="help-section">
                     <h3>SETTINGS</h3>
-                    <p><strong>LISTEN ADDR:</strong> Network address and port for gRPC server (e.g., 0.0.0.0:8080)</p>
-                    <p><strong>MOCK HTTP ADDR:</strong> Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)</p>
-                    <p><strong>TAILNET:</strong> Tailscale tailnet name for your network (e.g., kairos.ts.net)</p>
-                    <p><strong>TAILSCALE ENABLED:</strong> Enable Tailscale VPN for secure networking</p>
-                    <p><strong>QUEUE RETRY LIMIT:</strong> Maximum number of retry attempts for failed messages</p>
-                    <p><strong>QUEUE TTL (HOURS):</strong> Time-to-live for queued messages before expiring</p>
-                    <p><strong>ADMIN CODE INTERVAL (SEC):</strong> How long admin codes remain valid before rotating</p>
-                    <p><strong>SOUNDS:</strong> Browse and play available sound effects organized by category.</p>
+                    <p><strong>LISTEN ADDR:</strong> Network address and port for gRPC server (e.g., 0.0.0.0:8080). This is the address where the node listens for gRPC connections from other KairOS devices. Use 0.0.0.0 to listen on all network interfaces.</p>
+                    <p><strong>MOCK HTTP ADDR:</strong> Network address and port for HTTP gateway (e.g., 0.0.0.0:8081). This is the address where the web UI is accessible. Use 0.0.0.0 to listen on all network interfaces.</p>
+                    <p><strong>TAILNET:</strong> Tailscale tailnet name for your network (e.g., kairos.ts.net). This must match your Tailscale network name. Devices on the same tailnet can communicate securely.</p>
+                    <p><strong>TAILSCALE ENABLED:</strong> Enable Tailscale VPN for secure networking. When enabled, only devices from the configured tailnet can access the node. Disable for testing or local-only operation.</p>
+                    <p><strong>QUEUE RETRY LIMIT:</strong> Maximum number of retry attempts for failed messages. Messages that fail to deliver will be retried this many times with exponential backoff before being marked as failed.</p>
+                    <p><strong>QUEUE TTL (HOURS):</strong> Time-to-live for queued messages before expiring. Messages older than this time will be automatically deleted from the queue even if not delivered.</p>
+                    <p><strong>ADMIN CODE INTERVAL (SEC):</strong> How long admin codes remain valid before rotating. New codes are generated automatically after this interval expires. Default is 3600 seconds (1 hour).</p>
+                    <p><strong>SOUNDS:</strong> Browse and play available sound effects organized by category. Sounds include click sounds, alerts, success sounds, ambient sounds, UI sounds, notifications, and other effects. Click PLAY to preview a sound. Sounds are used throughout the interface for feedback.</p>
                 </div>
             </div>
         </div>

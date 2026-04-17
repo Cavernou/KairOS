@@ -860,6 +860,9 @@ async function loadSounds() {
         const response = await fetch('/mock/v1/sounds');
         const sounds = await response.json();
 
+        console.log('Loaded sounds:', sounds);
+        console.log('Total sounds:', sounds.length);
+
         const soundList = document.getElementById('sound-list-settings');
         if (sounds && sounds.length > 0) {
             // Backend already filters out macOS ._ files, no need to filter here
@@ -875,13 +878,16 @@ async function loadSounds() {
                 'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
             };
 
+            console.log('Categories:', categories);
+
             let html = '';
             for (const [category, categorySounds] of Object.entries(categories)) {
                 if (categorySounds.length > 0) {
+                    console.log(`Category ${category}: ${categorySounds.length} sounds`);
                     html += `
                         <div class="sound-category">
                             <h3 onclick="toggleSoundCategory('${category}')">${category} ▼</h3>
-                            <div class="sound-category-content" id="category-${category.replace(/\s/g, '-')}">
+                            <div class="sound-category-content" id="category-${category.replace(/\s/g, '-')}" style="display: block;">
                                 ${categorySounds.map(sound => `
                                     <div class="sound-item">
                                         <span class="sound-name">${sound.name}</span>

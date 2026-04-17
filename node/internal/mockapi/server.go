@@ -843,23 +843,36 @@ func (s *Server) handleSounds(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	logger.Info("Found %d entries in sounds directory", len(entries))
+
 	var sounds []map[string]string
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			name := entry.Name()
+			logger.Info("Processing file: %s", name)
+
 			// Filter out macOS ._ files
 			if strings.HasPrefix(name, "._") {
+				logger.Info("Skipping macOS ._ file: %s", name)
 				continue
 			}
-			if strings.HasSuffix(name, ".mp3") || strings.HasSuffix(name, ".wav") {
+
+			// Accept both .mp3 and .wav files
+			ext := filepath.Ext(name)
+			if ext == ".mp3" || ext == ".wav" {
+				soundName := strings.TrimSuffix(name, ext)
 				sounds = append(sounds, map[string]string{
-					"name": strings.TrimSuffix(name, filepath.Ext(name)),
+					"name": soundName,
 					"path": name,
 				})
+				logger.Info("Added sound: %s (original: %s)", soundName, name)
+			} else {
+				logger.Info("Skipping file with unsupported extension: %s", name)
 			}
 		}
 	}
 
+	logger.Info("Returning %d sounds", len(sounds))
 	writeJSON(w, http.StatusOK, sounds)
 }
 
