@@ -62,23 +62,50 @@ struct ActivationTerminalView: View {
     private var formBlock: some View {
         VStack(alignment: .leading, spacing: 16) {
             VStack(alignment: .leading, spacing: 16) {
-                TextField("K-NUMBER", text: $viewModel.kairNumber)
-                    .textFieldStyle(IndustrialTextFieldStyle())
-                    .onTapGesture {
+                HStack {
+                    TextField("K-NUMBER", text: $viewModel.kairNumber)
+                        .textFieldStyle(IndustrialTextFieldStyle())
+                        .onTapGesture {
+                            appState.soundManager.playSubtleClick()
+                        }
+                    Button("?") {
                         appState.soundManager.playSubtleClick()
+                        // Show tooltip for K-NUMBER
                     }
-                
-                SecureField("PASSCODE", text: $passcode)
-                    .textFieldStyle(IndustrialTextFieldStyle())
-                    .onTapGesture {
+                    .font(KairOSTypography.mono)
+                    .foregroundStyle(KairOSColors.chrome)
+                    .help("Your unique KairOS identifier. Format: K-XXXX-XXXX")
+                }
+
+                HStack {
+                    SecureField("PASSCODE", text: $passcode)
+                        .textFieldStyle(IndustrialTextFieldStyle())
+                        .onTapGesture {
+                            appState.soundManager.playSubtleClick()
+                        }
+                    Button("?") {
                         appState.soundManager.playSubtleClick()
+                        // Show tooltip for PASSCODE
                     }
-                
-                TextField("ADMIN CODE", text: $viewModel.adminCode)
-                    .textFieldStyle(IndustrialTextFieldStyle())
-                    .onTapGesture {
+                    .font(KairOSTypography.mono)
+                    .foregroundStyle(KairOSColors.chrome)
+                    .help("Your personal passcode. Keep it secret.")
+                }
+
+                HStack {
+                    TextField("ADMIN CODE", text: $viewModel.adminCode)
+                        .textFieldStyle(IndustrialTextFieldStyle())
+                        .onTapGesture {
+                            appState.soundManager.playSubtleClick()
+                        }
+                    Button("?") {
                         appState.soundManager.playSubtleClick()
+                        // Show tooltip for ADMIN CODE
                     }
+                    .font(KairOSTypography.mono)
+                    .foregroundStyle(KairOSColors.chrome)
+                    .help("Admin code from your KairOS Node control center. Click 'GENERATE CODE' in the control center to get one.")
+                }
                 
                 // Avatar upload
                 VStack(alignment: .leading, spacing: 8) {
