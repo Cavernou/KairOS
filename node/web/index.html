@@ -22,16 +22,19 @@
 
     <div id="dashboard" class="container" style="display: none;">
         <div class="header">
-            <div class="header-controls">
-                <h1><strong>KAIROS NODE</strong></h1>
-                <div class="header-right">
-                    <button onclick="showHelp(); playClick();" class="help-button">HELP</button>
-                    <div class="status-indicator">
-                        <span class="led active"></span>
-                        <span>ONLINE</span>
-                    </div>
-                    <button onclick="logout()">LOGOUT</button>
-                </div>
+            <div class="header-left">
+                <h1>KAIROS NODE CONTROL CENTER</h1>
+            </div>
+            <div class="header-right">
+                <button class="help-button" onclick="showHelp(); playClick();">HELP</button>
+            </div>
+        </div>
+
+        <div id="news-banner" class="news-banner" style="display: none;">
+            <div class="news-content">
+                <span class="news-label">NEWS:</span>
+                <span class="news-message" id="news-message">No news available</span>
+                <button onclick="closeNewsBanner()" class="news-close">X</button>
             </div>
         </div>
 
@@ -144,6 +147,42 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="panel">
+                    <h2>LIVE STATISTICS</h2>
+                    <div class="live-stats">
+                        <div class="stat-chart">
+                            <h3>CPU USAGE</h3>
+                            <div class="bar-chart">
+                                <div class="bar" style="width: 25%;"></div>
+                            </div>
+                            <span class="chart-value">25%</span>
+                        </div>
+                        <div class="stat-chart">
+                            <h3>MEMORY USAGE</h3>
+                            <div class="bar-chart">
+                                <div class="bar" style="width: 45%;"></div>
+                            </div>
+                            <span class="chart-value">45%</span>
+                        </div>
+                        <div class="stat-chart">
+                            <h3>NETWORK TRAFFIC</h3>
+                            <div class="line-chart">
+                                <svg width="100%" height="60" viewBox="0 0 200 60">
+                                    <polyline points="0,50 20,45 40,48 60,40 80,42 100,35 120,38 140,30 160,33 180,25 200,28" fill="none" stroke="#332C0C" stroke-width="2"/>
+                                </svg>
+                            </div>
+                            <span class="chart-value">1.2 MB/s</span>
+                        </div>
+                        <div class="stat-chart">
+                            <h3>MESSAGE QUEUE</h3>
+                            <div class="bar-chart">
+                                <div class="bar" style="width: 12%;"></div>
+                            </div>
+                            <span class="chart-value">12 messages</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -223,6 +262,17 @@
                                 <span class="file-name">Loading...</span>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                <div class="panel" id="file-viewer-panel" style="display: none;">
+                    <h2>FILE VIEWER</h2>
+                    <div class="file-viewer-controls">
+                        <button onclick="closeFileViewer()" class="nav-button">CLOSE</button>
+                        <span id="file-viewer-name" style="margin-left: 10px;"></span>
+                    </div>
+                    <div class="file-viewer-content" id="file-viewer-content">
+                        <pre style="white-space: pre-wrap; word-wrap: break-word;"></pre>
                     </div>
                 </div>
 

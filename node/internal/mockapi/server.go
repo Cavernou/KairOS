@@ -1,6 +1,7 @@
 package mockapi
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
@@ -208,6 +209,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/tasks", s.handleTasks)
 	mux.HandleFunc("/mock/v1/tasks/", s.handleTaskByID)
 	mux.HandleFunc("/mock/v1/files/browse", s.handleFileBrowse)
+	mux.HandleFunc("/mock/v1/files/view", s.handleFileView)
+	mux.HandleFunc("/mock/v1/news", s.handleNews)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -917,6 +920,98 @@ func (s *Server) handleFileBrowse(w http.ResponseWriter, r *http.Request) {
 		"path":  path,
 		"files": files,
 	})
+}
+
+func (s *Server) handleFileView(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// Get the file path from query parameter
+	path := r.URL.Query().Get("path")
+	if path == "" {
+		writeError(w, http.StatusBadRequest, "path is required")
+		return
+	}
+
+	// Security: ensure path doesn't escape the current directory
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		logger.Error("Failed to resolve path: %v", err)
+		writeError(w, http.StatusBadRequest, "invalid path")
+		return
+	}
+
+	// Check if path is within the current working directory
+	cwd, err := os.Getwd()
+	if err != nil {
+		logger.Error("Failed to get current working directory: %v", err)
+		writeError(w, http.StatusInternalServerError, "server error")
+		return
+	}
+
+	relPath, err := filepath.Rel(cwd, absPath)
+	if err != nil || strings.HasPrefix(relPath, "..") {
+		logger.Error("Path outside working directory: %s", path)
+		writeError(w, http.StatusBadRequest, "path outside allowed directory")
+		return
+	}
+
+	// Check if it's a directory
+	info, err := os.Stat(absPath)
+	if err != nil {
+		logger.Error("Failed to stat file: %v", err)
+		writeError(w, http.StatusNotFound, "file not found")
+		return
+	}
+
+	if info.IsDir() {
+		writeError(w, http.StatusBadRequest, "cannot view directory")
+		return
+	}
+
+	// Check file size (limit to 1MB for viewing)
+	if info.Size() > 1024*1024 {
+		writeError(w, http.StatusBadRequest, "file too large to view")
+		return
+	}
+
+	// Read file content
+	content, err := os.ReadFile(absPath)
+	if err != nil {
+		logger.Error("Failed to read file: %v", err)
+		writeError(w, http.StatusInternalServerError, "failed to read file")
+		return
+	}
+
+	// Detect if file is text by checking for null bytes
+	if bytes.Contains(content, []byte{0}) {
+		writeError(w, http.StatusBadRequest, "binary file cannot be viewed")
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Write(content)
+}
+
+func (s *Server) handleNews(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// Return mock news data
+	news := map[string]interface{}{
+		"message":    "KairOS v1.1.0 released with new features including live statistics, file browser, and news broadcasts!",
+		"timestamp":  time.Now().Unix(),
+		"priority":   "high",
+		"expires_at": time.Now().Add(24 * time.Hour).Unix(),
+	}
+
+	writeJSON(w, http.StatusOK, news)
 }
 
 func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {

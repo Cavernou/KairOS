@@ -368,9 +368,7 @@ function initializeDashboard() {
     fetchDevices();
     updateSystemStats();
     checkTailscaleStatus();
-    
-    // Start auto-reload mechanism
-    startAutoReload();
+    loadNews();
     
     // Set up periodic refresh for live data
     setInterval(() => {
@@ -395,11 +393,61 @@ function setupTooltips() {
 // Show help modal
 function showHelp() {
     document.getElementById('help-modal').style.display = 'block';
+    makeDraggable(document.getElementById('help-modal').querySelector('.modal-content'));
 }
 
-// Close help modal
 function closeHelp() {
     document.getElementById('help-modal').style.display = 'none';
+}
+
+function closeNewsBanner() {
+    document.getElementById('news-banner').style.display = 'none';
+    playClick();
+}
+
+async function loadNews() {
+    try {
+        const response = await fetch('/mock/v1/news');
+        const news = await response.json();
+        
+        if (news.message) {
+            document.getElementById('news-message').textContent = news.message;
+            document.getElementById('news-banner').style.display = 'block';
+        }
+    } catch (error) {
+        console.error('Failed to load news:', error);
+    }
+}
+
+function makeDraggable(element) {
+    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    
+    element.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        element.style.top = (element.offsetTop - pos2) + "px";
+        element.style.left = (element.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() {
+        document.onmouseup = null;
+        document.onmousemove = null;
+    }
 }
 
 // Switch between tabs
@@ -565,7 +613,7 @@ async function browseFiles(path) {
         const fileList = document.getElementById('file-browser-list');
         if (data.files && data.files.length > 0) {
             fileList.innerHTML = data.files.map(file => `
-                <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${data.path}/${file.name}')` : ''}">
+                <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${data.path}/${file.name}')` : `viewFile('${data.path}/${file.name}')`}">
                     <span class="file-name">${file.is_dir ? '[DIR] ' : ''}${file.name}</span>
                     <span class="file-info">${formatFileSize(file.size)}</span>
                 </div>
@@ -577,6 +625,31 @@ async function browseFiles(path) {
         console.error('Failed to browse files:', error);
         document.getElementById('file-browser-list').innerHTML = '<div class="file-item"><span class="file-name">Failed to load files</span></div>';
     }
+}
+
+async function viewFile(filePath) {
+    try {
+        const response = await fetch(`/mock/v1/files/view?path=${encodeURIComponent(filePath)}`);
+        if (response.ok) {
+            const text = await response.text();
+            document.getElementById('file-viewer-name').textContent = filePath;
+            document.getElementById('file-viewer-content').querySelector('pre').textContent = text;
+            document.getElementById('file-viewer-panel').style.display = 'block';
+            playClick();
+        } else {
+            alert('Failed to view file');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to view file:', error);
+        alert('Failed to view file');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+function closeFileViewer() {
+    document.getElementById('file-viewer-panel').style.display = 'none';
+    playClick();
 }
 
 function browseUp() {
