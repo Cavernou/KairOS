@@ -427,6 +427,11 @@ function switchTab(tabName) {
     if (selectedTabButton) {
         selectedTabButton.classList.add('active');
     }
+
+    // Load content for specific tabs
+    if (tabName === 'files') {
+        browseFiles('.');
+    }
 }
 
 // Auto-reload mechanism
@@ -544,6 +549,51 @@ async function saveSettings() {
         alert('Failed to save settings');
         playSound('DISAPPOINTING_FAILURE');
     }
+}
+
+// File browser
+let currentBrowsePath = '.';
+
+async function browseFiles(path) {
+    try {
+        const response = await fetch(`/mock/v1/files/browse?path=${encodeURIComponent(path)}`);
+        const data = await response.json();
+        
+        currentBrowsePath = data.path;
+        document.getElementById('current-path').textContent = data.path;
+        
+        const fileList = document.getElementById('file-browser-list');
+        if (data.files && data.files.length > 0) {
+            fileList.innerHTML = data.files.map(file => `
+                <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${data.path}/${file.name}')` : ''}">
+                    <span class="file-name">${file.is_dir ? '[DIR] ' : ''}${file.name}</span>
+                    <span class="file-info">${formatFileSize(file.size)}</span>
+                </div>
+            `).join('');
+        } else {
+            fileList.innerHTML = '<div class="file-item"><span class="file-name">Empty directory</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to browse files:', error);
+        document.getElementById('file-browser-list').innerHTML = '<div class="file-item"><span class="file-name">Failed to load files</span></div>';
+    }
+}
+
+function browseUp() {
+    const pathParts = currentBrowsePath.split('/');
+    if (pathParts.length > 1) {
+        pathParts.pop();
+        const parentPath = pathParts.join('/');
+        browseFiles(parentPath || '.');
+    }
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
 }
 
 // Sound management

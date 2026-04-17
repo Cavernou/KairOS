@@ -516,7 +516,7 @@ button:hover {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    max-height: 200px;
+    max-height: 400px;
     overflow-y: auto;
 }
 
@@ -529,6 +529,7 @@ button:hover {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-radius: 4px;
 }
 
 .sound-name,
@@ -762,6 +763,68 @@ button:hover {
     color: #332C0C;
 }
 
+.file-browser-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #FFE258;
+}
+
+.nav-button {
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    padding: 8px 16px;
+    font-family: 'HomeVideoBold', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-button:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.file-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.file-item:hover {
+    background-color: #D8BF4D;
+    color: #332C0C;
+}
+
+.file-item.directory {
+    font-weight: bold;
+}
+
+.file-name {
+    font-family: 'MIB', monospace;
+}
+
+.file-info {
+    font-size: 12px;
+    color: #D8BF4D;
+}
+
 .tab-content {
     display: block;
 }
@@ -904,6 +967,10 @@ button:hover {
     background-color: #332C0C;
     border: 2px solid #FFE258;
     margin-bottom: 15px;
+}
+
+.clock-display span {
+    color: #FFE258 !important;
 }
 
 .calendar-list,

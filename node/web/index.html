@@ -70,6 +70,21 @@
                     <div class="refresh-button-container">
                         <button id="refresh-btn" onclick="fetchAdminCode()">REFRESH CODE</button>
                     </div>
+
+                    <div class="clock-section" style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #FFE258;">
+                        <h3 style="margin-bottom: 10px;">CLOCK</h3>
+                        <div class="clock-display">
+                            <span id="system-clock" style="font-size: 48px; font-family: 'Digital7', monospace;">Loading...</span>
+                        </div>
+                        <div class="clock-settings">
+                            <select id="clock-mode">
+                                <option value="12h">12-HOUR</option>
+                                <option value="24h">24-HOUR</option>
+                                <option value="utc">UTC</option>
+                            </select>
+                            <button onclick="updateClockSettings()">UPDATE CLOCK</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="panel">
@@ -115,39 +130,18 @@
                             <span>PLATFORM:</span>
                             <span>darwin/amd64</span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="panel">
-                    <h2>NETWORK</h2>
-                    <div class="network-info">
-                        <div class="info-item">
+                        <div class="stat-item">
                             <span>TAILNET:</span>
                             <span>kairos.ts.net</span>
                         </div>
-                        <div class="info-item">
+                        <div class="stat-item">
                             <span>LISTEN:</span>
                             <span>:8080</span>
                         </div>
-                        <div class="info-item">
+                        <div class="stat-item">
                             <span>HTTP:</span>
                             <span>:8081</span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="panel">
-                    <h2>CLOCK</h2>
-                    <div class="clock-display">
-                        <span id="system-clock" style="font-size: 48px; font-family: 'Digital7', monospace;">Loading...</span>
-                    </div>
-                    <div class="clock-settings">
-                        <select id="clock-mode">
-                            <option value="12h">12-HOUR</option>
-                            <option value="24h">24-HOUR</option>
-                            <option value="utc">UTC</option>
-                        </select>
-                        <button onclick="updateClockSettings()">UPDATE CLOCK</button>
                     </div>
                 </div>
             </div>
@@ -216,6 +210,22 @@
 
             <!-- Files Tab -->
             <div id="tab-files" class="tab-content" style="display: none;">
+                <div class="panel">
+                    <h2>FILE BROWSER</h2>
+                    <div class="file-browser">
+                        <div class="file-browser-controls">
+                            <button onclick="browseFiles('.')" class="nav-button">ROOT</button>
+                            <button onclick="browseUp()" class="nav-button">UP</button>
+                            <span id="current-path" style="margin-left: 10px;">/</span>
+                        </div>
+                        <div class="file-list" id="file-browser-list">
+                            <div class="file-item">
+                                <span class="file-name">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="panel">
                     <h2>FILE TRANSFER</h2>
                     <div class="file-transfer">

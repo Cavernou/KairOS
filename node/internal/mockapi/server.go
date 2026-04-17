@@ -207,6 +207,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/calendar/export", s.handleCalendarExport)
 	mux.HandleFunc("/mock/v1/tasks", s.handleTasks)
 	mux.HandleFunc("/mock/v1/tasks/", s.handleTaskByID)
+	mux.HandleFunc("/mock/v1/files/browse", s.handleFileBrowse)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -843,6 +844,79 @@ func (s *Server) handleSounds(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, sounds)
+}
+
+func (s *Server) handleFileBrowse(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// Get the directory path from query parameter (default to current directory)
+	path := r.URL.Query().Get("path")
+	if path == "" {
+		path = "."
+	}
+
+	// Security: ensure path doesn't escape the current directory
+	absPath, err := filepath.Abs(path)
+	if err != nil {
+		logger.Error("Failed to resolve path: %v", err)
+		writeError(w, http.StatusBadRequest, "invalid path")
+		return
+	}
+
+	// Check if path is within the current working directory
+	cwd, err := os.Getwd()
+	if err != nil {
+		logger.Error("Failed to get current working directory: %v", err)
+		writeError(w, http.StatusInternalServerError, "server error")
+		return
+	}
+
+	relPath, err := filepath.Rel(cwd, absPath)
+	if err != nil || strings.HasPrefix(relPath, "..") {
+		logger.Error("Path outside working directory: %s", path)
+		writeError(w, http.StatusBadRequest, "path outside allowed directory")
+		return
+	}
+
+	// Read directory
+	entries, err := os.ReadDir(absPath)
+	if err != nil {
+		logger.Error("Failed to read directory: %v", err)
+		writeError(w, http.StatusInternalServerError, "failed to read directory")
+		return
+	}
+
+	var files []map[string]interface{}
+	for _, entry := range entries {
+		name := entry.Name()
+		// Filter out hidden files (starting with .)
+		if strings.HasPrefix(name, ".") {
+			continue
+		}
+
+		info, err := entry.Info()
+		if err != nil {
+			continue
+		}
+
+		fileInfo := map[string]interface{}{
+			"name":     name,
+			"is_dir":   entry.IsDir(),
+			"size":     info.Size(),
+			"modified": info.ModTime().Unix(),
+		}
+		files = append(files, fileInfo)
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"path":  path,
+		"files": files,
+	})
 }
 
 func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
