@@ -1,6 +1,6 @@
 tailnet: kairos.ts.net
 listen_addr: 0.0.0.0:8080
-tailscale_enabled: true
+tailscale_enabled: false
 tailscale_addr: ""  # Auto-detected from Tailscale
 mock_http_enabled: true
 mock_http_listen_addr: 0.0.0.0:8081
