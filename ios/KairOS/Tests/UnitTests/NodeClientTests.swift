@@ -13,6 +13,7 @@ final class NodeClientTests: XCTestCase {
     }
     
     func testEndpointPersistence() {
+        let originalEndpoint = NodeClient.Endpoint.stored()
         let endpoint = NodeClient.Endpoint(host: "test-host", port: 9999, useTailscale: false)
         
         NodeClient.Endpoint.persist(host: endpoint.host, port: endpoint.port, useTailscale: endpoint.useTailscale)
@@ -20,6 +21,9 @@ final class NodeClientTests: XCTestCase {
         
         XCTAssertEqual(stored.host, "test-host")
         XCTAssertEqual(stored.port, 9999)
+        
+        // Reset to original endpoint
+        NodeClient.Endpoint.persist(host: originalEndpoint.host, port: originalEndpoint.port, useTailscale: originalEndpoint.useTailscale)
     }
     
     func testDefaultEndpoint() {
@@ -39,21 +43,23 @@ final class NodeClientTests: XCTestCase {
     }
     
     func testActivationResult() async throws {
+        let realClient = NodeClient(endpoint: NodeClient.Endpoint(host: "192.168.12.253", port: 8081, useTailscale: false))
         let publicKeyData = Data([1, 2, 3, 4])
         let publicKey = publicKeyData.base64EncodedString()
-        let result = try await nodeClient.activateDevice(
+        let result = try await realClient.activateDevice(
             deviceID: UUID().uuidString,
-            kairNumber: "K-TEST-1234",
+            kairNumber: "K-3000-0003",
             publicKey: publicKey,
             adminCode: "",
             avatarData: nil
         )
         
         XCTAssertFalse(result.state.isEmpty)
-        // Should return pending state or debug admin code for empty admin code
+        XCTAssertEqual(result.state, "pending_admin_code")
     }
     
-    func testMessagePacketCreation() async {
+    func testMessagePacketCreation() async throws {
+        let realClient = NodeClient(endpoint: NodeClient.Endpoint(host: "192.168.12.253", port: 8081, useTailscale: false))
         let packet = MessagePacket(
             id: UUID().uuidString,
             type: "message",
@@ -65,22 +71,15 @@ final class NodeClientTests: XCTestCase {
             hasAttachments: false
         )
         
-        do {
-            try await nodeClient.send(packet: packet)
-        } catch {
-            // Should handle network errors gracefully
-            XCTAssertTrue(true)
-        }
+        try await realClient.send(packet: packet)
     }
     
-    func testContactsFetch() async {
-        do {
-            let contacts = try await nodeClient.fetchContacts()
-            XCTAssertFalse(contacts.isEmpty)
-        } catch {
-            // Should handle network errors gracefully
-            XCTAssertTrue(true)
-        }
+    func testContactsFetch() async throws {
+        let realClient = NodeClient(endpoint: NodeClient.Endpoint(host: "192.168.12.253", port: 8081, useTailscale: false))
+        let contacts = try await realClient.fetchContacts()
+        XCTAssertFalse(contacts.isEmpty)
+        // Verify at least the default contacts exist
+        XCTAssertGreaterThanOrEqual(contacts.count, 2)
     }
     
     func testStatusCheck() async {

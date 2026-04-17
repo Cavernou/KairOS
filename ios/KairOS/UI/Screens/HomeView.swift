@@ -32,9 +32,9 @@ final class AppState: ObservableObject {
                     id: contact.id,
                     displayName: contact.displayName,
                     realPhone: nil,
-                    notes: nil,
+                    notes: contact.notes,
                     trustStatus: contact.trustStatus,
-                    lastInteraction: nil,
+                    lastInteraction: contact.lastInteraction != nil ? Date(timeIntervalSince1970: TimeInterval(contact.lastInteraction! / 1000)) : nil,
                     avatarASCII: contact.avatarASCII
                 )
             }

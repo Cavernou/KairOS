@@ -73,12 +73,6 @@ iOSInjectionProject/
 .vscode/
 .idea/
 
-# Large binary files (use Git LFS if needed)
-*.gguf
-*.mp3
-*.wav
-*.otf
-*.ttf
-
 # Reference materials
 Refrences/
+ALICE_2.0/

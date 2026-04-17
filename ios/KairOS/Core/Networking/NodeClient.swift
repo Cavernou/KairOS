@@ -1,10 +1,21 @@
 import Foundation
 
-struct Contact {
+struct Contact: Codable {
     let id: String
     let displayName: String
     let trustStatus: String
     let avatarASCII: String?
+    let notes: String?
+    let lastInteraction: Int64?
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case displayName = "display_name"
+        case trustStatus = "trust_status"
+        case avatarASCII = "avatar_ascii"
+        case notes
+        case lastInteraction = "last_interaction"
+    }
 }
 
 struct MemoryEntry {
@@ -33,8 +44,8 @@ class NodeClient {
                 return Endpoint(host: host, port: port, useTailscale: true)
             }
             
-            let host = defaults.string(forKey: hostDefaultsKey) ?? "127.0.0.1"
-            let port = defaults.object(forKey: portDefaultsKey) as? Int ?? 8080
+            let host = defaults.string(forKey: hostDefaultsKey) ?? "192.168.12.253"
+            let port = defaults.object(forKey: portDefaultsKey) as? Int ?? 8081
             return Endpoint(host: host, port: port, useTailscale: false)
         }
 
@@ -95,11 +106,11 @@ class NodeClient {
         let (data, _) = try await URLSession.shared.data(for: request)
         let response = try JSONDecoder().decode(ActivationResponse.self, from: data)
         
-        return ActivationResult(state: response.state, debugAdminCode: response.debugAdminCode)
+        return ActivationResult(state: response.activationState, debugAdminCode: response.debugAdminCode)
     }
     
     func send(packet: MessagePacket) async throws -> String {
-        let url = buildURL(path: "/mock/v1/send")
+        let url = buildURL(path: "/mock/v1/messages")
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -133,10 +144,12 @@ class NodeClient {
         
         return response.contacts.map { contact in
             Contact(
-                id: contact.kairNumber,
+                id: contact.id,
                 displayName: contact.displayName,
                 trustStatus: contact.trustStatus,
-                avatarASCII: contact.avatarASCII
+                avatarASCII: contact.avatarASCII,
+                notes: contact.notes,
+                lastInteraction: contact.lastInteraction
             )
         }
     }
@@ -209,8 +222,19 @@ class NodeClient {
     // MARK: - Response Types
     
     struct ActivationResponse: Codable {
-        let state: String
+        let activated: Bool
+        let activationState: String
+        let deviceID: String
+        let kairNumber: String
         let debugAdminCode: String?
+
+        enum CodingKeys: String, CodingKey {
+            case activated
+            case activationState = "activation_state"
+            case deviceID = "device_id"
+            case kairNumber = "kair_number"
+            case debugAdminCode = "debug_admin_code"
+        }
     }
     
     struct SendResponse: Codable {
@@ -218,10 +242,21 @@ class NodeClient {
     }
     
     struct ContactResponse: Codable {
-        let kairNumber: String
+        let id: String
         let displayName: String
+        let notes: String?
         let trustStatus: String
+        let lastInteraction: Int64?
         let avatarASCII: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id
+            case displayName = "display_name"
+            case notes
+            case trustStatus = "trust_status"
+            case lastInteraction = "last_interaction"
+            case avatarASCII = "avatar_ascii"
+        }
     }
     
     struct ContactsResponse: Codable {
