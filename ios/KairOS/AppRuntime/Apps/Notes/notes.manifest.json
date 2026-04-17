@@ -1,0 +1,8 @@
+{
+  "id": "com.kairos.notes",
+  "name": "Notes",
+  "version": "1.0.0",
+  "entry_type": "panel",
+  "permissions": ["files", "local_storage", "ai"],
+  "ai_summary": "Manages text notes with tagging."
+}

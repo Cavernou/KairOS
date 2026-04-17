@@ -1,0 +1,316 @@
+import Foundation
+// import NetworkExtension
+// import SystemConfiguration
+
+@MainActor
+final class TailscaleSDK: ObservableObject {
+    @Published var isConnected = false
+    @Published var tailnet = "kairos.ts.net"
+    @Published var status: VPNStatus = .disconnected
+    @Published var peers: [TailscalePeer] = []
+    @Published var currentIP = ""
+    @Published var lastError: String?
+    
+    private let vpnManager = NEVPNManager()
+    private var statusObserver: NSObjectProtocol?
+    
+    enum VPNStatus {
+        case disconnected
+        case connecting
+        case connected
+        case reconnecting
+        case disconnecting
+        case error(String)
+        
+        var description: String {
+            switch self {
+            case .disconnected: return "DISCONNECTED"
+            case .connecting: return "CONNECTING"
+            case .connected: return "CONNECTED"
+            case .reconnecting: return "RECONNECTING"
+            case .disconnecting: return "DISCONNECTING"
+            case .error(let message): return "ERROR: \(message)"
+            }
+        }
+        
+        var isActive: Bool {
+            switch self {
+            case .connected: return true
+            default: return false
+            }
+        }
+    }
+    
+    init() {
+        setupStatusObserver()
+    }
+    
+    deinit {
+        connTask()
+    }
+    
+    // MARK: - Connection Management
+    
+    func connTask() {
+        @MainActor in
+        removeStatusObserver()
+    }
+        
+    func connect() async throws {
+        guard case .connected = status else { return }
+        
+        status = .connecting
+        lastError = nil
+        
+        do {
+            try await loadAndStartVPN()
+            await updateStatus()
+        } catch {
+            status = .error(error.localizedDescription)
+            lastError = error.localizedDescription
+            throw error
+        }
+    }
+    
+    func disconnect() async throws {
+        guard status.rawValue != VPNStatus.connected.rawValue else { return }
+        
+        status = .disconnecting
+        
+        do {
+            try await vpnManager.connection.stopVPNTunnel()
+            await updateStatus()
+        } catch {
+            status = .error
+            status = .error(error.localizedDescription)
+            lastError = error.localizedDescription
+            throw error
+        }
+    }
+    
+    func reconnect() async throws {
+        try await disconnect()
+        try? await Task.sleep(nanoseconds: 1_000_000_000) // 1 second
+        try await connect()
+    }
+    
+    // MARK: - VPN Configuration
+    
+    private func loadAndStartVPN() async throws {
+        try await vpnManager.loadFromPreferences()
+        
+        guard let vpnConnection = vpnManager.connection as? NEVPNConnection else {
+            throw TailscaleError.vpnConfigurationNotFound
+        }
+        
+        // Configure Tailscale-specific settings
+        vpnConnection.startVPNTunnel() { error in
+            if let error = error {
+                Task { @MainActor in
+                    self.status = .error(error.localizedDescription)
+                    self.lastError = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    private func createVPNConfiguration() -> NEVPNProtocol {
+        let config = NEVPNProtocolIPSec()
+        config.username = "kairos-device"
+        config.serverAddress = "kairos.ts.net"
+        config.authenticationMethod = .none
+        config.useExtendedAuthentication = true
+        
+        // Tailscale-specific settings
+        config.localIdentifier = "kairos-ios"
+        config.remoteIdentifier = "kairos-tailnet"
+        
+        return config
+    }
+    
+    // MARK: - Status Monitoring
+    
+    private func setupStatusObserver() {
+        statusObserver = NotificationCenter.default.addObserver(
+            forName: .NEVPNStatusDidChange,
+            object: vpnManager.connection,
+            queue: .main
+        ) { [weak self] notification in
+            Task { @MainActor in
+                self?.handleVPNStatusChange(notification)
+            }
+        }
+    }
+    
+    private func removeStatusObserver() {
+        if let observer = statusObserver {
+            NotificationCenter.default.removeObserver(observer)
+            statusObserver = nil
+        }
+    }
+    
+    private func handleVPNStatusChange(_ notification: Notification) {
+        guard let connection = notification.object as? NEVPNConnection else { return }
+        
+        switch connection.status {
+        case .connected:
+            status = .connected
+            isConnected = true
+            updateConnectionInfo(connection)
+            
+        case .connecting:
+            status = .connecting
+            isConnected = false
+            
+        case .disconnecting:
+            status = .disconnecting
+            isConnected = false
+            
+        case .disconnected:
+            status = .disconnected
+            isConnected = false
+            currentIP = ""
+            
+        case .reasserting:
+            status = .reconnecting
+            isConnected = false
+            
+        case .invalid:
+            status = .error("Invalid VPN configuration")
+            isConnected = false
+            lastError = "Invalid VPN configuration"
+            
+        @unknown default:
+            status = .error("Unknown VPN status")
+            isConnected = false
+            lastError = "Unknown VPN status"
+        }
+    }
+    
+    private func updateConnectionInfo(_ connection: NEVPNConnection) {
+        // Extract current IP and connection details
+        if let ipv4Settings = connection.ipv4Settings {
+            currentIP = ipv4Settings.addresses?.first ?? ""
+        }
+        
+        // Update peer information
+        Task {
+            await updatePeerInfo()
+        }
+    }
+    
+    // MARK: - Peer Management
+    
+    private func updatePeerInfo() async {
+        // Query Tailscale daemon for peer information
+        do {
+            peers = try await queryTailscalePeers()
+        } catch {
+            print("Failed to query Tailscale peers: \(error)")
+            peers = []
+        }
+    }
+    
+    private func queryTailscalePeers() async throws -> [TailscalePeer] {
+        // In a real implementation, this would query the Tailscale daemon
+        // For now, return mock data
+        return [
+            TailscalePeer(
+                id: "home-node",
+                name: "home-node",
+                addresses: ["100.100.1.1"],
+                online: true,
+                lastSeen: Date()
+            ),
+            TailscalePeer(
+                id: "test-device",
+                name: "test-device",
+                addresses: ["100.100.1.2"],
+                online: false,
+                lastSeen: Date().addingTimeInterval(-3600)
+            )
+        ]
+    }
+    
+    // MARK: - Status Updates
+    
+    private func updateStatus() async {
+        guard let connection = vpnManager.connection as? NEVPNConnection else { return }
+        
+        await MainActor.run {
+            handleVPNStatusChange(Notification(name: .NEVPNStatusDidChange, object: connection))
+        }
+    }
+    
+    func getCurrentStatus() async -> VPNStatus {
+        guard let connection = vpnManager.connection as? NEVPNConnection else {
+            return .disconnected
+        }
+        
+        switch connection.status {
+        case .connected: return .connected
+        case .connecting: return .connecting
+        case .disconnecting: return .disconnecting
+        case .disconnected: return .disconnected
+        case .reasserting: return .reconnecting
+        case .invalid: return .error("Invalid configuration")
+        @unknown default: return .error("Unknown status")
+        }
+    }
+    
+    // MARK: - Network Reachability
+    
+    func checkNetworkReachability() -> Bool {
+        var zeroAddress = sockaddr_in()
+        zeroAddress.sin_len = UInt8(MemoryLayout.size(ofValue: zeroAddress))
+        zeroAddress.sin_family = sa_family_t(AF_INET)
+        
+        guard let reachability = withUnsafePointer(to: &zeroAddress, {
+            $0.withMemoryRebound(to: sockaddr.self, capacity: 1) {
+                SCNetworkReachabilityCreateWithAddress(nil, $0)
+            }
+        }) else {
+            return false
+        }
+        
+        var flags = SCNetworkReachabilityFlags()
+        let success = SCNetworkReachabilityGetFlags(reachability, &flags)
+        
+        defer {
+            SCNetworkReachabilityUnscheduleFromRunLoop(reachability, .main, .defaultMode)
+        }
+        
+        guard success else { return false }
+        
+        let isReachable = flags.contains(.reachable)
+        let needsConnection = flags.contains(.connectionRequired)
+        
+        return isReachable && !needsConnection
+    }
+    
+    // MARK: - Error Types
+    
+    enum TailscaleError: LocalizedError {
+        case vpnConfigurationNotFound
+        case connectionFailed(String)
+        case authenticationFailed
+        case networkUnavailable
+        
+        var errorDescription: String? {
+            switch self {
+            case .vpnConfigurationNotFound:
+                return "VPN configuration not found"
+            case .connectionFailed(let message):
+                return "Connection failed: \(message)"
+            case .authenticationFailed:
+                return "Authentication failed"
+            case .networkUnavailable:
+                return "Network unavailable"
+            }
+        }
+    }
+}
+
+// MARK: - Tailscale Peer Model
+
+// Remove duplicate initializer - use the one in the struct definition

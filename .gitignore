@@ -1,0 +1,84 @@
+._*
+.DS_Store
+node/var/
+*.db
+DerivedData/
+build/
+
+# Go
+node/bin/
+node/pkg/
+*.exe
+*.exe~
+*.dll
+*.so
+*.test
+*.out
+node/go.work
+node/kairos-node
+.gocache/
+.gomodcache/
+
+# iOS
+ios/KairOS/Pods/
+ios/KairOS/Podfile.lock
+ios/KairOS/*.xcworkspace
+ios/KairOS/*.xcuserdatad
+ios/KairOS/*.xcuserstate
+ios/KairOS/*.moved-aside
+ios/KairOS/*.hmap
+ios/KairOS/Generated/
+ios/KairOS/Build/
+ios/KairOS/build/
+ios/KairOS/*.ipa
+ios/KairOS/*.dSYM.zip
+ios/KairOS/*.dSYM
+ios/KairOS/.swiftpm/
+
+# Xcode
+*.xcuserstate
+*.xcuserdatad
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Package.pins
+Package.resolved
+Packages/
+
+# Carthage
+Carthage/Build/
+
+# CocoaPods
+Pods/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Code Injection
+iOSInjectionProject/
+
+# Temporary files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Large binary files (use Git LFS if needed)
+*.gguf
+*.mp3
+*.wav
+*.otf
+*.ttf
+
+# Reference materials
+Refrences/

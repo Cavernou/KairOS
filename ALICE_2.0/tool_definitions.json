@@ -1,0 +1,102 @@
+{
+  "tools": [
+    {
+      "name": "send_message",
+      "description": "Send a message to another KairOS user",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "K-number of the recipient"
+          },
+          "text": {
+            "type": "string", 
+            "description": "Message content"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": "Optional file attachments"
+          }
+        },
+        "required": ["to", "text"]
+      },
+      "requires_confirmation": true
+    },
+    {
+      "name": "list_files",
+      "description": "List files in the current directory",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string",
+            "description": "Directory path to list (optional)"
+          }
+        }
+      },
+      "requires_confirmation": false
+    },
+    {
+      "name": "read_file",
+      "description": "Read the contents of a file",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Name of the file to read"
+          }
+        },
+        "required": ["filename"]
+      },
+      "requires_confirmation": false
+    },
+    {
+      "name": "search_contacts",
+      "description": "Search through contacts",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Search query for contacts"
+          }
+        },
+        "required": ["query"]
+      },
+      "requires_confirmation": false
+    },
+    {
+      "name": "start_call",
+      "description": "Initiate a voice call to another KairOS user",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "to": {
+            "type": "string",
+            "description": "K-number of the person to call"
+          }
+        },
+        "required": ["to"]
+      },
+      "requires_confirmation": true
+    },
+    {
+      "name": "delete_file",
+      "description": "Delete a file from storage",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "filename": {
+            "type": "string",
+            "description": "Name of the file to delete"
+          }
+        },
+        "required": ["filename"]
+      },
+      "requires_confirmation": true
+    }
+  ]
+}

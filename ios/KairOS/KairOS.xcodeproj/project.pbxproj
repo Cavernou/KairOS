@@ -1,0 +1,1111 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		010C632E45D0E54E23DC7B0F /* OldDataUnpackProcessing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B5519CD0DE8119FEEC3C6EAC /* OldDataUnpackProcessing.mp3 */; };
+		0303BD1791BEF8E7535B0B44 /* AliceSendMessage.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3ACA045D228EC3E795B09801 /* AliceSendMessage.mp3 */; };
+		03DD19EF876FEF5A037FF20E /* kairos_node.proto in Resources */ = {isa = PBXBuildFile; fileRef = 1210128F4A315EA7638C467D /* kairos_node.proto */; };
+		050F4629E1041C08C0B7156A /* archivist_file_window_close.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3457806957DECDB87E2C825 /* archivist_file_window_close.wav */; };
+		0599C7FD9674D7C84149393B /* KairOSAPIImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 649A9635BED8E739971B45DB /* KairOSAPIImpl.swift */; };
+		081947B98F326656E03D3972 /* EventTypes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C47FC61DBEDC565A5CE325C /* EventTypes.swift */; };
+		0BEB160C711FA6EA465ED02D /* CryptoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = F245E1038CF641CDD7E3F625 /* CryptoService.swift */; };
+		0D9FEA7B1DB3D98DABC04D48 /* LEDIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C62020D93AE9975D52B23D /* LEDIndicator.swift */; };
+		0FE944ABEBC6F69F38845306 /* PacketSerializer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07FE809B2185E30AF37DA51B /* PacketSerializer.swift */; };
+		1097E75F05971DF7370C562B /* Reminder.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5BBB7BB6DF6245CF31F5BC5C /* Reminder.mp3 */; };
+		1280F6C347A9AAF435E58AEA /* YesSound.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 312AD4FE506BC9717143ACB7 /* YesSound.mp3 */; };
+		15DF7FB30222D774DEE708BB /* code128.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4D67E0AF8CB3966E451E8109 /* code128.ttf */; };
+		197D0431AE23B93D27B47F47 /* DISAPPOINTING_FAILURE.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 5006D1AA8799CF3D2F340DBF /* DISAPPOINTING_FAILURE.mp3 */; };
+		1CACC41B2148B172EFBC603E /* BlackboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 954B1B4828C223C3F8D716E6 /* BlackboxView.swift */; };
+		1D3D0F787D325B61DD859CB6 /* KeyType2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B7296599DCC387633CF26DC2 /* KeyType2.mp3 */; };
+		1F065850BA6CED2EFCFB56BE /* KairOSCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37933E9E1219771DD4000D99 /* KairOSCoreTests.swift */; };
+		2006D135AB972895257AB856 /* files.manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 8204B0B59B194BFE4718FEF5 /* files.manifest.json */; };
+		206C018AB5126CAC54A3365B /* VoiceCallManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4F8176987CA4878509FE10B /* VoiceCallManager.swift */; };
+		2A91C50EED2394562768D82E /* command_line_click#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = 9F9D8EE65A19A333CFCE6890 /* command_line_click#3.wav */; };
+		2B1433C8713B339FA1019726 /* ActivationTerminalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56AE10F4CF8B7C8F784773A4 /* ActivationTerminalView.swift */; };
+		2CE0D8820F10FA081187A348 /* KeyType4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 61A56104EC3FA051AD73F3AD /* KeyType4.mp3 */; };
+		2F1444BE07E0E3DC1C4FC3C3 /* AreYouSure.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 41C5ACE6C147600E05D5CAFC /* AreYouSure.mp3 */; };
+		329159494551814716AE62FF /* command_line_click#1.wav in Resources */ = {isa = PBXBuildFile; fileRef = E17D3AC21DA0F4AF52123B82 /* command_line_click#1.wav */; };
+		3304EE94A14F1DE0AF795F63 /* diagnostics.manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = 08C42675E2CEB00FBE14C33E /* diagnostics.manifest.json */; };
+		3345BE1A1F0D26806C21868D /* FileDirectoryOpen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 74959B19DEA1997528C2110F /* FileDirectoryOpen.mp3 */; };
+		37125828C327C10BEFE4683E /* RadarPing.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = E3073A1A91C1B0C8E95A95AC /* RadarPing.mp3 */; };
+		3A8494748E5357A73837342B /* TadaSuccess.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4A4985F1B971A9BBAE63B442 /* TadaSuccess.mp3 */; };
+		3C170B935D6B1367BD4B98C5 /* ScanlineOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE784792F7D42B3792486D04 /* ScanlineOverlay.swift */; };
+		3D0858461ABD6EE7C4788B95 /* KairOSAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA14FBCDED0A31F4FA54FAC6 /* KairOSAPI.swift */; };
+		3D8CB753BDB1CAD59FB0DBF6 /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0D8222E4E224E3A274014DB /* TabBarView.swift */; };
+		44E7F9539A5A09CA6D89F31F /* ModelLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A096465312E92212607FAC6 /* ModelLoader.swift */; };
+		49D0A9CBFD42028A26B86EBE /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C60578129E20EAB0113F785 /* Tokenizer.swift */; };
+		4ACA0FA23046B71A0B8D31E0 /* MIB.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2E5CE68F0C3E0E2A54B94E44 /* MIB.ttf */; };
+		4BB6BB0080B820142B71A89D /* MessagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFE932A03C4FA5585079600 /* MessagesView.swift */; };
+		4CA7840218FA8FF8B75CACBF /* Redacted-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39BB66418CF0A6A2711F7894 /* Redacted-Regular.ttf */; };
+		51E3367B517177F75B7496E1 /* LowPower.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 55E7E786EB132A5FF7893F01 /* LowPower.mp3 */; };
+		565254E3DA945C0100B1E109 /* KairOSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DD6B0A34BBE2AC6E37EDF4 /* KairOSApp.swift */; };
+		574EB9512ADCCECECF4CBCE9 /* ToolRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = E0850C12BC27236D13E20D22 /* ToolRegistry.swift */; };
+		58481D96431DE84725578647 /* AppContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAAE8FEDA3A7D9BD7C04C90F /* AppContainer.swift */; };
+		60D3175665BED5B1CEFD90EA /* KairOSSoundLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4580865BD8183AA4CE03DB35 /* KairOSSoundLibrary.swift */; };
+		64946E61BB821AD07A5E6B15 /* FileRead.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4E73111DF66E30838B2B66B2 /* FileRead.mp3 */; };
+		6524C229501D9C8F5BCFF72A /* LayoutMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BF1DA0295DF4A9BCA9F2A4 /* LayoutMode.swift */; };
+		6698DDE52316EED0377353F6 /* IndustrialModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B792206FBF59E749E7FC73 /* IndustrialModifiers.swift */; };
+		69FF3E2498B1C42A7F7207B2 /* europa-grotesk-sh-bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B031EDD06415CC294D9F5503 /* europa-grotesk-sh-bold.otf */; };
+		6A97EC0E65AEED3E6BD46864 /* ActivationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222231B523C80AAC32CA4AC3 /* ActivationViewModel.swift */; };
+		6B543AE23ABD25AB4862CBB9 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B18DCF7C49AF1434C60CC9E /* Typography.swift */; };
+		7041B5F584BF81AC0929B425 /* notes.manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = E3208E3D933626CA462FB6FF /* notes.manifest.json */; };
+		7653CCB4EE7BD09CF6B6C933 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3F73ADF54B8FF9C42BD29D /* ContactsView.swift */; };
+		7A071DA936E8B32971A51755 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F56621E0D6798EBFB0C3AD /* HomeView.swift */; };
+		7E300A7C96583749A7C5D442 /* command_line_click#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = D627C4A5814D582067D97112 /* command_line_click#2.wav */; };
+		7F66842A9F6B2EDEC21201D1 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF04BD775C65D63F77F22B6A /* Router.swift */; };
+		7F8EA7B4FACBDEDBF7E3C739 /* InferenceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1257D79E3FB709A082056E9 /* InferenceEngine.swift */; };
+		7F8F7006506DFE7B785A127A /* HomeVideo-BLG6G.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CEAE2E701224DCF5FEC6004C /* HomeVideo-BLG6G.ttf */; };
+		83397AFE10158D9801100AB8 /* TailscaleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55976DBF7EA2E9AAB92F0733 /* TailscaleManager.swift */; };
+		86F2F29610A25956D03D2526 /* TailscaleSDK.swift.bak in Resources */ = {isa = PBXBuildFile; fileRef = 2E155439F93A6F9AE41D2CEF /* TailscaleSDK.swift.bak */; };
+		8A026CBA7E755A29E6E12BE1 /* SystemTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22C7D066F2E445EC1A1CD10 /* SystemTools.swift */; };
+		8AE442C6F5C133B936E48EE3 /* AppLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D535071BFEA68B7EAD867ED /* AppLoader.swift */; };
+		918D58CC56409EA073CFFDFA /* KairModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77F5A87466D0743158AD5E2E /* KairModels.swift */; };
+		92CEBB5E3077EB8A46B52705 /* IdentityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8C299BE8EED30C6E83A9A6B /* IdentityManager.swift */; };
+		938A2A4FB4E527DDFE886C15 /* command_line_click#5.wav in Resources */ = {isa = PBXBuildFile; fileRef = B5FAB932898F8DEEE6BD3B22 /* command_line_click#5.wav */; };
+		93D4163227C2F83C7C5A83E9 /* QueueManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93DF0C4288369DAA5C822FB6 /* QueueManager.swift */; };
+		961C500EB64F6A565BD87131 /* NodeClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13510BB456DFF165E624DE5 /* NodeClientTests.swift */; };
+		9623681621BC9C88446A969A /* KairOSUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A941DA4EE140841D6C4065B1 /* KairOSUITests.swift */; };
+		97916F39D4A6D4E8EBAF8A0D /* UserSendMessage.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F8ADE5537659359ADF552A05 /* UserSendMessage.mp3 */; };
+		97F54ED7D2907E6270569C22 /* EventBus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FACFEE95078394667FB12D3 /* EventBus.swift */; };
+		98E426BB37B7CC2E2330EF43 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2000BEDB3CCA5007FB247C96 /* AppsView.swift */; };
+		9BB6A4CFAB1EB7E740FFD0BA /* LocalCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F1D3D59D2F41491DCCBC04 /* LocalCache.swift */; };
+		9D81307AC6156D09EC7FF003 /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 619B86458586EB75D963B0F5 /* Colors.swift */; };
+		A04A73529E6C0AA1508F15A2 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 124439DA5D6AF5198F3776CC /* ImagePicker.swift */; };
+		A14ECBE106BB340678EB3FF6 /* TelemetryDecor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C5A6261AC219A285263D8F3 /* TelemetryDecor.swift */; };
+		A396354E7471477E38977C41 /* FileBack.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = F77693BEBBD5041ED78F07C2 /* FileBack.mp3 */; };
+		A49AB4EBFDF5438F8063593A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A983D312B5E3C97925601FF4 /* SettingsView.swift */; };
+		A5D3485E5DF2C77A4415E2CA /* CryptoServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BEEE04EAE16A2825F4F2790 /* CryptoServiceTests.swift */; };
+		A78C7A6B3DD89F985F66326D /* FilesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797DF0BCF72E95819005C5D9 /* FilesView.swift */; };
+		A7C55A11D8828DA7BBF82778 /* FileFolderOpen.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 710B0D6006E8DCB00E036249 /* FileFolderOpen.mp3 */; };
+		A9263A2ECF443CDB53D5EE5B /* AppLifecycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = E35030EFF176F59A84CAF708 /* AppLifecycle.swift */; };
+		AA1CD8009FC3760766CD67AD /* vcr-jp.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B99ED713AB41129E1749E38 /* vcr-jp.ttf */; };
+		AB11654B1F39EE26931FD25B /* BlackboxExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 982ECFAF1C5509381F8DD647 /* BlackboxExporter.swift */; };
+		AD43E9DAEE6BAD9A53F7DC87 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A67CB19CCD6FE3EF943588 /* SoundManager.swift */; };
+		AED391D4D7E98F6920A2F729 /* KeyType1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 01DCE91C5C337E8DF8CADEEE /* KeyType1.mp3 */; };
+		B115A4230A866977098B9303 /* NodesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B08425539BEC8C72F41DE0 /* NodesView.swift */; };
+		B28FED54133480D9EDF74675 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A18F54E28F234BDA6857263 /* AppDelegate.swift */; };
+		B81A81CA1EA8C56B892B4C16 /* NodeMemoryClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1234B1A376D79E41C3BF21 /* NodeMemoryClient.swift */; };
+		BC569C14AB2D28F826838A32 /* EndToEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B34D6D5360324DD0646BBF5 /* EndToEndTests.swift */; };
+		C05E3E4384EFC093F7E5838B /* WarningUI.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 705C10F9ABACE997BF949229 /* WarningUI.mp3 */; };
+		C15711E6BCB7C28F2342B052 /* chatwaifu_v1.0-q4_k_m.gguf in Resources */ = {isa = PBXBuildFile; fileRef = F7CBEE7C0A239393817E277D /* chatwaifu_v1.0-q4_k_m.gguf */; };
+		C288E8CC0208431F59B5DA50 /* Zekton.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0E12D238E8E346C841301704 /* Zekton.otf */; };
+		C34398371DE634BE186A75A1 /* KeyType3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 26BBCF7B5E9413B6F06E57C4 /* KeyType3.mp3 */; };
+		C693D9580042C26B09AF7A5C /* AppToolAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29F89E4CA6027EDA62904FFE /* AppToolAdapter.swift */; };
+		C6CF6AD6BC323061536EC9C5 /* ShortTermMemory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B2FBAD6E72C65DDA3E3410 /* ShortTermMemory.swift */; };
+		CB3EBCA93D40074D1040DF44 /* NodeClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C20882A4E3521073CFF1F7 /* NodeClient.swift */; };
+		CC4E8000EE4D1ECC91604928 /* PanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F9E83B91DF2ECBE1CB1F3B3 /* PanelView.swift */; };
+		D2981463EB01310700116EBC /* ALICEOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09F3A112DA7C91CC3BBC085D /* ALICEOrchestrator.swift */; };
+		D3A406BC8CE4A54DF22BDD7F /* ManifestLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F5812A12F56E53B75BB4B28 /* ManifestLoader.swift */; };
+		D4693DEC125481F804DB4147 /* SaveConsoleOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1FA58E2DD25B01087825B10 /* SaveConsoleOverlay.swift */; };
+		DA950C1CDD1D1051C1E0754E /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 464045D80800E66977589C5B /* KeychainWrapper.swift */; };
+		DC85D2F19CC523C722776EFE /* PermissionGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A823CC71007720CE767C2A72 /* PermissionGate.swift */; };
+		E0874A6A9BB02D349FCBEBF3 /* command_line_click#4.wav in Resources */ = {isa = PBXBuildFile; fileRef = 39F92405ABA9AF663DD5EA52 /* command_line_click#4.wav */; };
+		E40486D56026184F16710694 /* BlackboxImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A50ACCFCE742F3555607FE3F /* BlackboxImporter.swift */; };
+		E717FDDD43E5A827C60A82A2 /* AccessGranted.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = BA0E4EF3D334928B4A46F84E /* AccessGranted.mp3 */; };
+		EA737D14125DE7B94BB43D10 /* ALICEInferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDBFDF4C87774A5BF1B1416 /* ALICEInferenceTests.swift */; };
+		F073F5B34F5DF1CDB46CBEA0 /* GGUFInferenceEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F9B1ABF84B23418B665EC0 /* GGUFInferenceEngine.swift */; };
+		F52BC6833E71A7176C4A1912 /* HomeVideoBold-R90Dv.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 90D6C513344C28AA81B996CB /* HomeVideoBold-R90Dv.ttf */; };
+		F7E73DA1EB028F5874B8EDCE /* BlackboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F0F9B12E7C792461A6A6327 /* BlackboxTests.swift */; };
+		FD23B69055FEE3647D0AD3FC /* WeatherAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F60E2FABF1E34DA58F9796FE /* WeatherAppView.swift */; };
+		FD274F08FE3BB7B93CE7D975 /* digital-7.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8B7322A7C6767F025CE96D0 /* digital-7.ttf */; };
+		FE90775108B59E6C9CC10489 /* NotesAppView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3A1CEE0EA06CC28090EC3E /* NotesAppView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E8CDE0816F1249C8F2E5245D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A68EB83C3F362495469A17A5 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F62EDD303B89DF8648E8BAAC;
+			remoteInfo = KairOS;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		01DCE91C5C337E8DF8CADEEE /* KeyType1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = KeyType1.mp3; sourceTree = "<group>"; };
+		05BF1DA0295DF4A9BCA9F2A4 /* LayoutMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutMode.swift; sourceTree = "<group>"; };
+		07FE809B2185E30AF37DA51B /* PacketSerializer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketSerializer.swift; sourceTree = "<group>"; };
+		08C42675E2CEB00FBE14C33E /* diagnostics.manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = diagnostics.manifest.json; sourceTree = "<group>"; };
+		09F3A112DA7C91CC3BBC085D /* ALICEOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALICEOrchestrator.swift; sourceTree = "<group>"; };
+		0E12D238E8E346C841301704 /* Zekton.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zekton.otf; sourceTree = "<group>"; };
+		1210128F4A315EA7638C467D /* kairos_node.proto */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.protobuf; path = kairos_node.proto; sourceTree = "<group>"; };
+		124439DA5D6AF5198F3776CC /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		1B99ED713AB41129E1749E38 /* vcr-jp.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "vcr-jp.ttf"; sourceTree = "<group>"; };
+		1C47FC61DBEDC565A5CE325C /* EventTypes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTypes.swift; sourceTree = "<group>"; };
+		1F5812A12F56E53B75BB4B28 /* ManifestLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManifestLoader.swift; sourceTree = "<group>"; };
+		2000BEDB3CCA5007FB247C96 /* AppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsView.swift; sourceTree = "<group>"; };
+		222231B523C80AAC32CA4AC3 /* ActivationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationViewModel.swift; sourceTree = "<group>"; };
+		24841D50CD2F3885DC19E518 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		26BBCF7B5E9413B6F06E57C4 /* KeyType3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = KeyType3.mp3; sourceTree = "<group>"; };
+		29F89E4CA6027EDA62904FFE /* AppToolAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppToolAdapter.swift; sourceTree = "<group>"; };
+		2A18F54E28F234BDA6857263 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		2AFE932A03C4FA5585079600 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
+		2E155439F93A6F9AE41D2CEF /* TailscaleSDK.swift.bak */ = {isa = PBXFileReference; path = TailscaleSDK.swift.bak; sourceTree = "<group>"; };
+		2E5CE68F0C3E0E2A54B94E44 /* MIB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MIB.ttf; sourceTree = "<group>"; };
+		2F9E83B91DF2ECBE1CB1F3B3 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
+		312AD4FE506BC9717143ACB7 /* YesSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = YesSound.mp3; sourceTree = "<group>"; };
+		37933E9E1219771DD4000D99 /* KairOSCoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSCoreTests.swift; sourceTree = "<group>"; };
+		39BB66418CF0A6A2711F7894 /* Redacted-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Redacted-Regular.ttf"; sourceTree = "<group>"; };
+		39F92405ABA9AF663DD5EA52 /* command_line_click#4.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "command_line_click#4.wav"; sourceTree = "<group>"; };
+		3A096465312E92212607FAC6 /* ModelLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoader.swift; sourceTree = "<group>"; };
+		3ACA045D228EC3E795B09801 /* AliceSendMessage.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AliceSendMessage.mp3; sourceTree = "<group>"; };
+		41C5ACE6C147600E05D5CAFC /* AreYouSure.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AreYouSure.mp3; sourceTree = "<group>"; };
+		4580865BD8183AA4CE03DB35 /* KairOSSoundLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSSoundLibrary.swift; sourceTree = "<group>"; };
+		464045D80800E66977589C5B /* KeychainWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
+		4A3A1CEE0EA06CC28090EC3E /* NotesAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesAppView.swift; sourceTree = "<group>"; };
+		4A4985F1B971A9BBAE63B442 /* TadaSuccess.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = TadaSuccess.mp3; sourceTree = "<group>"; };
+		4D67E0AF8CB3966E451E8109 /* code128.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = code128.ttf; sourceTree = "<group>"; };
+		4E73111DF66E30838B2B66B2 /* FileRead.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileRead.mp3; sourceTree = "<group>"; };
+		5006D1AA8799CF3D2F340DBF /* DISAPPOINTING_FAILURE.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = DISAPPOINTING_FAILURE.mp3; sourceTree = "<group>"; };
+		55976DBF7EA2E9AAB92F0733 /* TailscaleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TailscaleManager.swift; sourceTree = "<group>"; };
+		55E7E786EB132A5FF7893F01 /* LowPower.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = LowPower.mp3; sourceTree = "<group>"; };
+		56AE10F4CF8B7C8F784773A4 /* ActivationTerminalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivationTerminalView.swift; sourceTree = "<group>"; };
+		57F56621E0D6798EBFB0C3AD /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		59C62020D93AE9975D52B23D /* LEDIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LEDIndicator.swift; sourceTree = "<group>"; };
+		5B18DCF7C49AF1434C60CC9E /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
+		5BBB7BB6DF6245CF31F5BC5C /* Reminder.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = Reminder.mp3; sourceTree = "<group>"; };
+		5C60578129E20EAB0113F785 /* Tokenizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
+		5EDBFDF4C87774A5BF1B1416 /* ALICEInferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ALICEInferenceTests.swift; sourceTree = "<group>"; };
+		619B86458586EB75D963B0F5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
+		61A56104EC3FA051AD73F3AD /* KeyType4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = KeyType4.mp3; sourceTree = "<group>"; };
+		649A9635BED8E739971B45DB /* KairOSAPIImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSAPIImpl.swift; sourceTree = "<group>"; };
+		705C10F9ABACE997BF949229 /* WarningUI.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = WarningUI.mp3; sourceTree = "<group>"; };
+		710B0D6006E8DCB00E036249 /* FileFolderOpen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileFolderOpen.mp3; sourceTree = "<group>"; };
+		74959B19DEA1997528C2110F /* FileDirectoryOpen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileDirectoryOpen.mp3; sourceTree = "<group>"; };
+		77F5A87466D0743158AD5E2E /* KairModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairModels.swift; sourceTree = "<group>"; };
+		797DF0BCF72E95819005C5D9 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
+		7BEEE04EAE16A2825F4F2790 /* CryptoServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoServiceTests.swift; sourceTree = "<group>"; };
+		7CF89D9E68E97E2AF5BBC9BD /* KairOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KairOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8204B0B59B194BFE4718FEF5 /* files.manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = files.manifest.json; sourceTree = "<group>"; };
+		82F9B1ABF84B23418B665EC0 /* GGUFInferenceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GGUFInferenceEngine.swift; sourceTree = "<group>"; };
+		8C5A6261AC219A285263D8F3 /* TelemetryDecor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryDecor.swift; sourceTree = "<group>"; };
+		8D3F73ADF54B8FF9C42BD29D /* ContactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsView.swift; sourceTree = "<group>"; };
+		8FACFEE95078394667FB12D3 /* EventBus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBus.swift; sourceTree = "<group>"; };
+		90D6C513344C28AA81B996CB /* HomeVideoBold-R90Dv.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HomeVideoBold-R90Dv.ttf"; sourceTree = "<group>"; };
+		93DF0C4288369DAA5C822FB6 /* QueueManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueueManager.swift; sourceTree = "<group>"; };
+		954B1B4828C223C3F8D716E6 /* BlackboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackboxView.swift; sourceTree = "<group>"; };
+		982ECFAF1C5509381F8DD647 /* BlackboxExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackboxExporter.swift; sourceTree = "<group>"; };
+		9B34D6D5360324DD0646BBF5 /* EndToEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EndToEndTests.swift; sourceTree = "<group>"; };
+		9D535071BFEA68B7EAD867ED /* AppLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLoader.swift; sourceTree = "<group>"; };
+		9F0F9B12E7C792461A6A6327 /* BlackboxTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackboxTests.swift; sourceTree = "<group>"; };
+		9F9D8EE65A19A333CFCE6890 /* command_line_click#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "command_line_click#3.wav"; sourceTree = "<group>"; };
+		A1257D79E3FB709A082056E9 /* InferenceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InferenceEngine.swift; sourceTree = "<group>"; };
+		A50ACCFCE742F3555607FE3F /* BlackboxImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackboxImporter.swift; sourceTree = "<group>"; };
+		A823CC71007720CE767C2A72 /* PermissionGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionGate.swift; sourceTree = "<group>"; };
+		A941DA4EE140841D6C4065B1 /* KairOSUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSUITests.swift; sourceTree = "<group>"; };
+		A983D312B5E3C97925601FF4 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A9C20882A4E3521073CFF1F7 /* NodeClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeClient.swift; sourceTree = "<group>"; };
+		B031EDD06415CC294D9F5503 /* europa-grotesk-sh-bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "europa-grotesk-sh-bold.otf"; sourceTree = "<group>"; };
+		B2A67CB19CCD6FE3EF943588 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
+		B5519CD0DE8119FEEC3C6EAC /* OldDataUnpackProcessing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = OldDataUnpackProcessing.mp3; sourceTree = "<group>"; };
+		B5B2FBAD6E72C65DDA3E3410 /* ShortTermMemory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShortTermMemory.swift; sourceTree = "<group>"; };
+		B5FAB932898F8DEEE6BD3B22 /* command_line_click#5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "command_line_click#5.wav"; sourceTree = "<group>"; };
+		B7296599DCC387633CF26DC2 /* KeyType2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = KeyType2.mp3; sourceTree = "<group>"; };
+		BA0E4EF3D334928B4A46F84E /* AccessGranted.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = AccessGranted.mp3; sourceTree = "<group>"; };
+		BA14FBCDED0A31F4FA54FAC6 /* KairOSAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSAPI.swift; sourceTree = "<group>"; };
+		C0B08425539BEC8C72F41DE0 /* NodesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodesView.swift; sourceTree = "<group>"; };
+		C3457806957DECDB87E2C825 /* archivist_file_window_close.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = archivist_file_window_close.wav; sourceTree = "<group>"; };
+		C4F1D3D59D2F41491DCCBC04 /* LocalCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalCache.swift; sourceTree = "<group>"; };
+		C6DD6B0A34BBE2AC6E37EDF4 /* KairOSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSApp.swift; sourceTree = "<group>"; };
+		CE1234B1A376D79E41C3BF21 /* NodeMemoryClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeMemoryClient.swift; sourceTree = "<group>"; };
+		CEAE2E701224DCF5FEC6004C /* HomeVideo-BLG6G.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "HomeVideo-BLG6G.ttf"; sourceTree = "<group>"; };
+		D1FA58E2DD25B01087825B10 /* SaveConsoleOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveConsoleOverlay.swift; sourceTree = "<group>"; };
+		D22C7D066F2E445EC1A1CD10 /* SystemTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemTools.swift; sourceTree = "<group>"; };
+		D4F8176987CA4878509FE10B /* VoiceCallManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceCallManager.swift; sourceTree = "<group>"; };
+		D627C4A5814D582067D97112 /* command_line_click#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "command_line_click#2.wav"; sourceTree = "<group>"; };
+		D7EA94521CEDC86675FEFB7B /* KairOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = KairOSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAAE8FEDA3A7D9BD7C04C90F /* AppContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppContainer.swift; sourceTree = "<group>"; };
+		E0850C12BC27236D13E20D22 /* ToolRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolRegistry.swift; sourceTree = "<group>"; };
+		E0D8222E4E224E3A274014DB /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		E13510BB456DFF165E624DE5 /* NodeClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeClientTests.swift; sourceTree = "<group>"; };
+		E17D3AC21DA0F4AF52123B82 /* command_line_click#1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "command_line_click#1.wav"; sourceTree = "<group>"; };
+		E3073A1A91C1B0C8E95A95AC /* RadarPing.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = RadarPing.mp3; sourceTree = "<group>"; };
+		E3208E3D933626CA462FB6FF /* notes.manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = notes.manifest.json; sourceTree = "<group>"; };
+		E35030EFF176F59A84CAF708 /* AppLifecycle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppLifecycle.swift; sourceTree = "<group>"; };
+		E8B7322A7C6767F025CE96D0 /* digital-7.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "digital-7.ttf"; sourceTree = "<group>"; };
+		F1B792206FBF59E749E7FC73 /* IndustrialModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IndustrialModifiers.swift; sourceTree = "<group>"; };
+		F245E1038CF641CDD7E3F625 /* CryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoService.swift; sourceTree = "<group>"; };
+		F60E2FABF1E34DA58F9796FE /* WeatherAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppView.swift; sourceTree = "<group>"; };
+		F77693BEBBD5041ED78F07C2 /* FileBack.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileBack.mp3; sourceTree = "<group>"; };
+		F7CBEE7C0A239393817E277D /* chatwaifu_v1.0-q4_k_m.gguf */ = {isa = PBXFileReference; path = "chatwaifu_v1.0-q4_k_m.gguf"; sourceTree = "<group>"; };
+		F8ADE5537659359ADF552A05 /* UserSendMessage.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = UserSendMessage.mp3; sourceTree = "<group>"; };
+		F8C299BE8EED30C6E83A9A6B /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
+		FE784792F7D42B3792486D04 /* ScanlineOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanlineOverlay.swift; sourceTree = "<group>"; };
+		FF04BD775C65D63F77F22B6A /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		04A17679948F4997E9599472 /* Identity */ = {
+			isa = PBXGroup;
+			children = (
+				222231B523C80AAC32CA4AC3 /* ActivationViewModel.swift */,
+				F8C299BE8EED30C6E83A9A6B /* IdentityManager.swift */,
+			);
+			path = Identity;
+			sourceTree = "<group>";
+		};
+		069D8D36D4FAAD66383E5543 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2A18F54E28F234BDA6857263 /* AppDelegate.swift */,
+				24841D50CD2F3885DC19E518 /* Info.plist */,
+				C6DD6B0A34BBE2AC6E37EDF4 /* KairOSApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		0929B8FBDDB98E75F7BFD3BF /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				A941DA4EE140841D6C4065B1 /* KairOSUITests.swift */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
+		0EA7502A0FDF931E1B0C9FE1 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				4580865BD8183AA4CE03DB35 /* KairOSSoundLibrary.swift */,
+				B2A67CB19CCD6FE3EF943588 /* SoundManager.swift */,
+				D4F8176987CA4878509FE10B /* VoiceCallManager.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		1E0009078D30A626BC2A619D /* Apps */ = {
+			isa = PBXGroup;
+			children = (
+				5E4153ECB7CC8FB2156C8479 /* Diagnostics */,
+				4694ECB61C20E424C4818A91 /* Files */,
+				F7840A50A1895BA38769156B /* Notes */,
+				71956FC399DCC31549A0D6B7 /* Weather */,
+			);
+			path = Apps;
+			sourceTree = "<group>";
+		};
+		20FBA22FF994356777D2B101 /* AppRuntime */ = {
+			isa = PBXGroup;
+			children = (
+				1E0009078D30A626BC2A619D /* Apps */,
+				DB00733F9C38B49C0F7FA255 /* Dynamic */,
+				CF2671318DF9EA21DD2FE0EF /* EventBus */,
+				D5CDAEE3CE507D0624B386FF /* Sandbox */,
+				FE140E246BE7443D3782CEEC /* SDK */,
+			);
+			path = AppRuntime;
+			sourceTree = "<group>";
+		};
+		21DDA562EBE875223AA9CF9E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F7CBEE7C0A239393817E277D /* chatwaifu_v1.0-q4_k_m.gguf */,
+				328F9637DAC5B462A5BDE17C /* Fonts */,
+				D1195BB6E6DD8B6CE72AFBD5 /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		296F7FCFFE415BFE61DE9304 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				05BF1DA0295DF4A9BCA9F2A4 /* LayoutMode.swift */,
+				FF04BD775C65D63F77F22B6A /* Router.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		2E2E0F772F9B5A26449E3491 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				AE7CD4994178AEF266434B0E /* Components */,
+				296F7FCFFE415BFE61DE9304 /* Navigation */,
+				A36A498827020D2AD2026CF7 /* Screens */,
+				C7B75EB500DA963E36E9E54D /* Theme */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		328F9637DAC5B462A5BDE17C /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				4D67E0AF8CB3966E451E8109 /* code128.ttf */,
+				E8B7322A7C6767F025CE96D0 /* digital-7.ttf */,
+				B031EDD06415CC294D9F5503 /* europa-grotesk-sh-bold.otf */,
+				CEAE2E701224DCF5FEC6004C /* HomeVideo-BLG6G.ttf */,
+				90D6C513344C28AA81B996CB /* HomeVideoBold-R90Dv.ttf */,
+				2E5CE68F0C3E0E2A54B94E44 /* MIB.ttf */,
+				39BB66418CF0A6A2711F7894 /* Redacted-Regular.ttf */,
+				38A87985CD9FBBA1D06E0E45 /* Optional */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		35B62B73EED6BF940E442A46 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7CF89D9E68E97E2AF5BBC9BD /* KairOS.app */,
+				D7EA94521CEDC86675FEFB7B /* KairOSTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		38A87985CD9FBBA1D06E0E45 /* Optional */ = {
+			isa = PBXGroup;
+			children = (
+				1B99ED713AB41129E1749E38 /* vcr-jp.ttf */,
+				0E12D238E8E346C841301704 /* Zekton.otf */,
+			);
+			path = Optional;
+			sourceTree = "<group>";
+		};
+		3A484B417D5D0C7FC054AB79 /* LLM */ = {
+			isa = PBXGroup;
+			children = (
+				82F9B1ABF84B23418B665EC0 /* GGUFInferenceEngine.swift */,
+				A1257D79E3FB709A082056E9 /* InferenceEngine.swift */,
+				3A096465312E92212607FAC6 /* ModelLoader.swift */,
+				5C60578129E20EAB0113F785 /* Tokenizer.swift */,
+			);
+			path = LLM;
+			sourceTree = "<group>";
+		};
+		4694ECB61C20E424C4818A91 /* Files */ = {
+			isa = PBXGroup;
+			children = (
+				8204B0B59B194BFE4718FEF5 /* files.manifest.json */,
+			);
+			path = Files;
+			sourceTree = "<group>";
+		};
+		4B6EE37425F15C6E1C8010F1 /* Blackbox */ = {
+			isa = PBXGroup;
+			children = (
+				982ECFAF1C5509381F8DD647 /* BlackboxExporter.swift */,
+				A50ACCFCE742F3555607FE3F /* BlackboxImporter.swift */,
+			);
+			path = Blackbox;
+			sourceTree = "<group>";
+		};
+		4F959505FC15223679DA3DC6 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				9F0F9B12E7C792461A6A6327 /* BlackboxTests.swift */,
+				37933E9E1219771DD4000D99 /* KairOSCoreTests.swift */,
+				586533675595AAC8916A2C10 /* IntegrationTests */,
+				0929B8FBDDB98E75F7BFD3BF /* UITests */,
+				992E9E3CDC49A84D2883B0AA /* UnitTests */,
+			);
+			path = Tests;
+			sourceTree = "<group>";
+		};
+		54590D35ABA72C57864D595A /* ALICE */ = {
+			isa = PBXGroup;
+			children = (
+				09F3A112DA7C91CC3BBC085D /* ALICEOrchestrator.swift */,
+				3A484B417D5D0C7FC054AB79 /* LLM */,
+				760CA4752ADBCF2A4C07DC8C /* Memory */,
+				D81554D8E443E049DC8B1B9D /* ToolDispatcher */,
+			);
+			path = ALICE;
+			sourceTree = "<group>";
+		};
+		586533675595AAC8916A2C10 /* IntegrationTests */ = {
+			isa = PBXGroup;
+			children = (
+				9B34D6D5360324DD0646BBF5 /* EndToEndTests.swift */,
+			);
+			path = IntegrationTests;
+			sourceTree = "<group>";
+		};
+		5E4153ECB7CC8FB2156C8479 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				08C42675E2CEB00FBE14C33E /* diagnostics.manifest.json */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
+		6D7E47BB145A739E7D4B9679 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				0EA7502A0FDF931E1B0C9FE1 /* Audio */,
+				4B6EE37425F15C6E1C8010F1 /* Blackbox */,
+				D77A502316673E3223A2FDF3 /* Database */,
+				B0B0F4CB619811D479C15AA7 /* Encryption */,
+				04A17679948F4997E9599472 /* Identity */,
+				BFF17304B630B2A6F2B53B6C /* Networking */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		6DBF5E7B440980350D8031C3 = {
+			isa = PBXGroup;
+			children = (
+				54590D35ABA72C57864D595A /* ALICE */,
+				069D8D36D4FAAD66383E5543 /* App */,
+				20FBA22FF994356777D2B101 /* AppRuntime */,
+				6D7E47BB145A739E7D4B9679 /* Core */,
+				21DDA562EBE875223AA9CF9E /* Resources */,
+				4F959505FC15223679DA3DC6 /* Tests */,
+				2E2E0F772F9B5A26449E3491 /* UI */,
+				35B62B73EED6BF940E442A46 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		71956FC399DCC31549A0D6B7 /* Weather */ = {
+			isa = PBXGroup;
+			children = (
+				F60E2FABF1E34DA58F9796FE /* WeatherAppView.swift */,
+			);
+			path = Weather;
+			sourceTree = "<group>";
+		};
+		760CA4752ADBCF2A4C07DC8C /* Memory */ = {
+			isa = PBXGroup;
+			children = (
+				CE1234B1A376D79E41C3BF21 /* NodeMemoryClient.swift */,
+				B5B2FBAD6E72C65DDA3E3410 /* ShortTermMemory.swift */,
+			);
+			path = Memory;
+			sourceTree = "<group>";
+		};
+		992E9E3CDC49A84D2883B0AA /* UnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				5EDBFDF4C87774A5BF1B1416 /* ALICEInferenceTests.swift */,
+				7BEEE04EAE16A2825F4F2790 /* CryptoServiceTests.swift */,
+				E13510BB456DFF165E624DE5 /* NodeClientTests.swift */,
+			);
+			path = UnitTests;
+			sourceTree = "<group>";
+		};
+		A36A498827020D2AD2026CF7 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				56AE10F4CF8B7C8F784773A4 /* ActivationTerminalView.swift */,
+				2000BEDB3CCA5007FB247C96 /* AppsView.swift */,
+				954B1B4828C223C3F8D716E6 /* BlackboxView.swift */,
+				8D3F73ADF54B8FF9C42BD29D /* ContactsView.swift */,
+				797DF0BCF72E95819005C5D9 /* FilesView.swift */,
+				57F56621E0D6798EBFB0C3AD /* HomeView.swift */,
+				2AFE932A03C4FA5585079600 /* MessagesView.swift */,
+				C0B08425539BEC8C72F41DE0 /* NodesView.swift */,
+				D1FA58E2DD25B01087825B10 /* SaveConsoleOverlay.swift */,
+				A983D312B5E3C97925601FF4 /* SettingsView.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		AE7CD4994178AEF266434B0E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				124439DA5D6AF5198F3776CC /* ImagePicker.swift */,
+				59C62020D93AE9975D52B23D /* LEDIndicator.swift */,
+				2F9E83B91DF2ECBE1CB1F3B3 /* PanelView.swift */,
+				FE784792F7D42B3792486D04 /* ScanlineOverlay.swift */,
+				E0D8222E4E224E3A274014DB /* TabBarView.swift */,
+				8C5A6261AC219A285263D8F3 /* TelemetryDecor.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B0B0F4CB619811D479C15AA7 /* Encryption */ = {
+			isa = PBXGroup;
+			children = (
+				F245E1038CF641CDD7E3F625 /* CryptoService.swift */,
+				464045D80800E66977589C5B /* KeychainWrapper.swift */,
+			);
+			path = Encryption;
+			sourceTree = "<group>";
+		};
+		BFF17304B630B2A6F2B53B6C /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				1210128F4A315EA7638C467D /* kairos_node.proto */,
+				A9C20882A4E3521073CFF1F7 /* NodeClient.swift */,
+				07FE809B2185E30AF37DA51B /* PacketSerializer.swift */,
+				93DF0C4288369DAA5C822FB6 /* QueueManager.swift */,
+				55976DBF7EA2E9AAB92F0733 /* TailscaleManager.swift */,
+				2E155439F93A6F9AE41D2CEF /* TailscaleSDK.swift.bak */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		C4EF9BAEFD75D035ADCD5C76 /* SystemSounds */ = {
+			isa = PBXGroup;
+			children = (
+				BA0E4EF3D334928B4A46F84E /* AccessGranted.mp3 */,
+				3ACA045D228EC3E795B09801 /* AliceSendMessage.mp3 */,
+				C3457806957DECDB87E2C825 /* archivist_file_window_close.wav */,
+				41C5ACE6C147600E05D5CAFC /* AreYouSure.mp3 */,
+				E17D3AC21DA0F4AF52123B82 /* command_line_click#1.wav */,
+				D627C4A5814D582067D97112 /* command_line_click#2.wav */,
+				9F9D8EE65A19A333CFCE6890 /* command_line_click#3.wav */,
+				39F92405ABA9AF663DD5EA52 /* command_line_click#4.wav */,
+				B5FAB932898F8DEEE6BD3B22 /* command_line_click#5.wav */,
+				5006D1AA8799CF3D2F340DBF /* DISAPPOINTING_FAILURE.mp3 */,
+				F77693BEBBD5041ED78F07C2 /* FileBack.mp3 */,
+				74959B19DEA1997528C2110F /* FileDirectoryOpen.mp3 */,
+				710B0D6006E8DCB00E036249 /* FileFolderOpen.mp3 */,
+				4E73111DF66E30838B2B66B2 /* FileRead.mp3 */,
+				01DCE91C5C337E8DF8CADEEE /* KeyType1.mp3 */,
+				B7296599DCC387633CF26DC2 /* KeyType2.mp3 */,
+				26BBCF7B5E9413B6F06E57C4 /* KeyType3.mp3 */,
+				61A56104EC3FA051AD73F3AD /* KeyType4.mp3 */,
+				55E7E786EB132A5FF7893F01 /* LowPower.mp3 */,
+				B5519CD0DE8119FEEC3C6EAC /* OldDataUnpackProcessing.mp3 */,
+				E3073A1A91C1B0C8E95A95AC /* RadarPing.mp3 */,
+				5BBB7BB6DF6245CF31F5BC5C /* Reminder.mp3 */,
+				4A4985F1B971A9BBAE63B442 /* TadaSuccess.mp3 */,
+				F8ADE5537659359ADF552A05 /* UserSendMessage.mp3 */,
+				705C10F9ABACE997BF949229 /* WarningUI.mp3 */,
+				312AD4FE506BC9717143ACB7 /* YesSound.mp3 */,
+			);
+			path = SystemSounds;
+			sourceTree = "<group>";
+		};
+		C7B75EB500DA963E36E9E54D /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				619B86458586EB75D963B0F5 /* Colors.swift */,
+				F1B792206FBF59E749E7FC73 /* IndustrialModifiers.swift */,
+				5B18DCF7C49AF1434C60CC9E /* Typography.swift */,
+			);
+			path = Theme;
+			sourceTree = "<group>";
+		};
+		CF2671318DF9EA21DD2FE0EF /* EventBus */ = {
+			isa = PBXGroup;
+			children = (
+				8FACFEE95078394667FB12D3 /* EventBus.swift */,
+				1C47FC61DBEDC565A5CE325C /* EventTypes.swift */,
+			);
+			path = EventBus;
+			sourceTree = "<group>";
+		};
+		D1195BB6E6DD8B6CE72AFBD5 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				C4EF9BAEFD75D035ADCD5C76 /* SystemSounds */,
+			);
+			path = Sounds;
+			sourceTree = "<group>";
+		};
+		D1C9E2ACB4930371ECA15ADB /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				77F5A87466D0743158AD5E2E /* KairModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		D5CDAEE3CE507D0624B386FF /* Sandbox */ = {
+			isa = PBXGroup;
+			children = (
+				DAAE8FEDA3A7D9BD7C04C90F /* AppContainer.swift */,
+				E35030EFF176F59A84CAF708 /* AppLifecycle.swift */,
+				A823CC71007720CE767C2A72 /* PermissionGate.swift */,
+			);
+			path = Sandbox;
+			sourceTree = "<group>";
+		};
+		D77A502316673E3223A2FDF3 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				C4F1D3D59D2F41491DCCBC04 /* LocalCache.swift */,
+				D1C9E2ACB4930371ECA15ADB /* Models */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
+		D81554D8E443E049DC8B1B9D /* ToolDispatcher */ = {
+			isa = PBXGroup;
+			children = (
+				29F89E4CA6027EDA62904FFE /* AppToolAdapter.swift */,
+				D22C7D066F2E445EC1A1CD10 /* SystemTools.swift */,
+				E0850C12BC27236D13E20D22 /* ToolRegistry.swift */,
+			);
+			path = ToolDispatcher;
+			sourceTree = "<group>";
+		};
+		DB00733F9C38B49C0F7FA255 /* Dynamic */ = {
+			isa = PBXGroup;
+			children = (
+				9D535071BFEA68B7EAD867ED /* AppLoader.swift */,
+			);
+			path = Dynamic;
+			sourceTree = "<group>";
+		};
+		F7840A50A1895BA38769156B /* Notes */ = {
+			isa = PBXGroup;
+			children = (
+				E3208E3D933626CA462FB6FF /* notes.manifest.json */,
+				4A3A1CEE0EA06CC28090EC3E /* NotesAppView.swift */,
+			);
+			path = Notes;
+			sourceTree = "<group>";
+		};
+		FE140E246BE7443D3782CEEC /* SDK */ = {
+			isa = PBXGroup;
+			children = (
+				BA14FBCDED0A31F4FA54FAC6 /* KairOSAPI.swift */,
+				649A9635BED8E739971B45DB /* KairOSAPIImpl.swift */,
+				1F5812A12F56E53B75BB4B28 /* ManifestLoader.swift */,
+			);
+			path = SDK;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		01C2F7A4E68C8260542CC2E3 /* KairOSTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DF48602EBABA92EF7DCC4433 /* Build configuration list for PBXNativeTarget "KairOSTests" */;
+			buildPhases = (
+				474B21D00EBACFC723AE2223 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E94A88B885084557009872C3 /* PBXTargetDependency */,
+			);
+			name = KairOSTests;
+			packageProductDependencies = (
+			);
+			productName = KairOSTests;
+			productReference = D7EA94521CEDC86675FEFB7B /* KairOSTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F62EDD303B89DF8648E8BAAC /* KairOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8A25C1DBE99B7CF03F605E09 /* Build configuration list for PBXNativeTarget "KairOS" */;
+			buildPhases = (
+				3A1CE83A20153809D8B695C9 /* Sources */,
+				696C2140E5AE0256E98661F6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = KairOS;
+			packageProductDependencies = (
+			);
+			productName = KairOS;
+			productReference = 7CF89D9E68E97E2AF5BBC9BD /* KairOS.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A68EB83C3F362495469A17A5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					F62EDD303B89DF8648E8BAAC = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 13A5AEB6DF32EE614C69B9E5 /* Build configuration list for PBXProject "KairOS" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6DBF5E7B440980350D8031C3;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 35B62B73EED6BF940E442A46 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F62EDD303B89DF8648E8BAAC /* KairOS */,
+				01C2F7A4E68C8260542CC2E3 /* KairOSTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		696C2140E5AE0256E98661F6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E717FDDD43E5A827C60A82A2 /* AccessGranted.mp3 in Resources */,
+				0303BD1791BEF8E7535B0B44 /* AliceSendMessage.mp3 in Resources */,
+				2F1444BE07E0E3DC1C4FC3C3 /* AreYouSure.mp3 in Resources */,
+				197D0431AE23B93D27B47F47 /* DISAPPOINTING_FAILURE.mp3 in Resources */,
+				A396354E7471477E38977C41 /* FileBack.mp3 in Resources */,
+				3345BE1A1F0D26806C21868D /* FileDirectoryOpen.mp3 in Resources */,
+				A7C55A11D8828DA7BBF82778 /* FileFolderOpen.mp3 in Resources */,
+				64946E61BB821AD07A5E6B15 /* FileRead.mp3 in Resources */,
+				7F8F7006506DFE7B785A127A /* HomeVideo-BLG6G.ttf in Resources */,
+				F52BC6833E71A7176C4A1912 /* HomeVideoBold-R90Dv.ttf in Resources */,
+				AED391D4D7E98F6920A2F729 /* KeyType1.mp3 in Resources */,
+				1D3D0F787D325B61DD859CB6 /* KeyType2.mp3 in Resources */,
+				C34398371DE634BE186A75A1 /* KeyType3.mp3 in Resources */,
+				2CE0D8820F10FA081187A348 /* KeyType4.mp3 in Resources */,
+				51E3367B517177F75B7496E1 /* LowPower.mp3 in Resources */,
+				4ACA0FA23046B71A0B8D31E0 /* MIB.ttf in Resources */,
+				010C632E45D0E54E23DC7B0F /* OldDataUnpackProcessing.mp3 in Resources */,
+				37125828C327C10BEFE4683E /* RadarPing.mp3 in Resources */,
+				4CA7840218FA8FF8B75CACBF /* Redacted-Regular.ttf in Resources */,
+				1097E75F05971DF7370C562B /* Reminder.mp3 in Resources */,
+				3A8494748E5357A73837342B /* TadaSuccess.mp3 in Resources */,
+				86F2F29610A25956D03D2526 /* TailscaleSDK.swift.bak in Resources */,
+				97916F39D4A6D4E8EBAF8A0D /* UserSendMessage.mp3 in Resources */,
+				C05E3E4384EFC093F7E5838B /* WarningUI.mp3 in Resources */,
+				1280F6C347A9AAF435E58AEA /* YesSound.mp3 in Resources */,
+				C288E8CC0208431F59B5DA50 /* Zekton.otf in Resources */,
+				050F4629E1041C08C0B7156A /* archivist_file_window_close.wav in Resources */,
+				C15711E6BCB7C28F2342B052 /* chatwaifu_v1.0-q4_k_m.gguf in Resources */,
+				15DF7FB30222D774DEE708BB /* code128.ttf in Resources */,
+				329159494551814716AE62FF /* command_line_click#1.wav in Resources */,
+				7E300A7C96583749A7C5D442 /* command_line_click#2.wav in Resources */,
+				2A91C50EED2394562768D82E /* command_line_click#3.wav in Resources */,
+				E0874A6A9BB02D349FCBEBF3 /* command_line_click#4.wav in Resources */,
+				938A2A4FB4E527DDFE886C15 /* command_line_click#5.wav in Resources */,
+				3304EE94A14F1DE0AF795F63 /* diagnostics.manifest.json in Resources */,
+				FD274F08FE3BB7B93CE7D975 /* digital-7.ttf in Resources */,
+				69FF3E2498B1C42A7F7207B2 /* europa-grotesk-sh-bold.otf in Resources */,
+				2006D135AB972895257AB856 /* files.manifest.json in Resources */,
+				03DD19EF876FEF5A037FF20E /* kairos_node.proto in Resources */,
+				7041B5F584BF81AC0929B425 /* notes.manifest.json in Resources */,
+				AA1CD8009FC3760766CD67AD /* vcr-jp.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3A1CE83A20153809D8B695C9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D2981463EB01310700116EBC /* ALICEOrchestrator.swift in Sources */,
+				2B1433C8713B339FA1019726 /* ActivationTerminalView.swift in Sources */,
+				6A97EC0E65AEED3E6BD46864 /* ActivationViewModel.swift in Sources */,
+				58481D96431DE84725578647 /* AppContainer.swift in Sources */,
+				B28FED54133480D9EDF74675 /* AppDelegate.swift in Sources */,
+				A9263A2ECF443CDB53D5EE5B /* AppLifecycle.swift in Sources */,
+				8AE442C6F5C133B936E48EE3 /* AppLoader.swift in Sources */,
+				C693D9580042C26B09AF7A5C /* AppToolAdapter.swift in Sources */,
+				98E426BB37B7CC2E2330EF43 /* AppsView.swift in Sources */,
+				AB11654B1F39EE26931FD25B /* BlackboxExporter.swift in Sources */,
+				E40486D56026184F16710694 /* BlackboxImporter.swift in Sources */,
+				1CACC41B2148B172EFBC603E /* BlackboxView.swift in Sources */,
+				9D81307AC6156D09EC7FF003 /* Colors.swift in Sources */,
+				7653CCB4EE7BD09CF6B6C933 /* ContactsView.swift in Sources */,
+				0BEB160C711FA6EA465ED02D /* CryptoService.swift in Sources */,
+				97F54ED7D2907E6270569C22 /* EventBus.swift in Sources */,
+				081947B98F326656E03D3972 /* EventTypes.swift in Sources */,
+				A78C7A6B3DD89F985F66326D /* FilesView.swift in Sources */,
+				F073F5B34F5DF1CDB46CBEA0 /* GGUFInferenceEngine.swift in Sources */,
+				7A071DA936E8B32971A51755 /* HomeView.swift in Sources */,
+				92CEBB5E3077EB8A46B52705 /* IdentityManager.swift in Sources */,
+				A04A73529E6C0AA1508F15A2 /* ImagePicker.swift in Sources */,
+				6698DDE52316EED0377353F6 /* IndustrialModifiers.swift in Sources */,
+				7F8EA7B4FACBDEDBF7E3C739 /* InferenceEngine.swift in Sources */,
+				918D58CC56409EA073CFFDFA /* KairModels.swift in Sources */,
+				3D0858461ABD6EE7C4788B95 /* KairOSAPI.swift in Sources */,
+				0599C7FD9674D7C84149393B /* KairOSAPIImpl.swift in Sources */,
+				565254E3DA945C0100B1E109 /* KairOSApp.swift in Sources */,
+				60D3175665BED5B1CEFD90EA /* KairOSSoundLibrary.swift in Sources */,
+				DA950C1CDD1D1051C1E0754E /* KeychainWrapper.swift in Sources */,
+				0D9FEA7B1DB3D98DABC04D48 /* LEDIndicator.swift in Sources */,
+				6524C229501D9C8F5BCFF72A /* LayoutMode.swift in Sources */,
+				9BB6A4CFAB1EB7E740FFD0BA /* LocalCache.swift in Sources */,
+				D3A406BC8CE4A54DF22BDD7F /* ManifestLoader.swift in Sources */,
+				4BB6BB0080B820142B71A89D /* MessagesView.swift in Sources */,
+				44E7F9539A5A09CA6D89F31F /* ModelLoader.swift in Sources */,
+				CB3EBCA93D40074D1040DF44 /* NodeClient.swift in Sources */,
+				B81A81CA1EA8C56B892B4C16 /* NodeMemoryClient.swift in Sources */,
+				B115A4230A866977098B9303 /* NodesView.swift in Sources */,
+				FE90775108B59E6C9CC10489 /* NotesAppView.swift in Sources */,
+				0FE944ABEBC6F69F38845306 /* PacketSerializer.swift in Sources */,
+				CC4E8000EE4D1ECC91604928 /* PanelView.swift in Sources */,
+				DC85D2F19CC523C722776EFE /* PermissionGate.swift in Sources */,
+				93D4163227C2F83C7C5A83E9 /* QueueManager.swift in Sources */,
+				7F66842A9F6B2EDEC21201D1 /* Router.swift in Sources */,
+				D4693DEC125481F804DB4147 /* SaveConsoleOverlay.swift in Sources */,
+				3C170B935D6B1367BD4B98C5 /* ScanlineOverlay.swift in Sources */,
+				A49AB4EBFDF5438F8063593A /* SettingsView.swift in Sources */,
+				C6CF6AD6BC323061536EC9C5 /* ShortTermMemory.swift in Sources */,
+				AD43E9DAEE6BAD9A53F7DC87 /* SoundManager.swift in Sources */,
+				8A026CBA7E755A29E6E12BE1 /* SystemTools.swift in Sources */,
+				3D8CB753BDB1CAD59FB0DBF6 /* TabBarView.swift in Sources */,
+				83397AFE10158D9801100AB8 /* TailscaleManager.swift in Sources */,
+				A14ECBE106BB340678EB3FF6 /* TelemetryDecor.swift in Sources */,
+				49D0A9CBFD42028A26B86EBE /* Tokenizer.swift in Sources */,
+				574EB9512ADCCECECF4CBCE9 /* ToolRegistry.swift in Sources */,
+				6B543AE23ABD25AB4862CBB9 /* Typography.swift in Sources */,
+				206C018AB5126CAC54A3365B /* VoiceCallManager.swift in Sources */,
+				FD23B69055FEE3647D0AD3FC /* WeatherAppView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		474B21D00EBACFC723AE2223 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA737D14125DE7B94BB43D10 /* ALICEInferenceTests.swift in Sources */,
+				F7E73DA1EB028F5874B8EDCE /* BlackboxTests.swift in Sources */,
+				A5D3485E5DF2C77A4415E2CA /* CryptoServiceTests.swift in Sources */,
+				BC569C14AB2D28F826838A32 /* EndToEndTests.swift in Sources */,
+				1F065850BA6CED2EFCFB56BE /* KairOSCoreTests.swift in Sources */,
+				9623681621BC9C88446A969A /* KairOSUITests.swift in Sources */,
+				961C500EB64F6A565BD87131 /* NodeClientTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E94A88B885084557009872C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F62EDD303B89DF8648E8BAAC /* KairOS */;
+			targetProxy = E8CDE0816F1249C8F2E5245D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		185E55258715F2CF8CBFDE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kairos.app;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		37482D1BA0BBF07ECFF5E3DE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KairOS.app/KairOS";
+			};
+			name = Release;
+		};
+		5FCA1928A882D94D3BF8872C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGNING_REQUIRED = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = App/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.kairos.app;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.1;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		6377F10B4DCE4ABF1E898214 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		C4E9DCC2F39299D82929A185 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				CODE_SIGN_IDENTITY = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/KairOS.app/KairOS";
+			};
+			name = Debug;
+		};
+		FFD74D55554C2527ACE85449 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		13A5AEB6DF32EE614C69B9E5 /* Build configuration list for PBXProject "KairOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFD74D55554C2527ACE85449 /* Debug */,
+				6377F10B4DCE4ABF1E898214 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8A25C1DBE99B7CF03F605E09 /* Build configuration list for PBXNativeTarget "KairOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				185E55258715F2CF8CBFDE8F /* Debug */,
+				5FCA1928A882D94D3BF8872C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DF48602EBABA92EF7DCC4433 /* Build configuration list for PBXNativeTarget "KairOSTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C4E9DCC2F39299D82929A185 /* Debug */,
+				37482D1BA0BBF07ECFF5E3DE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A68EB83C3F362495469A17A5 /* Project object */;
+}

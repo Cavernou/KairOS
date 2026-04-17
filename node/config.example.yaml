@@ -1,0 +1,12 @@
+tailnet: kairos.ts.net
+listen_addr: 0.0.0.0:8080
+tailscale_enabled: true
+tailscale_addr: 100.64.0.1:8080
+mock_http_enabled: true
+mock_http_listen_addr: 0.0.0.0:8081
+db_path: ./var/kairos-node.db
+master_key_path: ./var/node-master.key
+admin_code_interval: 3600
+queue_retry_limit: 100
+queue_ttl_hours: 168
+apns_enabled: false

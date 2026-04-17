@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KairOS Node Dashboard</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div id="login-screen" class="login-screen">
+        <div class="login-container">
+            <h1>KAIROS NODE</h1>
+            <p>SECURE ACCESS REQUIRED</p>
+            <div class="login-form">
+                <input type="text" id="username" placeholder="USERNAME" autocomplete="off">
+                <input type="password" id="password" placeholder="PASSWORD" autocomplete="off">
+                <button onclick="login()">ACCESS</button>
+                <p id="login-error" class="error"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="dashboard" class="container" style="display: none;">
+        <div class="header">
+            <div class="header-controls">
+                <h1><strong>KAIROS NODE</strong></h1>
+                <div class="header-right">
+                    <div class="status-indicator">
+                        <span class="led active"></span>
+                        <span>ONLINE</span>
+                    </div>
+                    <button onclick="logout()">LOGOUT</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <div class="panel">
+                <h2>DEVICES</h2>
+                <div id="device-list" class="device-list">
+                    <div class="device-item">
+                        <span class="device-name">No devices connected</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>ADMIN CODE</h2>
+                <div class="admin-code-display">
+                    <span id="admin-code">Loading...</span>
+                </div>
+                <div class="code-timer">
+                    <span>EXPIRES IN:</span>
+                    <span id="code-timer">Loading...</span>
+                </div>
+                <div class="cooldown-indicator">
+                    <span>REFRESH COOLDOWN:</span>
+                    <span id="cooldown-timer">Ready</span>
+                </div>
+                <div class="refresh-button-container">
+                    <button id="refresh-btn" onclick="fetchAdminCode()">REFRESH CODE</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>FILE TRANSFER</h2>
+                <div class="file-transfer">
+                    <input type="file" id="file-input" />
+                    <select id="target-device">
+                        <option value="">Select Device</option>
+                    </select>
+                    <button onclick="uploadFile()">SEND FILE</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>NETWORK</h2>
+                <div class="network-info">
+                    <div class="info-item">
+                        <span>TAILNET:</span>
+                        <span>kairos.ts.net</span>
+                    </div>
+                    <div class="info-item">
+                        <span>LISTEN:</span>
+                        <span>:8080</span>
+                    </div>
+                    <div class="info-item">
+                        <span>MOCK API:</span>
+                        <span>:8081</span>
+                    </div>
+                    <div class="info-item">
+                        <span>TAILSCALE:</span>
+                        <span id="tailscale-status">Checking...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>QUEUE</h2>
+                <div class="queue-stats">
+                    <div class="stat-item">
+                        <span>PENDING:</span>
+                        <span id="queue-pending">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>RETRY LIMIT:</span>
+                        <span>100</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>TTL:</span>
+                        <span>168h</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>PROCESSED:</span>
+                        <span id="queue-processed">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>SYSTEM</h2>
+                <div class="system-stats">
+                    <div class="stat-item">
+                        <span>UPTIME:</span>
+                        <span id="uptime">0s</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>MEMORY:</span>
+                        <span id="memory">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>VERSION:</span>
+                        <span>1.0.0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>BUILD:</span>
+                        <span>dev</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>GO VERSION:</span>
+                        <span>go1.24</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>PLATFORM:</span>
+                        <span>darwin/amd64</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>DATABASE</h2>
+                <div class="db-stats">
+                    <div class="stat-item">
+                        <span>DEVICES:</span>
+                        <span id="db-devices">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>CONTACTS:</span>
+                        <span id="db-contacts">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>MESSAGES:</span>
+                        <span id="db-messages">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>FILES:</span>
+                        <span id="db-files">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>ADMIN CODES:</span>
+                        <span id="db-codes">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>SECURITY</h2>
+                <div class="security-stats">
+                    <div class="stat-item">
+                        <span>ENCRYPTION:</span>
+                        <span>AES-256-GCM</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>MASTER KEY:</span>
+                        <span>Protected</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>TLS:</span>
+                        <span>Enabled</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>AUTH:</span>
+                        <span>Required</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/app.js"></script>
+</body>
+</html>

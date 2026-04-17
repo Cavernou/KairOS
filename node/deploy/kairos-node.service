@@ -1,0 +1,15 @@
+[Unit]
+Description=KairOS Home Node
+After=network-online.target tailscaled.service
+Wants=network-online.target tailscaled.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/kairos-node -config /etc/kairos/config.yaml
+Restart=on-failure
+User=kairos
+Group=kairos
+WorkingDirectory=/var/lib/kairos
+
+[Install]
+WantedBy=multi-user.target

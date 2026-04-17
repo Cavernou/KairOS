@@ -1,0 +1,461 @@
+@font-face {
+    font-family: 'HomeVideo';
+    src: url('HomeVideo-BLG6G.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'HomeVideoBold';
+    src: url('HomeVideoBold-R90Dv.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'MIB';
+    src: url('MIB.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Redacted';
+    src: url('Redacted-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Digital7';
+    src: url('digital-7.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Code128';
+    src: url('code128.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'EuropaGrotesk';
+    src: url('europa-grotesk-sh-bold.otf') format('opentype');
+}
+
+@font-face {
+    font-family: 'WeatherIcons';
+    src: url('weathericons-regular-webfont.ttf') format('truetype');
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'HomeVideo', monospace;
+    background-color: #332C0C;
+    color: #FFE258;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+body.critical-error {
+    background-color: #FF0000;
+    color: #FFE258;
+}
+
+body.critical-error .panel {
+    background-color: #740000;
+    border-color: #D30000;
+}
+
+body.critical-error h1,
+body.critical-error h2 {
+    color: #FFE258;
+}
+
+body.critical-error button {
+    background-color: #D30000;
+    color: #FFE258;
+    border-color: #FF0000;
+}
+
+body.critical-error .admin-code-display {
+    background-color: #FF0000;
+    border-color: #D30000;
+}
+
+body.critical-error .admin-code-display span {
+    background-color: #FF0000;
+    color: #FFE258;
+}
+
+body.critical-error #admin-code {
+    color: #FFE258;
+}
+
+body.critical-error .device-item {
+    border-color: #D30000;
+}
+
+body.critical-error .device-name,
+body.critical-error .device-status {
+    color: #FFE258;
+}
+
+body.critical-error .info-item,
+body.critical-error .stat-item {
+    color: #FFE258;
+    border-color: #D30000;
+}
+
+body.critical-error .code-timer,
+body.critical-error .cooldown-indicator {
+    color: #FFE258;
+    border-color: #D30000;
+}
+
+body.critical-error .status-indicator {
+    color: #FFE258;
+}
+
+body.critical-error .login-container {
+    background-color: #740000;
+    border-color: #D30000;
+}
+
+body.critical-error .dashboard-grid {
+    background-color: #740000;
+}
+
+body.critical-error .device-list {
+    background-color: #740000;
+}
+
+body.critical-error .queue-stats,
+body.critical-error .system-stats,
+body.critical-error .db-stats,
+body.critical-error .security-stats {
+    background-color: #740000;
+}
+
+body.critical-error .network-info {
+    background-color: #740000;
+}
+
+body.critical-error input,
+body.critical-error select {
+    background-color: #740000;
+    border-color: #D30000;
+    color: #FFE258;
+}
+
+.login-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #332C0C;
+}
+
+.login-container {
+    background-color: #FFE258;
+    color: #332C0C;
+    border: 2px solid #D8BF4D;
+    padding: 40px;
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+}
+
+.login-container h1 {
+    font-family: 'HomeVideoBold', monospace;
+    font-size: 32px;
+    margin-bottom: 10px;
+    letter-spacing: 0;
+}
+
+.login-container p {
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-form input {
+    font-family: 'HomeVideo', monospace;
+    padding: 12px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 16px;
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #FFE258;
+}
+
+.login-form button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 12px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #FFE258;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.login-form button:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.error {
+    color: #FF0000;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #D8BF4D;
+    color: #332C0C;
+    margin-bottom: 30px;
+    border: 2px solid #FFE258;
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.header h1 {
+    font-family: 'HomeVideo', monospace;
+    font-size: 32px;
+    letter-spacing: 0;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.led {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #332C0C;
+    border: 2px solid #FFE258;
+}
+
+.led.active {
+    background-color: #00FF00;
+    box-shadow: 0 0 10px #00FF00;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.panel {
+    background-color: #FFE258;
+    color: #332C0C;
+    border: 2px solid #D8BF4D;
+    padding: 20px;
+    min-height: 200px;
+}
+
+.panel h2 {
+    font-family: 'HomeVideoBold', monospace;
+    font-size: 18px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #332C0C;
+    padding-bottom: 10px;
+}
+
+.device-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.device-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+}
+
+.device-name {
+    font-weight: bold;
+}
+
+.code-display {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px;
+    background-color: #332C0C;
+    border: 2px solid #FFE258;
+    margin-bottom: 10px;
+}
+
+.admin-code-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    font-size: 36px;
+    font-weight: bold;
+    color: #332C0C;
+    background-color: #FFE258;
+    border: 3px solid #332C0C;
+    margin-bottom: 15px;
+}
+
+.admin-code-display span {
+    background-color: #FFE258;
+    padding: 10px 30px;
+    font-family: 'Digital7', monospace;
+    letter-spacing: 5px;
+}
+
+#admin-code {
+    font-family: 'MIB', monospace;
+    font-size: 36px;
+    letter-spacing: 4px;
+    color: #332C0C;
+}
+
+button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 10px 20px;
+    background-color: #FFE258;
+    color: #332C0C;
+    border: 2px solid #332C0C;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.header button {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #D8BF4D;
+}
+
+.code-timer {
+    font-size: 14px;
+    color: #332C0C;
+}
+
+.cooldown-indicator {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-top: 1px solid #332C0C;
+    margin-top: 10px;
+    font-size: 12px;
+    color: #332C0C;
+}
+
+.refresh-button-container {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.refresh-button-container button {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.refresh-button-container button {
+    background-color: #FFE258;
+    color: #332C0C;
+    cursor: pointer;
+}
+
+.header button {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.header button {
+    background-color: #FFE258;
+    color: #332C0C;
+    cursor: pointer;
+}
+
+.file-transfer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.file-transfer input,
+.file-transfer select,
+.file-transfer button {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.file-transfer button {
+    background-color: #FFE258;
+    color: #332C0C;
+    cursor: pointer;
+}
+
+.network-info, .queue-stats, .system-stats, .db-stats, .security-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-item, .stat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #332C0C;
+}
+
+.info-item span:first-child,
+.stat-item span:first-child {
+    font-weight: bold;
+}

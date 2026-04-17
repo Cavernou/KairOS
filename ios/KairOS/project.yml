@@ -1,0 +1,43 @@
+name: KairOS
+options:
+  minimumXcodeGenVersion: 2.38.0
+targets:
+  KairOS:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - App
+      - Core
+      - UI
+      - ALICE
+      - AppRuntime
+      - Resources
+      - Core/Networking
+    resources:
+      - Resources
+    exclude:
+      - Resources/Fonts/UsedInRef
+      - AppRuntime/Apps/Notes/manifest.json
+      - AppRuntime/Apps/Weather/manifest.json
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.kairos.app
+      SWIFT_VERSION: 5.10
+      INFOPLIST_FILE: App/Info.plist
+      CODE_SIGNING_ALLOWED: YES
+      CODE_SIGNING_REQUIRED: YES
+      CODE_SIGN_IDENTITY: "Apple Development"
+      CODE_SIGN_STYLE: Automatic
+  KairOSTests:
+    type: bundle.unit-test
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - Tests
+    dependencies:
+      - target: KairOS
+    settings:
+      GENERATE_INFOPLIST_FILE: YES
+      CODE_SIGNING_ALLOWED: NO
+      CODE_SIGNING_REQUIRED: NO
+      CODE_SIGN_IDENTITY: ""
