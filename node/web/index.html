@@ -35,6 +35,14 @@
             </div>
         </div>
 
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('dashboard')">DASHBOARD</button>
+            <button class="nav-tab" onclick="switchTab('devices')">DEVICES</button>
+            <button class="nav-tab" onclick="switchTab('communications')">COMMUNICATIONS</button>
+            <button class="nav-tab" onclick="switchTab('files')">FILES</button>
+            <button class="nav-tab" onclick="switchTab('settings')">SETTINGS</button>
+        </div>
+
         <div class="dashboard-grid">
             <div class="panel">
                 <h2>DEVICES</h2>
@@ -159,249 +167,220 @@
                         <span>CONTACTS:</span>
                         <span id="db-contacts">0</span>
                     </div>
-                    <div class="stat-item">
-                        <span>MESSAGES:</span>
-                        <span id="db-messages">0</span>
+                </div>
+
+                <div class="panel">
+                    <h2>CONTACTS</h2>
+                    <div class="contact-list" id="contact-list-devices">
+                        <div class="contact-item">
+                            <span class="contact-name">Loading contacts...</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span>FILES:</span>
-                        <span id="db-files">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>ADMIN CODES:</span>
-                        <span id="db-codes">0</span>
+                    <div class="contact-add">
+                        <input type="text" id="new-contact-kair" placeholder="K-NUMBER">
+                        <input type="text" id="new-contact-name" placeholder="DISPLAY NAME">
+                        <button onclick="addContact()">ADD CONTACT</button>
                     </div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>SECURITY</h2>
-                <div class="security-stats">
-                    <div class="stat-item">
-                        <span>ENCRYPTION:</span>
-                        <span>AES-256-GCM</span>
+            <!-- Communications Tab -->
+            <div id="tab-communications" class="tab-content" style="display: none;">
+                <div class="panel">
+                    <h2>CALLING</h2>
+                    <div class="calling-list" id="calling-list-comm">
+                        <div class="calling-item">
+                            <span class="calling-name">No active calls</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span>MASTER KEY:</span>
-                        <span>Protected</span>
+                    <div class="call-actions">
+                        <input type="text" id="call-kair" placeholder="K-NUMBER TO CALL">
+                        <button onclick="initiateCall()">CALL</button>
                     </div>
-                    <div class="stat-item">
-                        <span>TLS:</span>
-                        <span>Enabled</span>
+                </div>
+
+                <div class="panel">
+                    <h2>FILTERING</h2>
+                    <div class="filter-list" id="filter-list-comm">
+                        <div class="filter-item">
+                            <span class="filter-name">Loading filters...</span>
+                        </div>
                     </div>
-                    <div class="stat-item">
-                        <span>AUTH:</span>
-                        <span>Required</span>
+                    <div class="filter-add">
+                        <input type="text" id="filter-keyword" placeholder="KEYWORD">
+                        <select id="filter-type">
+                            <option value="block">BLOCK</option>
+                            <option value="allow">ALLOW</option>
+                        </select>
+                        <button onclick="addFilter()">ADD FILTER</button>
                     </div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>SETTINGS</h2>
-                <div class="settings-form">
-                    <div class="setting-item">
-                        <label>LISTEN ADDR:</label>
-                        <input type="text" id="setting-listen-addr" value="0.0.0.0:8080">
+            <!-- Files Tab -->
+            <div id="tab-files" class="tab-content" style="display: none;">
+                <div class="panel">
+                    <h2>FILE TRANSFER</h2>
+                    <div class="file-transfer">
+                        <input type="file" id="file-input" />
+                        <select id="target-device">
+                            <option value="">Select Device</option>
+                        </select>
+                        <button onclick="uploadFile()">SEND FILE</button>
                     </div>
-                    <div class="setting-item">
-                        <label>MOCK HTTP ADDR:</label>
-                        <input type="text" id="setting-mock-http-addr" value="0.0.0.0:8081">
+                </div>
+
+                <div class="panel">
+                    <h2>MEDIA</h2>
+                    <div class="media-list" id="media-list-files">
+                        <div class="media-item">
+                            <span class="media-name">Loading media...</span>
+                        </div>
                     </div>
-                    <div class="setting-item">
-                        <label>TAILNET:</label>
-                        <input type="text" id="setting-tailnet" value="kairos.ts.net">
+                    <div class="media-add">
+                        <input type="file" id="media-input" />
+                        <button onclick="uploadMedia()">UPLOAD MEDIA</button>
                     </div>
-                    <div class="setting-item">
-                        <label>TAILSCALE ENABLED:</label>
-                        <input type="checkbox" id="setting-tailscale-enabled">
+                </div>
+
+                <div class="panel">
+                    <h2>STORAGE</h2>
+                    <div class="storage-stats">
+                        <div class="stat-item">
+                            <span>TOTAL:</span>
+                            <span id="storage-total">Checking...</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>USED:</span>
+                            <span id="storage-used">Checking...</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>FREE:</span>
+                            <span id="storage-free">Checking...</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>MESSAGES:</span>
+                            <span id="storage-messages">Checking...</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>FILES:</span>
+                            <span id="storage-files">Checking...</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>MEDIA:</span>
+                            <span id="storage-media">Checking...</span>
+                        </div>
                     </div>
-                    <div class="setting-item">
-                        <label>QUEUE RETRY LIMIT:</label>
-                        <input type="number" id="setting-retry-limit" value="100">
+                    <div class="storage-actions">
+                        <button onclick="cleanupStorage()">CLEANUP OLD FILES</button>
                     </div>
-                    <div class="setting-item">
-                        <label>QUEUE TTL (HOURS):</label>
-                        <input type="number" id="setting-ttl" value="168">
+                </div>
+
+                <div class="panel">
+                    <h2>NOTES</h2>
+                    <div class="notes-list" id="notes-list-files">
+                        <div class="note-item">
+                            <span class="note-name">Loading notes...</span>
+                        </div>
                     </div>
-                    <div class="setting-item">
-                        <label>ADMIN CODE INTERVAL (SEC):</label>
-                        <input type="number" id="setting-admin-interval" value="3600">
+                    <div class="note-add">
+                        <input type="text" id="note-title" placeholder="TITLE">
+                        <textarea id="note-content" placeholder="CONTENT"></textarea>
+                        <button onclick="addNote()">ADD NOTE</button>
                     </div>
-                    <button onclick="saveSettings()">SAVE SETTINGS</button>
+                </div>
+
+                <div class="panel">
+                    <h2>CALENDAR</h2>
+                    <div class="calendar-list" id="calendar-list-files">
+                        <div class="calendar-item">
+                            <span class="calendar-name">Loading events...</span>
+                        </div>
+                    </div>
+                    <div class="calendar-add">
+                        <input type="text" id="event-title" placeholder="TITLE">
+                        <input type="datetime-local" id="event-start" placeholder="START TIME">
+                        <input type="datetime-local" id="event-end" placeholder="END TIME">
+                        <button onclick="addEvent()">ADD EVENT</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>TASKS</h2>
+                    <div class="task-list" id="task-list-files">
+                        <div class="task-item">
+                            <span class="task-name">Loading tasks...</span>
+                        </div>
+                    </div>
+                    <div class="task-add">
+                        <input type="text" id="task-title" placeholder="TITLE">
+                        <input type="date" id="task-due" placeholder="DUE DATE">
+                        <select id="task-priority">
+                            <option value="low">LOW</option>
+                            <option value="medium">MEDIUM</option>
+                            <option value="high">HIGH</option>
+                        </select>
+                        <button onclick="addTask()">ADD TASK</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h2>TELEMETRY</h2>
+                    <div class="telemetry-list" id="telemetry-list-files">
+                        <div class="telemetry-item">
+                            <span class="telemetry-name">Loading activity log...</span>
+                        </div>
+                    </div>
+                    <div class="telemetry-actions">
+                        <button onclick="exportTelemetry()">EXPORT LOG</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="panel">
-                <h2>SOUNDS</h2>
-                <div class="sound-list" id="sound-list">
-                    <div class="sound-item">
-                        <span class="sound-name">Loading sounds...</span>
+            <!-- Settings Tab -->
+            <div id="tab-settings" class="tab-content" style="display: none;">
+                <div class="panel">
+                    <h2>SETTINGS</h2>
+                    <div class="settings-form">
+                        <div class="setting-item">
+                            <label>LISTEN ADDR:</label>
+                            <input type="text" id="setting-listen-addr" value="0.0.0.0:8080">
+                        </div>
+                        <div class="setting-item">
+                            <label>MOCK HTTP ADDR:</label>
+                            <input type="text" id="setting-mock-http-addr" value="0.0.0.0:8081">
+                        </div>
+                        <div class="setting-item">
+                            <label>TAILNET:</label>
+                            <input type="text" id="setting-tailnet" value="kairos.ts.net">
+                        </div>
+                        <div class="setting-item">
+                            <label>TAILSCALE ENABLED:</label>
+                            <input type="checkbox" id="setting-tailscale-enabled">
+                        </div>
+                        <div class="setting-item">
+                            <label>QUEUE RETRY LIMIT:</label>
+                            <input type="number" id="setting-retry-limit" value="100">
+                        </div>
+                        <div class="setting-item">
+                            <label>QUEUE TTL (HOURS):</label>
+                            <input type="number" id="setting-ttl" value="168">
+                        </div>
+                        <div class="setting-item">
+                            <label>ADMIN CODE INTERVAL (SEC):</label>
+                            <input type="number" id="setting-admin-interval" value="3600">
+                        </div>
+                        <button onclick="saveSettings()">SAVE SETTINGS</button>
                     </div>
                 </div>
-            </div>
 
-            <div class="panel">
-                <h2>CONTACTS</h2>
-                <div class="contact-list" id="contact-list">
-                    <div class="contact-item">
-                        <span class="contact-name">Loading contacts...</span>
+                <div class="panel">
+                    <h2>SOUNDS</h2>
+                    <div class="sound-list" id="sound-list-settings">
+                        <div class="sound-item">
+                            <span class="sound-name">Loading sounds...</span>
+                        </div>
                     </div>
-                </div>
-                <div class="contact-add">
-                    <input type="text" id="new-contact-kair" placeholder="K-NUMBER">
-                    <input type="text" id="new-contact-name" placeholder="DISPLAY NAME">
-                    <button onclick="addContact()">ADD CONTACT</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>CALLING</h2>
-                <div class="calling-list" id="calling-list">
-                    <div class="calling-item">
-                        <span class="calling-name">No active calls</span>
-                    </div>
-                </div>
-                <div class="call-actions">
-                    <input type="text" id="call-kair" placeholder="K-NUMBER TO CALL">
-                    <button onclick="initiateCall()">CALL</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>FILTERING</h2>
-                <div class="filter-list" id="filter-list">
-                    <div class="filter-item">
-                        <span class="filter-name">Loading filters...</span>
-                    </div>
-                </div>
-                <div class="filter-add">
-                    <input type="text" id="filter-keyword" placeholder="KEYWORD">
-                    <select id="filter-type">
-                        <option value="block">BLOCK</option>
-                        <option value="allow">ALLOW</option>
-                    </select>
-                    <button onclick="addFilter()">ADD FILTER</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>TELEMETRY</h2>
-                <div class="telemetry-list" id="telemetry-list">
-                    <div class="telemetry-item">
-                        <span class="telemetry-name">Loading activity log...</span>
-                    </div>
-                </div>
-                <div class="telemetry-actions">
-                    <button onclick="exportTelemetry()">EXPORT LOG</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>NOTES</h2>
-                <div class="notes-list" id="notes-list">
-                    <div class="note-item">
-                        <span class="note-name">Loading notes...</span>
-                    </div>
-                </div>
-                <div class="note-add">
-                    <input type="text" id="note-title" placeholder="TITLE">
-                    <textarea id="note-content" placeholder="CONTENT"></textarea>
-                    <button onclick="addNote()">ADD NOTE</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>MEDIA</h2>
-                <div class="media-list" id="media-list">
-                    <div class="media-item">
-                        <span class="media-name">Loading media...</span>
-                    </div>
-                </div>
-                <div class="media-add">
-                    <input type="file" id="media-input" />
-                    <button onclick="uploadMedia()">UPLOAD MEDIA</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>STORAGE</h2>
-                <div class="storage-stats">
-                    <div class="stat-item">
-                        <span>TOTAL:</span>
-                        <span id="storage-total">Checking...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>USED:</span>
-                        <span id="storage-used">Checking...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>FREE:</span>
-                        <span id="storage-free">Checking...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>MESSAGES:</span>
-                        <span id="storage-messages">Checking...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>FILES:</span>
-                        <span id="storage-files">Checking...</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>MEDIA:</span>
-                        <span id="storage-media">Checking...</span>
-                    </div>
-                </div>
-                <div class="storage-actions">
-                    <button onclick="cleanupStorage()">CLEANUP OLD FILES</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>CLOCK</h2>
-                <div class="clock-display">
-                    <span id="system-clock" style="font-size: 48px; font-family: 'Digital7', monospace;">Loading...</span>
-                </div>
-                <div class="clock-settings">
-                    <select id="clock-mode">
-                        <option value="12h">12-HOUR</option>
-                        <option value="24h">24-HOUR</option>
-                        <option value="utc">UTC</option>
-                    </select>
-                    <button onclick="updateClockSettings()">UPDATE CLOCK</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>CALENDAR</h2>
-                <div class="calendar-list" id="calendar-list">
-                    <div class="calendar-item">
-                        <span class="calendar-name">Loading events...</span>
-                    </div>
-                </div>
-                <div class="calendar-add">
-                    <input type="text" id="event-title" placeholder="TITLE">
-                    <input type="datetime-local" id="event-start" placeholder="START TIME">
-                    <input type="datetime-local" id="event-end" placeholder="END TIME">
-                    <button onclick="addEvent()">ADD EVENT</button>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h2>TASKS</h2>
-                <div class="task-list" id="task-list">
-                    <div class="task-item">
-                        <span class="task-name">Loading tasks...</span>
-                    </div>
-                </div>
-                <div class="task-add">
-                    <input type="text" id="task-title" placeholder="TITLE">
-                    <input type="date" id="task-due" placeholder="DUE DATE">
-                    <select id="task-priority">
-                        <option value="low">LOW</option>
-                        <option value="medium">MEDIUM</option>
-                        <option value="high">HIGH</option>
-                    </select>
-                    <button onclick="addTask()">ADD TASK</button>
                 </div>
             </div>
         </div>

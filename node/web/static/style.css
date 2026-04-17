@@ -698,6 +698,38 @@ button:hover {
     display: block;
 }
 
+.nav-tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #FFE258;
+    padding-bottom: 10px;
+}
+
+.nav-tab {
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    padding: 10px 20px;
+    font-family: 'HomeVideoBold', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-tab:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.nav-tab.active {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.tab-content {
+    display: block;
+}
+
 .calling-list,
 .filter-list {
     display: flex;

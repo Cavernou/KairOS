@@ -218,7 +218,7 @@ async function fetchDevices() {
         const response = await fetch('/mock/v1/status');
         const data = await response.json();
         
-        const deviceList = document.getElementById('device-list');
+        const deviceList = document.getElementById('device-list-devices');
         
         // Display KairOS devices if available
         if (data.devices && data.devices.length > 0) {
@@ -360,9 +360,6 @@ function initializeDashboard() {
     updateSystemStats();
     checkTailscaleStatus();
     
-    // Set up tooltip functionality
-    setupTooltips();
-    
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
@@ -391,6 +388,33 @@ function showHelp() {
 // Close help modal
 function closeHelp() {
     document.getElementById('help-modal').style.display = 'none';
+}
+
+// Switch between tabs
+function switchTab(tabName) {
+    // Hide all tab contents
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabContents.forEach(tab => {
+        tab.style.display = 'none';
+    });
+
+    // Remove active class from all tabs
+    const tabs = document.querySelectorAll('.nav-tab');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+    });
+
+    // Show selected tab content
+    const selectedTab = document.getElementById(`tab-${tabName}`);
+    if (selectedTab) {
+        selectedTab.style.display = 'block';
+    }
+
+    // Add active class to selected tab
+    const selectedTabButton = document.querySelector(`.nav-tab[onclick="switchTab('${tabName}')"]`);
+    if (selectedTabButton) {
+        selectedTabButton.classList.add('active');
+    }
 }
 
 // Trigger critical error state
@@ -484,7 +508,7 @@ async function loadSounds() {
         const response = await fetch('/mock/v1/sounds');
         const sounds = await response.json();
 
-        const soundList = document.getElementById('sound-list');
+        const soundList = document.getElementById('sound-list-settings');
         if (sounds && sounds.length > 0) {
             // Group sounds by category
             const categories = {
@@ -546,7 +570,7 @@ async function loadContacts() {
         const response = await fetch('/mock/v1/contacts');
         const data = await response.json();
 
-        const contactList = document.getElementById('contact-list');
+        const contactList = document.getElementById('contact-list-devices');
         if (data.contacts && data.contacts.length > 0) {
             contactList.innerHTML = data.contacts.map(contact => `
                 <div class="contact-item">
@@ -669,7 +693,7 @@ async function loadTelemetry() {
         const response = await fetch('/mock/v1/telemetry');
         const data = await response.json();
 
-        const telemetryList = document.getElementById('telemetry-list');
+        const telemetryList = document.getElementById('telemetry-list-files');
         if (data.events && data.events.length > 0) {
             telemetryList.innerHTML = data.events.slice(0, 20).map(event => `
                 <div class="telemetry-item">
@@ -714,7 +738,7 @@ async function loadNotes() {
         const response = await fetch('/mock/v1/notes');
         const data = await response.json();
 
-        const notesList = document.getElementById('notes-list');
+        const notesList = document.getElementById('notes-list-files');
         if (data.notes && data.notes.length > 0) {
             notesList.innerHTML = data.notes.map(note => `
                 <div class="note-item">
@@ -806,7 +830,7 @@ async function loadMedia() {
         const response = await fetch('/mock/v1/media');
         const data = await response.json();
 
-        const mediaList = document.getElementById('media-list');
+        const mediaList = document.getElementById('media-list-files');
         if (data.media && data.media.length > 0) {
             // Filter out macOS ._ files
             const filteredMedia = data.media.filter(media => !media.name.startsWith('._'));
@@ -987,7 +1011,7 @@ async function loadCalendar() {
         const response = await fetch('/mock/v1/calendar');
         const data = await response.json();
 
-        const calendarList = document.getElementById('calendar-list');
+        const calendarList = document.getElementById('calendar-list-files');
         if (data.events && data.events.length > 0) {
             calendarList.innerHTML = data.events.map(event => `
                 <div class="calendar-item">
@@ -1082,7 +1106,7 @@ async function loadTasks() {
         const response = await fetch('/mock/v1/tasks');
         const data = await response.json();
 
-        const taskList = document.getElementById('task-list');
+        const taskList = document.getElementById('task-list-files');
         if (data.tasks && data.tasks.length > 0) {
             taskList.innerHTML = data.tasks.map(task => `
                 <div class="task-item">
@@ -1173,10 +1197,10 @@ async function deleteTask(taskId) {
 // Calling management
 async function loadCalling() {
     try {
-        const response = await fetch('/mock/v1/calls');
+        const response = await fetch('/mock/v1/calling');
         const data = await response.json();
 
-        const callingList = document.getElementById('calling-list');
+        const callingList = document.getElementById('calling-list-comm');
         if (data.calls && data.calls.length > 0) {
             callingList.innerHTML = data.calls.map(call => `
                 <div class="calling-item">
@@ -1265,7 +1289,7 @@ async function loadFilters() {
         const response = await fetch('/mock/v1/filters');
         const data = await response.json();
 
-        const filterList = document.getElementById('filter-list');
+        const filterList = document.getElementById('filter-list-comm');
         if (data.filters && data.filters.length > 0) {
             filterList.innerHTML = data.filters.map(filter => `
                 <div class="filter-item">
