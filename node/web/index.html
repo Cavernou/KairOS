@@ -25,6 +25,7 @@
             <div class="header-controls">
                 <h1><strong>KAIROS NODE</strong></h1>
                 <div class="header-right">
+                    <button onclick="showHelp()" class="help-button">HELP</button>
                     <div class="status-indicator">
                         <span class="led active"></span>
                         <span>ONLINE</span>
@@ -199,31 +200,31 @@
                 <h2>SETTINGS</h2>
                 <div class="settings-form">
                     <div class="setting-item">
-                        <label>LISTEN ADDR: <span class="help-icon" data-tooltip="Network address and port for gRPC server (e.g., 0.0.0.0:8080)">?</span></label>
+                        <label>LISTEN ADDR:</label>
                         <input type="text" id="setting-listen-addr" value="0.0.0.0:8080">
                     </div>
                     <div class="setting-item">
-                        <label>MOCK HTTP ADDR: <span class="help-icon" data-tooltip="Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)">?</span></label>
+                        <label>MOCK HTTP ADDR:</label>
                         <input type="text" id="setting-mock-http-addr" value="0.0.0.0:8081">
                     </div>
                     <div class="setting-item">
-                        <label>TAILNET: <span class="help-icon" data-tooltip="Tailscale tailnet name for your network (e.g., kairos.ts.net)">?</span></label>
+                        <label>TAILNET:</label>
                         <input type="text" id="setting-tailnet" value="kairos.ts.net">
                     </div>
                     <div class="setting-item">
-                        <label>TAILSCALE ENABLED: <span class="help-icon" data-tooltip="Enable Tailscale VPN for secure networking">?</span></label>
+                        <label>TAILSCALE ENABLED:</label>
                         <input type="checkbox" id="setting-tailscale-enabled">
                     </div>
                     <div class="setting-item">
-                        <label>QUEUE RETRY LIMIT: <span class="help-icon" data-tooltip="Maximum number of retry attempts for failed messages">?</span></label>
+                        <label>QUEUE RETRY LIMIT:</label>
                         <input type="number" id="setting-retry-limit" value="100">
                     </div>
                     <div class="setting-item">
-                        <label>QUEUE TTL (HOURS): <span class="help-icon" data-tooltip="Time-to-live for queued messages before expiring">?</span></label>
+                        <label>QUEUE TTL (HOURS):</label>
                         <input type="number" id="setting-ttl" value="168">
                     </div>
                     <div class="setting-item">
-                        <label>ADMIN CODE INTERVAL (SEC): <span class="help-icon" data-tooltip="How long admin codes remain valid before rotating">?</span></label>
+                        <label>ADMIN CODE INTERVAL (SEC):</label>
                         <input type="number" id="setting-admin-interval" value="3600">
                     </div>
                     <button onclick="saveSettings()">SAVE SETTINGS</button>
@@ -254,7 +255,7 @@
             </div>
 
             <div class="panel">
-                <h2>CALLING <span class="help-icon" data-tooltip="Voice call management and history">?</span></h2>
+                <h2>CALLING</h2>
                 <div class="calling-list" id="calling-list">
                     <div class="calling-item">
                         <span class="calling-name">No active calls</span>
@@ -267,7 +268,7 @@
             </div>
 
             <div class="panel">
-                <h2>FILTERING <span class="help-icon" data-tooltip="Message and content filtering rules">?</span></h2>
+                <h2>FILTERING</h2>
                 <div class="filter-list" id="filter-list">
                     <div class="filter-item">
                         <span class="filter-name">Loading filters...</span>
@@ -284,7 +285,7 @@
             </div>
 
             <div class="panel">
-                <h2>TELEMETRY <span class="help-icon" data-tooltip="Activity log and event timeline">?</span></h2>
+                <h2>TELEMETRY</h2>
                 <div class="telemetry-list" id="telemetry-list">
                     <div class="telemetry-item">
                         <span class="telemetry-name">Loading activity log...</span>
@@ -296,7 +297,7 @@
             </div>
 
             <div class="panel">
-                <h2>NOTES <span class="help-icon" data-tooltip="Structured text notes system">?</span></h2>
+                <h2>NOTES</h2>
                 <div class="notes-list" id="notes-list">
                     <div class="note-item">
                         <span class="note-name">Loading notes...</span>
@@ -310,7 +311,7 @@
             </div>
 
             <div class="panel">
-                <h2>MEDIA <span class="help-icon" data-tooltip="Image, audio, video handling">?</span></h2>
+                <h2>MEDIA</h2>
                 <div class="media-list" id="media-list">
                     <div class="media-item">
                         <span class="media-name">Loading media...</span>
@@ -323,7 +324,7 @@
             </div>
 
             <div class="panel">
-                <h2>STORAGE <span class="help-icon" data-tooltip="Storage usage and management">?</span></h2>
+                <h2>STORAGE</h2>
                 <div class="storage-stats">
                     <div class="stat-item">
                         <span>TOTAL:</span>
@@ -356,7 +357,7 @@
             </div>
 
             <div class="panel">
-                <h2>CLOCK <span class="help-icon" data-tooltip="System clock display">?</span></h2>
+                <h2>CLOCK</h2>
                 <div class="clock-display">
                     <span id="system-clock" style="font-size: 48px; font-family: 'Digital7', monospace;">Loading...</span>
                 </div>
@@ -371,7 +372,7 @@
             </div>
 
             <div class="panel">
-                <h2>CALENDAR <span class="help-icon" data-tooltip="Calendar and event management">?</span></h2>
+                <h2>CALENDAR</h2>
                 <div class="calendar-list" id="calendar-list">
                     <div class="calendar-item">
                         <span class="calendar-name">Loading events...</span>
@@ -386,7 +387,7 @@
             </div>
 
             <div class="panel">
-                <h2>TASKS <span class="help-icon" data-tooltip="Task management with due dates">?</span></h2>
+                <h2>TASKS</h2>
                 <div class="task-list" id="task-list">
                     <div class="task-item">
                         <span class="task-name">Loading tasks...</span>
@@ -402,6 +403,52 @@
                     </select>
                     <button onclick="addTask()">ADD TASK</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="help-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>KAIROS NODE HELP</h2>
+                <button onclick="closeHelp()" class="close-button">X</button>
+            </div>
+            <div class="modal-body">
+                <h3>SETTINGS</h3>
+                <p><strong>LISTEN ADDR:</strong> Network address and port for gRPC server (e.g., 0.0.0.0:8080)</p>
+                <p><strong>MOCK HTTP ADDR:</strong> Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)</p>
+                <p><strong>TAILNET:</strong> Tailscale tailnet name for your network (e.g., kairos.ts.net)</p>
+                <p><strong>TAILSCALE ENABLED:</strong> Enable Tailscale VPN for secure networking</p>
+                <p><strong>QUEUE RETRY LIMIT:</strong> Maximum number of retry attempts for failed messages</p>
+                <p><strong>QUEUE TTL (HOURS):</strong> Time-to-live for queued messages before expiring</p>
+                <p><strong>ADMIN CODE INTERVAL (SEC):</strong> How long admin codes remain valid before rotating</p>
+
+                <h3>STORAGE</h3>
+                <p><strong>CLEANUP OLD FILES:</strong> Deletes telemetry events older than 30 days and media files older than 90 days. This is safe and helps free up storage space.</p>
+
+                <h3>CALLING</h3>
+                <p><strong>Voice call management and history:</strong> Initiate and manage voice calls to other KairOS devices.</p>
+
+                <h3>FILTERING</h3>
+                <p><strong>Message and content filtering rules:</strong> Block or allow messages based on keywords.</p>
+
+                <h3>TELEMETRY</h3>
+                <p><strong>Activity log and event timeline:</strong> View system activity logs and export them.</p>
+
+                <h3>NOTES</h3>
+                <p><strong>Structured text notes system:</strong> Create, view, and delete text notes with tags.</p>
+
+                <h3>MEDIA</h3>
+                <p><strong>Image, audio, video handling:</strong> Upload and manage media files.</p>
+
+                <h3>CLOCK</h3>
+                <p><strong>System clock display:</strong> View and configure system clock display mode.</p>
+
+                <h3>CALENDAR</h3>
+                <p><strong>Calendar and event management:</strong> Create, view, and delete calendar events.</p>
+
+                <h3>TASKS</h3>
+                <p><strong>Task management with due dates:</strong> Create, view, and delete tasks with priorities and due dates.</p>
             </div>
         </div>
     </div>

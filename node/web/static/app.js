@@ -383,6 +383,16 @@ function setupTooltips() {
     });
 }
 
+// Show help modal
+function showHelp() {
+    document.getElementById('help-modal').style.display = 'block';
+}
+
+// Close help modal
+function closeHelp() {
+    document.getElementById('help-modal').style.display = 'none';
+}
+
 // Trigger critical error state
 function triggerCriticalError() {
     document.body.classList.add('critical-error');
@@ -476,20 +486,52 @@ async function loadSounds() {
 
         const soundList = document.getElementById('sound-list');
         if (sounds && sounds.length > 0) {
-            soundList.innerHTML = sounds.map(sound => `
-                <div class="sound-item">
-                    <span class="sound-name">${sound.name}</span>
-                    <div class="sound-actions">
-                        <button onclick="playSoundFile('${sound.name}')">PLAY</button>
-                    </div>
-                </div>
-            `).join('');
+            // Group sounds by category
+            const categories = {
+                'Click Sounds': sounds.filter(s => s.name.includes('click')),
+                'Alerts': sounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
+                'Success': sounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
+                'Ambient': sounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
+                'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background'))
+            };
+
+            let html = '';
+            for (const [category, categorySounds] of Object.entries(categories)) {
+                if (categorySounds.length > 0) {
+                    html += `
+                        <div class="sound-category">
+                            <h3 onclick="toggleSoundCategory('${category}')">${category} ▼</h3>
+                            <div class="sound-category-content" id="category-${category.replace(/\s/g, '-')}">
+                                ${categorySounds.map(sound => `
+                                    <div class="sound-item">
+                                        <span class="sound-name">${sound.name}</span>
+                                        <div class="sound-actions">
+                                            <button onclick="playSoundFile('${sound.name}')">PLAY</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            soundList.innerHTML = html;
         } else {
             soundList.innerHTML = '<div class="sound-item"><span class="sound-name">No sounds found</span></div>';
         }
     } catch (error) {
         console.error('Failed to load sounds:', error);
         document.getElementById('sound-list').innerHTML = '<div class="sound-item"><span class="sound-name">Failed to load sounds</span></div>';
+    }
+}
+
+function toggleSoundCategory(category) {
+    const categoryId = category.replace(/\s/g, '-');
+    const content = document.getElementById(`category-${categoryId}`);
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+    } else {
+        content.style.display = 'none';
     }
 }
 
@@ -864,8 +906,7 @@ async function loadStorage() {
 }
 
 async function cleanupStorage() {
-    playClick();
-    if (!confirm('Are you sure you want to clean up old files?')) {
+    if (!confirm('This will delete:\n- Telemetry events older than 30 days\n- Media files older than 90 days\n\nThis is safe and helps free up storage space.\n\nContinue?')) {
         return;
     }
 

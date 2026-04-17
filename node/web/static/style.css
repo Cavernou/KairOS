@@ -586,6 +586,118 @@ button:hover {
     max-width: 300px;
 }
 
+.help-button {
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    padding: 8px 16px;
+    font-family: 'HomeVideoBold', monospace;
+    cursor: pointer;
+    margin-right: 12px;
+}
+
+.help-button:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #FFE258;
+    border-radius: 8px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 20px;
+    width: 90%;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #FFE258;
+    padding-bottom: 10px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-family: 'HomeVideoBold', monospace;
+}
+
+.close-button {
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    padding: 4px 12px;
+    font-family: 'HomeVideoBold', monospace;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.modal-body h3 {
+    font-family: 'HomeVideoBold', monospace;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #FFE258;
+}
+
+.modal-body p {
+    font-family: 'MIB', monospace;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.modal-body strong {
+    color: #FFE258;
+}
+
+.sound-category {
+    margin-bottom: 15px;
+    border: 1px solid #FFE258;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.sound-category h3 {
+    background-color: #332C0C;
+    color: #FFE258;
+    padding: 10px;
+    margin: 0;
+    font-family: 'HomeVideoBold', monospace;
+    cursor: pointer;
+    user-select: none;
+}
+
+.sound-category h3:hover {
+    background-color: #FFE258;
+    color: #332C0C;
+}
+
+.sound-category-content {
+    padding: 10px;
+    display: block;
+}
+
 .calling-list,
 .filter-list {
     display: flex;
