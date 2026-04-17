@@ -369,12 +369,14 @@ function initializeDashboard() {
     updateSystemStats();
     checkTailscaleStatus();
     loadNews();
+    loadMetrics();
     
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
         checkTailscaleStatus();
-    }, 5000); // Refresh devices and Tailscale status every 5 seconds
+        loadMetrics();
+    }, 5000); // Refresh devices, Tailscale status, and metrics every 5 seconds
 }
 
 // Setup tooltip functionality
@@ -416,6 +418,52 @@ async function loadNews() {
         }
     } catch (error) {
         console.error('Failed to load news:', error);
+    }
+}
+
+async function loadMetrics() {
+    try {
+        const response = await fetch('/mock/v1/metrics');
+        const metrics = await response.json();
+        
+        // Update CPU usage
+        const cpuUsage = metrics.cpu_usage || 0;
+        document.getElementById('cpu-bar').style.width = cpuUsage + '%';
+        document.getElementById('cpu-value').textContent = cpuUsage.toFixed(1) + '%';
+        
+        // Update memory usage
+        const memUsage = metrics.memory_usage || 0;
+        document.getElementById('memory-bar').style.width = memUsage + '%';
+        document.getElementById('memory-value').textContent = memUsage.toFixed(1) + '%';
+        
+        // Update goroutines
+        const goroutines = metrics.goroutines || 0;
+        const goroutinesPercent = Math.min(goroutines / 100 * 100, 100);
+        document.getElementById('goroutines-bar').style.width = goroutinesPercent + '%';
+        document.getElementById('goroutines-value').textContent = goroutines;
+        
+        // Update uptime
+        const uptime = metrics.uptime || 0;
+        const uptimeSeconds = Math.floor(uptime);
+        const uptimePercent = Math.min(uptime / 3600 * 100, 100); // Scale to 1 hour
+        document.getElementById('uptime-bar').style.width = uptimePercent + '%';
+        document.getElementById('uptime-value').textContent = formatUptime(uptimeSeconds);
+    } catch (error) {
+        console.error('Failed to load metrics:', error);
+    }
+}
+
+function formatUptime(seconds) {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    
+    if (hours > 0) {
+        return `${hours}h ${minutes}m ${secs}s`;
+    } else if (minutes > 0) {
+        return `${minutes}m ${secs}s`;
+    } else {
+        return `${secs}s`;
     }
 }
 
@@ -601,6 +649,7 @@ async function saveSettings() {
 
 // File browser
 let currentBrowsePath = '.';
+let currentFiles = [];
 
 async function browseFiles(path) {
     try {
@@ -608,23 +657,60 @@ async function browseFiles(path) {
         const data = await response.json();
         
         currentBrowsePath = data.path;
+        currentFiles = data.files;
+        
         document.getElementById('current-path').textContent = data.path;
         
-        const fileList = document.getElementById('file-browser-list');
-        if (data.files && data.files.length > 0) {
-            fileList.innerHTML = data.files.map(file => `
-                <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${data.path}/${file.name}')` : `viewFile('${data.path}/${file.name}')`}">
-                    <span class="file-name">${file.is_dir ? '[DIR] ' : ''}${file.name}</span>
-                    <span class="file-info">${formatFileSize(file.size)}</span>
-                </div>
-            `).join('');
-        } else {
-            fileList.innerHTML = '<div class="file-item"><span class="file-name">Empty directory</span></div>';
-        }
+        renderFiles();
     } catch (error) {
         console.error('Failed to browse files:', error);
         document.getElementById('file-browser-list').innerHTML = '<div class="file-item"><span class="file-name">Failed to load files</span></div>';
     }
+}
+
+function renderFiles() {
+    const fileList = document.getElementById('file-browser-list');
+    const filterText = document.getElementById('file-filter').value.toLowerCase();
+    const sortBy = document.getElementById('file-sort').value;
+    
+    // Filter files
+    let filteredFiles = currentFiles.filter(file => {
+        return file.name.toLowerCase().includes(filterText);
+    });
+    
+    // Sort files
+    filteredFiles.sort((a, b) => {
+        if (a.is_dir && !b.is_dir) return -1;
+        if (!a.is_dir && b.is_dir) return 1;
+        
+        if (sortBy === 'name') {
+            return a.name.localeCompare(b.name);
+        } else if (sortBy === 'size') {
+            return b.size - a.size;
+        } else if (sortBy === 'modified') {
+            return b.modified - a.modified;
+        }
+        return 0;
+    });
+    
+    if (filteredFiles.length > 0) {
+        fileList.innerHTML = filteredFiles.map(file => `
+            <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${currentBrowsePath}/${file.name}')` : `viewFile('${currentBrowsePath}/${file.name}')`}">
+                <span class="file-name">${file.is_dir ? '[DIR] ' : ''}${file.name}</span>
+                <span class="file-info">${formatFileSize(file.size)}</span>
+            </div>
+        `).join('');
+    } else {
+        fileList.innerHTML = '<div class="file-item"><span class="file-name">No files found</span></div>';
+    }
+}
+
+function sortFiles() {
+    renderFiles();
+}
+
+function filterFiles() {
+    renderFiles();
 }
 
 async function viewFile(filePath) {

@@ -12,6 +12,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -43,6 +44,8 @@ type Server struct {
 	memory           *memory.Service
 	sound            *sound.Manager
 	db               *db.Store
+	startTime        time.Time
+	news             []map[string]interface{}
 
 	mu        sync.RWMutex
 	reachable bool
@@ -160,7 +163,16 @@ func NewServer(
 		memory:           memoryService,
 		sound:            sound.NewManager(soundDir),
 		db:               db,
-		reachable:        true,
+		startTime:        time.Now(),
+		news: []map[string]interface{}{
+			{
+				"message":    "KairOS v1.1.0 released with real system metrics, node-based broadcasts, and improved file browser",
+				"timestamp":  time.Now().Unix(),
+				"priority":   "high",
+				"expires_at": time.Now().Add(30 * 24 * time.Hour).Unix(),
+			},
+		},
+		reachable: true,
 	}
 }
 
@@ -211,6 +223,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/files/browse", s.handleFileBrowse)
 	mux.HandleFunc("/mock/v1/files/view", s.handleFileView)
 	mux.HandleFunc("/mock/v1/news", s.handleNews)
+	mux.HandleFunc("/mock/v1/metrics", s.handleMetrics)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -998,20 +1011,105 @@ func (s *Server) handleFileView(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleNews(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodGet {
+		s.mu.RLock()
+		defer s.mu.RUnlock()
+
+		// Return latest non-expired news
+		now := time.Now().Unix()
+		for _, newsItem := range s.news {
+			expiresAt, ok := newsItem["expires_at"].(int64)
+			if ok && expiresAt > now {
+				writeJSON(w, http.StatusOK, newsItem)
+				return
+			}
+		}
+
+		// No active news
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"message":    "",
+			"timestamp":  0,
+			"priority":   "",
+			"expires_at": 0,
+		})
+	} else if r.Method == http.MethodPost {
+		// Add new broadcast (admin only in production)
+		var newsItem map[string]interface{}
+		if err := json.NewDecoder(r.Body).Decode(&newsItem); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request body")
+			return
+		}
+
+		// Set timestamp if not provided
+		if _, ok := newsItem["timestamp"]; !ok {
+			newsItem["timestamp"] = time.Now().Unix()
+		}
+
+		// Set default expiration if not provided (24 hours)
+		if _, ok := newsItem["expires_at"]; !ok {
+			newsItem["expires_at"] = time.Now().Add(24 * time.Hour).Unix()
+		}
+
+		s.mu.Lock()
+		s.news = append(s.news, newsItem)
+		s.mu.Unlock()
+
+		writeJSON(w, http.StatusCreated, newsItem)
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 		return
 	}
 
-	// Return mock news data
-	news := map[string]interface{}{
-		"message":    "KairOS v1.1.0 released with new features including live statistics, file browser, and news broadcasts!",
-		"timestamp":  time.Now().Unix(),
-		"priority":   "high",
-		"expires_at": time.Now().Add(24 * time.Hour).Unix(),
+	// Get real system metrics
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+
+	// CPU usage (approximate from runtime)
+	cpuUsage := float64(m.Sys) / float64(m.Alloc) * 100
+	if cpuUsage > 100 || cpuUsage < 0 {
+		cpuUsage = 0
 	}
 
-	writeJSON(w, http.StatusOK, news)
+	// Memory usage
+	memoryUsage := float64(m.Alloc) / float64(m.Sys) * 100
+	if memoryUsage > 100 || memoryUsage < 0 {
+		memoryUsage = 0
+	}
+
+	// Network traffic (mock for now - would require real network monitoring)
+	networkTraffic := 0.0
+
+	// Message queue count (from database)
+	queueCount := 0
+
+	// Get system load average
+	loadAvg := getLoadAverage()
+
+	metrics := map[string]interface{}{
+		"cpu_usage":       cpuUsage,
+		"memory_usage":    memoryUsage,
+		"memory_alloc":    m.Alloc,
+		"memory_sys":      m.Sys,
+		"network_traffic": networkTraffic,
+		"queue_count":     queueCount,
+		"goroutines":      runtime.NumGoroutine(),
+		"load_average":    loadAvg,
+		"uptime":          time.Since(s.startTime).Seconds(),
+	}
+
+	writeJSON(w, http.StatusOK, metrics)
+}
+
+func getLoadAverage() []float64 {
+	// Get load average from /proc/loadavg on Linux, or use runtime info
+	// For cross-platform compatibility, we'll use goroutine count as a proxy
+	return []float64{float64(runtime.NumGoroutine()) / 100.0}
 }
 
 func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {

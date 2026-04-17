@@ -154,32 +154,30 @@
                         <div class="stat-chart">
                             <h3>CPU USAGE</h3>
                             <div class="bar-chart">
-                                <div class="bar" style="width: 25%;"></div>
+                                <div class="bar" id="cpu-bar" style="width: 0%;"></div>
                             </div>
-                            <span class="chart-value">25%</span>
+                            <span class="chart-value" id="cpu-value">0%</span>
                         </div>
                         <div class="stat-chart">
                             <h3>MEMORY USAGE</h3>
                             <div class="bar-chart">
-                                <div class="bar" style="width: 45%;"></div>
+                                <div class="bar" id="memory-bar" style="width: 0%;"></div>
                             </div>
-                            <span class="chart-value">45%</span>
+                            <span class="chart-value" id="memory-value">0%</span>
                         </div>
                         <div class="stat-chart">
-                            <h3>NETWORK TRAFFIC</h3>
-                            <div class="line-chart">
-                                <svg width="100%" height="60" viewBox="0 0 200 60">
-                                    <polyline points="0,50 20,45 40,48 60,40 80,42 100,35 120,38 140,30 160,33 180,25 200,28" fill="none" stroke="#332C0C" stroke-width="2"/>
-                                </svg>
-                            </div>
-                            <span class="chart-value">1.2 MB/s</span>
-                        </div>
-                        <div class="stat-chart">
-                            <h3>MESSAGE QUEUE</h3>
+                            <h3>GOROUTINES</h3>
                             <div class="bar-chart">
-                                <div class="bar" style="width: 12%;"></div>
+                                <div class="bar" id="goroutines-bar" style="width: 0%;"></div>
                             </div>
-                            <span class="chart-value">12 messages</span>
+                            <span class="chart-value" id="goroutines-value">0</span>
+                        </div>
+                        <div class="stat-chart">
+                            <h3>UPTIME</h3>
+                            <div class="bar-chart">
+                                <div class="bar" id="uptime-bar" style="width: 0%;"></div>
+                            </div>
+                            <span class="chart-value" id="uptime-value">0s</span>
                         </div>
                     </div>
                 </div>
@@ -256,7 +254,13 @@
                             <button onclick="browseFiles('.')" class="nav-button">ROOT</button>
                             <button onclick="browseUp()" class="nav-button">UP</button>
                             <span id="current-path" style="margin-left: 10px;">/</span>
+                            <select id="file-sort" onchange="sortFiles()" class="nav-button" style="margin-left: auto;">
+                                <option value="name">Sort: Name</option>
+                                <option value="size">Sort: Size</option>
+                                <option value="modified">Sort: Modified</option>
+                            </select>
                         </div>
+                        <input type="text" id="file-filter" placeholder="Filter files..." onkeyup="filterFiles()" class="file-filter">
                         <div class="file-list" id="file-browser-list">
                             <div class="file-item">
                                 <span class="file-name">Loading...</span>

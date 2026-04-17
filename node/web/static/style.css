@@ -791,6 +791,24 @@ button:hover {
     color: #332C0C;
 }
 
+.file-filter {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    border-radius: 4px;
+    font-family: 'HomeVideo', monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.file-filter:focus {
+    outline: none;
+    border-color: #D8BF4D;
+}
+
 .file-list {
     display: flex;
     flex-direction: column;
