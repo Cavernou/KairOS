@@ -15,9 +15,15 @@ let ambientVolume = 0.3;
 // Sound playback
 function playSound(soundName, volume = 1.0) {
     console.log('Attempting to play sound:', soundName);
+    // Try both mp3 and wav extensions
     const audio = new Audio(`/sounds/${soundName}.mp3`);
     audio.volume = volume;
-    audio.play().catch(err => console.log('Sound play failed:', err));
+    audio.play().catch(err => {
+        console.log('MP3 play failed, trying WAV:', err);
+        const wavAudio = new Audio(`/sounds/${soundName}.wav`);
+        wavAudio.volume = volume;
+        wavAudio.play().catch(err2 => console.log('WAV play also failed:', err2));
+    });
 }
 
 // Play subtle click sound
