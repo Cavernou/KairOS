@@ -22,7 +22,16 @@ function playSound(soundName, volume = 1.0) {
 
 // Play subtle click sound
 function playSubtleClick() {
-    // Disabled to reduce sound clutter
+    const clickSounds = ['command_line_click#1', 'command_line_click#2', 'command_line_click#3', 'command_line_click#4', 'command_line_click#5'];
+    const randomSound = clickSounds[Math.floor(Math.random() * clickSounds.length)];
+    playSound(randomSound, 0.2); // 20% volume for very subtle clicks
+}
+
+// Play click sound
+function playClick() {
+    const clickSounds = ['command_line_click#1', 'command_line_click#2', 'command_line_click#3', 'command_line_click#4', 'command_line_click#5'];
+    const randomIndex = Math.floor(Math.random() * clickSounds.length);
+    playSound(clickSounds[randomIndex], 0.3); // 30% volume for softer button clicks
 }
 
 // Register a temp sound (user can add these later)
@@ -551,7 +560,9 @@ async function loadSounds() {
                 'Alerts': sounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
                 'Success': sounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
                 'Ambient': sounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
-                'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background'))
+                'UI Sounds': sounds.filter(s => s.name.includes('UI') || s.name.includes('menu') || s.name.includes('hover')),
+                'Notifications': sounds.filter(s => s.name.includes('notification') || s.name.includes('alert') || s.name.includes('beep')),
+                'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
             };
 
             let html = '';
