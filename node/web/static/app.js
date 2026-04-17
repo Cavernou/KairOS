@@ -934,6 +934,9 @@ function initializeDashboard() {
     loadCalendar();
     loadTasks();
 
+    // Start auto-reload mechanism
+    startAutoReload();
+
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
