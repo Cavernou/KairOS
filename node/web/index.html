@@ -194,6 +194,64 @@
                     </div>
                 </div>
             </div>
+
+            <div class="panel">
+                <h2>SETTINGS</h2>
+                <div class="settings-form">
+                    <div class="setting-item">
+                        <label>LISTEN ADDR:</label>
+                        <input type="text" id="setting-listen-addr" value="0.0.0.0:8080">
+                    </div>
+                    <div class="setting-item">
+                        <label>MOCK HTTP ADDR:</label>
+                        <input type="text" id="setting-mock-http-addr" value="0.0.0.0:8081">
+                    </div>
+                    <div class="setting-item">
+                        <label>TAILNET:</label>
+                        <input type="text" id="setting-tailnet" value="kairos.ts.net">
+                    </div>
+                    <div class="setting-item">
+                        <label>TAILSCALE ENABLED:</label>
+                        <input type="checkbox" id="setting-tailscale-enabled">
+                    </div>
+                    <div class="setting-item">
+                        <label>QUEUE RETRY LIMIT:</label>
+                        <input type="number" id="setting-retry-limit" value="100">
+                    </div>
+                    <div class="setting-item">
+                        <label>QUEUE TTL (HOURS):</label>
+                        <input type="number" id="setting-ttl" value="168">
+                    </div>
+                    <div class="setting-item">
+                        <label>ADMIN CODE INTERVAL (SEC):</label>
+                        <input type="number" id="setting-admin-interval" value="3600">
+                    </div>
+                    <button onclick="saveSettings()">SAVE SETTINGS</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>SOUNDS</h2>
+                <div class="sound-list" id="sound-list">
+                    <div class="sound-item">
+                        <span class="sound-name">Loading sounds...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>CONTACTS</h2>
+                <div class="contact-list" id="contact-list">
+                    <div class="contact-item">
+                        <span class="contact-name">Loading contacts...</span>
+                    </div>
+                </div>
+                <div class="contact-add">
+                    <input type="text" id="new-contact-kair" placeholder="K-NUMBER">
+                    <input type="text" id="new-contact-name" placeholder="DISPLAY NAME">
+                    <button onclick="addContact()">ADD CONTACT</button>
+                </div>
+            </div>
         </div>
     </div>
 

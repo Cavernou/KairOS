@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
             playSubtleClick();
         });
     });
-    
+
     // Add click sounds to all buttons
     const buttons = document.querySelectorAll('button');
     buttons.forEach(button => {
@@ -404,6 +404,199 @@ document.addEventListener('DOMContentLoaded', () => {
             playClick();
         });
     });
-    
+
     // Don't auto-initialize - require login first
 });
+
+// Settings management
+async function loadSettings() {
+    try {
+        const response = await fetch('/mock/v1/settings');
+        const settings = await response.json();
+
+        document.getElementById('setting-listen-addr').value = settings.listen_addr || '0.0.0.0:8080';
+        document.getElementById('setting-mock-http-addr').value = settings.mock_http_listen_addr || '0.0.0.0:8081';
+        document.getElementById('setting-tailnet').value = settings.tailnet || 'kairos.ts.net';
+        document.getElementById('setting-tailscale-enabled').checked = settings.tailscale_enabled || false;
+        document.getElementById('setting-retry-limit').value = settings.queue_retry_limit || 100;
+        document.getElementById('setting-ttl').value = settings.queue_ttl_hours || 168;
+        document.getElementById('setting-admin-interval').value = settings.admin_code_interval || 3600;
+    } catch (error) {
+        console.error('Failed to load settings:', error);
+    }
+}
+
+async function saveSettings() {
+    playClick();
+    const settings = {
+        listen_addr: document.getElementById('setting-listen-addr').value,
+        mock_http_listen_addr: document.getElementById('setting-mock-http-addr').value,
+        tailnet: document.getElementById('setting-tailnet').value,
+        tailscale_enabled: document.getElementById('setting-tailscale-enabled').checked,
+        queue_retry_limit: parseInt(document.getElementById('setting-retry-limit').value),
+        queue_ttl_hours: parseInt(document.getElementById('setting-ttl').value),
+        admin_code_interval: parseInt(document.getElementById('setting-admin-interval').value)
+    };
+
+    try {
+        const response = await fetch('/mock/v1/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(settings)
+        });
+
+        if (response.ok) {
+            alert('Settings saved successfully');
+            playSound('TadaSuccess');
+        } else {
+            alert('Failed to save settings');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to save settings:', error);
+        alert('Failed to save settings');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Sound management
+async function loadSounds() {
+    try {
+        const response = await fetch('/mock/v1/sounds');
+        const sounds = await response.json();
+
+        const soundList = document.getElementById('sound-list');
+        if (sounds && sounds.length > 0) {
+            soundList.innerHTML = sounds.map(sound => `
+                <div class="sound-item">
+                    <span class="sound-name">${sound.name}</span>
+                    <div class="sound-actions">
+                        <button onclick="playSoundFile('${sound.name}')">PLAY</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            soundList.innerHTML = '<div class="sound-item"><span class="sound-name">No sounds found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load sounds:', error);
+        document.getElementById('sound-list').innerHTML = '<div class="sound-item"><span class="sound-name">Failed to load sounds</span></div>';
+    }
+}
+
+function playSoundFile(soundName) {
+    playClick();
+    playSound(soundName);
+}
+
+// Contact management
+async function loadContacts() {
+    try {
+        const response = await fetch('/mock/v1/contacts');
+        const data = await response.json();
+
+        const contactList = document.getElementById('contact-list');
+        if (data.contacts && data.contacts.length > 0) {
+            contactList.innerHTML = data.contacts.map(contact => `
+                <div class="contact-item">
+                    <span class="contact-name">${contact.display_name} (${contact.id})</span>
+                    <div class="contact-actions">
+                        <button onclick="deleteContact('${contact.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            contactList.innerHTML = '<div class="contact-item"><span class="contact-name">No contacts found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load contacts:', error);
+        document.getElementById('contact-list').innerHTML = '<div class="contact-item"><span class="contact-name">Failed to load contacts</span></div>';
+    }
+}
+
+async function addContact() {
+    playClick();
+    const kairNumber = document.getElementById('new-contact-kair').value;
+    const displayName = document.getElementById('new-contact-name').value;
+
+    if (!kairNumber || !displayName) {
+        alert('Please enter both K-number and display name');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/contacts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: kairNumber,
+                display_name: displayName,
+                trust_status: 'pending',
+                notes: ''
+            })
+        });
+
+        if (response.ok) {
+            alert('Contact added successfully');
+            playSound('TadaSuccess');
+            document.getElementById('new-contact-kair').value = '';
+            document.getElementById('new-contact-name').value = '';
+            loadContacts();
+        } else {
+            alert('Failed to add contact');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to add contact:', error);
+        alert('Failed to add contact');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteContact(contactId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this contact?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/contacts/${contactId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Contact deleted successfully');
+            playSound('TadaSuccess');
+            loadContacts();
+        } else {
+            alert('Failed to delete contact');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete contact:', error);
+        alert('Failed to delete contact');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Update initializeDashboard to load new features
+function initializeDashboard() {
+    fetchAdminCode();
+    fetchDevices();
+    updateSystemStats();
+    checkTailscaleStatus();
+    loadSettings();
+    loadSounds();
+    loadContacts();
+
+    // Set up periodic refresh for live data
+    setInterval(() => {
+        fetchDevices();
+        checkTailscaleStatus();
+    }, 5000); // Refresh devices and Tailscale status every 5 seconds
+}

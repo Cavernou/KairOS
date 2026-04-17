@@ -81,3 +81,86 @@ The codebase defines the canonical protobuf contract in `proto/`. The node now e
 - a development mock HTTP gateway on `mock_http_listen_addr` for simulator-first app integration
 
 Both adapters share the same underlying services and SQLite state.
+
+## Control Center Features
+
+**Critical:** The Node must provide a web-based control center for complete management of the KairOS system.
+
+### Web-Based Control Center
+- **Industrial UI:** Same yellow/black industrial telemetry design as iOS KairOS
+- **Real-time Monitoring:** Live status of Node, devices, queue, and network
+- **Settings Management:** All Node settings configurable via web UI
+- **Sound Management:** Play and manage system sounds
+- **Device Management:** View, activate, deactivate, and manage connected devices
+- **Queue Management:** View, retry, and manage message queue
+- **Contact Management:** Add, edit, and manage trusted contacts
+- **Trust Management:** View and adjust trust scores for contacts
+- **Memory Management:** View and manage AI memory entries
+- **Admin Code Management:** Generate and display current admin codes
+- **Tailscale Status:** Monitor and display Tailscale connection status
+
+### Sound System
+- **System Sounds:** All sounds from iOS KairOS available on Node
+- **Sound Categories:**
+  - User interactions (send message, receive message)
+  - System events (activation, connection, error)
+  - UI feedback (key presses, alerts, confirmations)
+  - File operations (upload, download, success, failure)
+- **Sound API:** REST API for playing sounds on-demand
+- **Sound Storage:** Sounds stored in `./sounds/` directory relative to Node folder
+- **Sound Auto-Discovery:** Automatically loads all .mp3 and .wav files from sounds directory
+
+### Settings Management
+- **Configurable Settings:**
+  - Network settings (listen address, ports)
+  - Tailscale settings (enabled, tailnet name)
+  - Queue settings (retry limit, TTL)
+  - Activation settings (admin code interval)
+  - Sound settings (volume, enabled/disabled)
+  - Security settings (encryption options)
+- **Settings API:** REST API for reading and updating settings
+- **Settings Persistence:** Settings saved to config.yaml
+- **Hot Reload:** Settings changes take effect immediately (no restart required)
+
+### Real-Time Monitoring
+- **Node Status:** CPU, memory, network usage
+- **Device Status:** Connected devices, activation status, last seen
+- **Queue Status:** Pending messages, failed messages, retry counts
+- **Network Status:** Tailscale connection, local network, bandwidth
+- **Database Status:** Database size, last migration, health check
+- **Live Updates:** WebSocket or SSE for real-time updates
+
+### Device Management
+- **Device List:** View all registered devices
+- **Device Details:** K-number, activation time, last activity
+- **Device Actions:** Activate, deactivate, remove device
+- **Device Logs:** View device activity logs
+- **Device Statistics:** Message count, success rate, error rate
+
+### Queue Management
+- **Queue View:** View all queued messages
+- **Queue Actions:** Retry message, delete message, clear failed messages
+- **Queue Statistics:** Success rate, failure rate, average delivery time
+- **Queue Configuration:** Adjust retry schedule, TTL, retry limit
+
+### Contact Management
+- **Contact List:** View all trusted contacts
+- **Contact Details:** K-number, display name, trust score, notes
+- **Contact Actions:** Add, edit, remove contact
+- **Trust Management:** Adjust trust scores for contacts
+- **Contact History:** View interaction history with contact
+
+### API Endpoints
+- `GET /` - Control center web UI
+- `GET /api/status` - Node status
+- `GET /api/settings` - Get settings
+- `PUT /api/settings` - Update settings
+- `GET /api/devices` - List devices
+- `POST /api/devices/:id/activate` - Activate device
+- `GET /api/queue` - List queued messages
+- `POST /api/queue/:id/retry` - Retry message
+- `GET /api/contacts` - List contacts
+- `POST /api/contacts` - Add contact
+- `GET /api/sounds` - List sounds
+- `POST /api/sounds/:id/play` - Play sound
+- `GET /api/admin-code` - Get current admin code

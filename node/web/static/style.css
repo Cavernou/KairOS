@@ -459,3 +459,94 @@ button:hover {
 .stat-item span:first-child {
     font-weight: bold;
 }
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.setting-item label {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.setting-item input[type="text"],
+.setting-item input[type="number"] {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.setting-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #FFE258;
+}
+
+.sound-list,
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.sound-item,
+.contact-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sound-name,
+.contact-name {
+    font-weight: bold;
+}
+
+.sound-actions,
+.contact-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.sound-actions button,
+.contact-actions button {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+.contact-add {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.contact-add input {
+    flex: 1;
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.contact-add button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 8px 16px;
+}

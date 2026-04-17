@@ -7,7 +7,9 @@ import (
 	"fmt"
 	"net"
 	"net/http"
+	"os"
 	"os/exec"
+	"path/filepath"
 	"strconv"
 	"strings"
 	"sync"
@@ -169,12 +171,15 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/messages", s.handleMessages)
 	mux.HandleFunc("/mock/v1/queue", s.handleQueue)
 	mux.HandleFunc("/mock/v1/contacts", s.handleContacts)
+	mux.HandleFunc("/mock/v1/contacts/", s.handleContactByID)
 	mux.HandleFunc("/mock/v1/trust", s.handleTrust)
 	mux.HandleFunc("/mock/v1/memory/", s.handleMemoryByID)
 	mux.HandleFunc("/mock/v1/memory", s.handleMemory)
 	mux.HandleFunc("/mock/v1/admin-code", s.handleAdminCode)
 	mux.HandleFunc("/mock/v1/files/upload", s.handleFileUpload)
 	mux.HandleFunc("/mock/v1/files/", s.handleFileDownload)
+	mux.HandleFunc("/mock/v1/settings", s.handleSettings)
+	mux.HandleFunc("/mock/v1/sounds", s.handleSounds)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -736,4 +741,82 @@ func SeedDefaults(ctx context.Context, contactService *contacts.Service) error {
 		return errors.New("contact service is required")
 	}
 	return contactService.SeedDefaults(ctx)
+}
+
+func (s *Server) handleSettings(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		// Return current settings (read-only for now)
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"listen_addr":           "0.0.0.0:8080",
+			"mock_http_listen_addr": "0.0.0.0:8081",
+			"tailnet":               s.tailnet,
+			"tailscale_enabled":     s.tailscaleEnabled,
+			"queue_retry_limit":     100,
+			"queue_ttl_hours":       168,
+			"admin_code_interval":   3600,
+		})
+	} else if r.Method == http.MethodPut {
+		logger.Info("Settings update requested")
+		// Settings would be updated here in production
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleSounds(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// List sounds from the sounds directory
+	soundsDir := "./sounds"
+	entries, err := os.ReadDir(soundsDir)
+	if err != nil {
+		logger.Error("Failed to read sounds directory: %v", err)
+		writeJSON(w, http.StatusOK, []interface{}{})
+		return
+	}
+
+	var sounds []map[string]string
+	for _, entry := range entries {
+		if !entry.IsDir() {
+			name := entry.Name()
+			if strings.HasSuffix(name, ".mp3") || strings.HasSuffix(name, ".wav") {
+				sounds = append(sounds, map[string]string{
+					"name": strings.TrimSuffix(name, filepath.Ext(name)),
+					"path": name,
+				})
+			}
+		}
+	}
+
+	writeJSON(w, http.StatusOK, sounds)
+}
+
+func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	contactID := strings.TrimPrefix(r.URL.Path, "/mock/v1/contacts/")
+	if contactID == "" {
+		writeError(w, http.StatusBadRequest, "contact ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete contact request: %s", contactID)
+		// Delete contact logic would go here
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else if r.Method == http.MethodGet {
+		logger.Info("Get contact request: %s", contactID)
+		// Get contact logic would go here
+		writeJSON(w, http.StatusOK, map[string]string{"id": contactID, "display_name": "Contact"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
 }
