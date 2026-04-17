@@ -88,6 +88,7 @@ func main() {
 			trustService,
 			memoryService,
 			soundDir,
+			store,
 		)
 		mockHTTPServer = &http.Server{
 			Addr:    cfg.MockHTTPListenAddr,

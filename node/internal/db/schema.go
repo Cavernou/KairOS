@@ -71,4 +71,66 @@ CREATE TABLE IF NOT EXISTS delivery_attempts (
     outcome TEXT NOT NULL,
     detail TEXT
 );
+
+CREATE TABLE IF NOT EXISTS telemetry_events (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    event_type TEXT NOT NULL,
+    details TEXT,
+    device_id TEXT,
+    timestamp INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS notes (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    tags TEXT,
+    created_by TEXT,
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS media (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL,
+    file_path TEXT NOT NULL,
+    size INTEGER,
+    uploaded_by TEXT,
+    uploaded_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS calendar_events (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    start_time INTEGER NOT NULL,
+    end_time INTEGER,
+    location TEXT,
+    attendees TEXT,
+    created_by TEXT,
+    created_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS tasks (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    due_date INTEGER,
+    priority TEXT NOT NULL CHECK(priority IN ('low','medium','high')),
+    status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','in_progress','completed')),
+    created_by TEXT,
+    created_at INTEGER NOT NULL,
+    completed_at INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS file_conflicts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    file_id TEXT NOT NULL,
+    device_id TEXT NOT NULL,
+    conflict_type TEXT NOT NULL,
+    resolution TEXT,
+    detected_at INTEGER NOT NULL,
+    resolved_at INTEGER
+);
 `

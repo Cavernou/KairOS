@@ -49,6 +49,7 @@ func TestMockAPIActivateAndQueueMessage(t *testing.T) {
 		trust.NewService(store),
 		memory.NewService(store),
 		"", // Empty sound dir for tests
+		store,
 	)
 
 	handler := server.Handler()

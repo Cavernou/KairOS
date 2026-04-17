@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -13,11 +14,14 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"syscall"
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/kairos-project/kairos/node/internal/activation"
 	"github.com/kairos-project/kairos/node/internal/contacts"
 	"github.com/kairos-project/kairos/node/internal/crypto"
+	"github.com/kairos-project/kairos/node/internal/db"
 	"github.com/kairos-project/kairos/node/internal/identity"
 	"github.com/kairos-project/kairos/node/internal/logging"
 	"github.com/kairos-project/kairos/node/internal/memory"
@@ -37,6 +41,7 @@ type Server struct {
 	trust            *trust.Service
 	memory           *memory.Service
 	sound            *sound.Manager
+	db               *db.Store
 
 	mu        sync.RWMutex
 	reachable bool
@@ -140,6 +145,7 @@ func NewServer(
 	trustService *trust.Service,
 	memoryService *memory.Service,
 	soundDir string,
+	db *db.Store,
 ) *Server {
 	return &Server{
 		tailnet:          tailnet,
@@ -919,8 +925,14 @@ func (s *Server) handleTelemetry(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Telemetry request")
+	events, err := db.GetTelemetryEvents(s.db.DB, 100)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to retrieve telemetry")
+		return
+	}
+
 	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"events": []interface{}{},
+		"events": events,
 	})
 }
 
@@ -933,10 +945,16 @@ func (s *Server) handleTelemetryExport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Telemetry export request")
+	events, err := db.GetTelemetryEvents(s.db.DB, 1000)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to retrieve telemetry")
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Content-Disposition", "attachment; filename=telemetry-export.json")
 	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"events":      []interface{}{},
+		"events":      events,
 		"exported_at": time.Now().Format(time.RFC3339),
 	})
 }
@@ -945,12 +963,33 @@ func (s *Server) handleNotes(w http.ResponseWriter, r *http.Request) {
 	logger := logging.GetLogger()
 
 	if r.Method == http.MethodGet {
+		notes, err := db.GetNotes(s.db.DB)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to retrieve notes")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{
-			"notes": []interface{}{},
+			"notes": notes,
 		})
 	} else if r.Method == http.MethodPost {
 		logger.Info("Add note request")
-		writeJSON(w, http.StatusOK, map[string]string{"note_id": "mock-note-id", "status": "added"})
+		var req struct {
+			Title     string `json:"title"`
+			Content   string `json:"content"`
+			Tags      string `json:"tags"`
+			CreatedBy string `json:"created_by"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request")
+			return
+		}
+
+		noteID := uuid.NewString()
+		if err := db.CreateNote(s.db.DB, noteID, req.Title, req.Content, req.Tags, req.CreatedBy); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create note")
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"note_id": noteID, "status": "added"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -967,6 +1006,10 @@ func (s *Server) handleNoteByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete note request: %s", noteID)
+		if err := db.DeleteNote(s.db.DB, noteID); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to delete note")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
@@ -977,12 +1020,63 @@ func (s *Server) handleMedia(w http.ResponseWriter, r *http.Request) {
 	logger := logging.GetLogger()
 
 	if r.Method == http.MethodGet {
+		media, err := db.GetMedia(s.db.DB)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to retrieve media")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{
-			"media": []interface{}{},
+			"media": media,
 		})
 	} else if r.Method == http.MethodPost {
 		logger.Info("Upload media request")
-		writeJSON(w, http.StatusOK, map[string]string{"media_id": "mock-media-id", "status": "uploaded"})
+		if err := r.ParseMultipartForm(10 << 20); err != nil {
+			writeError(w, http.StatusBadRequest, "failed to parse form")
+			return
+		}
+
+		file, header, err := r.FormFile("file")
+		if err != nil {
+			writeError(w, http.StatusBadRequest, "file is required")
+			return
+		}
+		defer file.Close()
+
+		mediaID := uuid.NewString()
+		filePath := filepath.Join("./media", mediaID)
+		if err := os.MkdirAll("./media", 0755); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create media directory")
+			return
+		}
+
+		destFile, err := os.Create(filePath)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create file")
+			return
+		}
+		defer destFile.Close()
+
+		if _, err := io.Copy(destFile, file); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to save file")
+			return
+		}
+
+		mediaType := "unknown"
+		if strings.HasPrefix(header.Header.Get("Content-Type"), "image/") {
+			mediaType = "image"
+		} else if strings.HasPrefix(header.Header.Get("Content-Type"), "audio/") {
+			mediaType = "audio"
+		} else if strings.HasPrefix(header.Header.Get("Content-Type"), "video/") {
+			mediaType = "video"
+		}
+
+		fileInfo, _ := destFile.Stat()
+		if err := db.CreateMedia(s.db.DB, mediaID, header.Filename, mediaType, filePath, fileInfo.Size(), "control_center"); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create media record")
+			return
+		}
+
+		writeJSON(w, http.StatusOK, map[string]string{"media_id": mediaID, "status": "uploaded"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -999,6 +1093,16 @@ func (s *Server) handleMediaByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete media request: %s", mediaID)
+		// Get media file path before deleting
+		media, err := db.GetMediaByID(s.db.DB, mediaID)
+		if err == nil {
+			// Delete the actual file
+			os.Remove(media.FilePath)
+		}
+		if err := db.DeleteMedia(s.db.DB, mediaID); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to delete media")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
@@ -1014,15 +1118,31 @@ func (s *Server) handleStorage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Storage statistics request")
-	// Return storage statistics
-	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"total":    "100 GB",
-		"used":     "10 GB",
-		"free":     "90 GB",
-		"messages": "1 GB",
-		"files":    "5 GB",
-		"media":    "4 GB",
-	})
+
+	// Get actual disk usage
+	var stat syscall.Statfs_t
+	if err := syscall.Statfs(".", &stat); err == nil {
+		total := uint64(stat.Blocks) * uint64(stat.Bsize)
+		free := uint64(stat.Bfree) * uint64(stat.Bsize)
+		used := total - free
+
+		// Get media stats
+		mediaStats, err := db.GetMediaStats(s.db.DB)
+		if err != nil {
+			mediaStats = make(map[string]int64)
+		}
+
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"total":    fmt.Sprintf("%.2f GB", float64(total)/1024/1024/1024),
+			"used":     fmt.Sprintf("%.2f GB", float64(used)/1024/1024/1024),
+			"free":     fmt.Sprintf("%.2f GB", float64(free)/1024/1024/1024),
+			"messages": fmt.Sprintf("%.2f GB", 0.5), // Placeholder
+			"files":    fmt.Sprintf("%.2f GB", 2.0), // Placeholder
+			"media":    fmt.Sprintf("%.2f GB", float64(mediaStats["total_size"])/1024/1024/1024),
+		})
+	} else {
+		writeError(w, http.StatusInternalServerError, "failed to get storage stats")
+	}
 }
 
 func (s *Server) handleStorageCleanup(w http.ResponseWriter, r *http.Request) {
@@ -1034,6 +1154,25 @@ func (s *Server) handleStorageCleanup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Storage cleanup request")
+
+	// Clean up old telemetry events (older than 30 days)
+	if err := db.CleanupOldEvents(s.db.DB, 30); err != nil {
+		logger.Error("Failed to cleanup old events: %v", err)
+	}
+
+	// Clean up old media files (older than 90 days and not referenced)
+	// This is a placeholder - actual implementation would check references
+	media, err := db.GetMedia(s.db.DB)
+	if err == nil {
+		for _, m := range media {
+			cutoff := time.Now().AddDate(0, 0, -90).Unix()
+			if m.UploadedAt < cutoff {
+				os.Remove(m.FilePath)
+				db.DeleteMedia(s.db.DB, m.ID)
+			}
+		}
+	}
+
 	writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 }
 
@@ -1068,12 +1207,36 @@ func (s *Server) handleCalendar(w http.ResponseWriter, r *http.Request) {
 	logger := logging.GetLogger()
 
 	if r.Method == http.MethodGet {
+		events, err := db.GetEvents(s.db.DB)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to retrieve events")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{
-			"events": []interface{}{},
+			"events": events,
 		})
 	} else if r.Method == http.MethodPost {
 		logger.Info("Add event request")
-		writeJSON(w, http.StatusOK, map[string]string{"event_id": "mock-event-id", "status": "added"})
+		var req struct {
+			Title       string `json:"title"`
+			Description string `json:"description"`
+			StartTime   int64  `json:"start_time"`
+			EndTime     int64  `json:"end_time"`
+			Location    string `json:"location"`
+			Attendees   string `json:"attendees"`
+			CreatedBy   string `json:"created_by"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request")
+			return
+		}
+
+		eventID := uuid.NewString()
+		if err := db.CreateEvent(s.db.DB, eventID, req.Title, req.Description, req.StartTime, req.EndTime, req.Location, req.Attendees, req.CreatedBy); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create event")
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"event_id": eventID, "status": "added"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -1090,6 +1253,10 @@ func (s *Server) handleCalendarByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete event request: %s", eventID)
+		if err := db.DeleteEvent(s.db.DB, eventID); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to delete event")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
@@ -1105,24 +1272,68 @@ func (s *Server) handleCalendarExport(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Calendar export request")
+	events, err := db.GetEvents(s.db.DB)
+	if err != nil {
+		writeError(w, http.StatusInternalServerError, "failed to retrieve events")
+		return
+	}
+
+	// Generate iCal format
+	ical := "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//KairOS//Calendar//EN\n"
+	for _, event := range events {
+		ical += "BEGIN:VEVENT\n"
+		ical += fmt.Sprintf("SUMMARY:%s\n", event.Title)
+		if event.Description != "" {
+			ical += fmt.Sprintf("DESCRIPTION:%s\n", event.Description)
+		}
+		ical += fmt.Sprintf("DTSTART:%d\n", event.StartTime)
+		if event.EndTime > 0 {
+			ical += fmt.Sprintf("DTEND:%d\n", event.EndTime)
+		}
+		if event.Location != "" {
+			ical += fmt.Sprintf("LOCATION:%s\n", event.Location)
+		}
+		ical += "END:VEVENT\n"
+	}
+	ical += "END:VCALENDAR\n"
+
 	w.Header().Set("Content-Type", "text/calendar")
 	w.Header().Set("Content-Disposition", "attachment; filename=calendar.ics")
-	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"events":      []interface{}{},
-		"exported_at": time.Now().Format(time.RFC3339),
-	})
+	w.Write([]byte(ical))
 }
 
 func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
 	logger := logging.GetLogger()
 
 	if r.Method == http.MethodGet {
+		tasks, err := db.GetTasks(s.db.DB)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to retrieve tasks")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]interface{}{
-			"tasks": []interface{}{},
+			"tasks": tasks,
 		})
 	} else if r.Method == http.MethodPost {
 		logger.Info("Add task request")
-		writeJSON(w, http.StatusOK, map[string]string{"task_id": "mock-task-id", "status": "added"})
+		var req struct {
+			Title       string `json:"title"`
+			Description string `json:"description"`
+			DueDate     int64  `json:"due_date"`
+			Priority    string `json:"priority"`
+			CreatedBy   string `json:"created_by"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request")
+			return
+		}
+
+		taskID := uuid.NewString()
+		if err := db.CreateTask(s.db.DB, taskID, req.Title, req.Description, req.DueDate, req.Priority, req.CreatedBy); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to create task")
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"task_id": taskID, "status": "added"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -1139,6 +1350,10 @@ func (s *Server) handleTaskByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete task request: %s", taskID)
+		if err := db.DeleteTask(s.db.DB, taskID); err != nil {
+			writeError(w, http.StatusInternalServerError, "failed to delete task")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
