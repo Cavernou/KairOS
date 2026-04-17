@@ -8,6 +8,33 @@
 - Operator targets:
   - macOS test node: local foreground process
   - Linux production node: systemd-managed daemon
+  - Windows: portable executable
+
+## Portability Requirements
+
+**Critical:** The Node must be fully portable and work independently on any system (Mac, Linux, Windows).
+
+### Key Requirements:
+- **Self-contained operation:** Node works inside its folder regardless of location
+- **Cross-platform support:** Must run on macOS, Linux, and Windows without modification
+- **Automatic detection:** All network configuration and Tailscale detection must be automatic
+- **No hardcoded paths:** All paths must be relative to the working directory
+- **Zero configuration required:** Node should work out of the box with sensible defaults
+
+### Implementation:
+- Database path: `./var/kairos-node.db` (relative to working directory)
+- Master key path: `./var/node-master.key` (relative to working directory)
+- Network auto-detection: Automatically detects local IP address
+- Tailscale auto-detection: Automatically detects Tailscale IP if available
+- Config auto-detection: If config file missing, uses auto-detected values
+- No platform-specific defaults: Same defaults across all platforms
+
+### Auto-Detection Features:
+- Local IP address detection via network interface enumeration
+- Tailscale IP detection via `tailscale status --json` command
+- Graceful fallback to local network if Tailscale unavailable
+- HTTP gateway automatically binds to detected IP
+- iOS app auto-discovers Node endpoint on local network
 
 ## Core Modules
 

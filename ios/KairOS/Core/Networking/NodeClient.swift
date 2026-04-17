@@ -1,4 +1,5 @@
 import Foundation
+import Network
 
 struct Contact: Codable {
     let id: String
@@ -37,16 +38,62 @@ class NodeClient {
         static func stored() -> Endpoint {
             let defaults = UserDefaults.standard
             let useTailscale = defaults.bool(forKey: useTailscaleKey)
-            
+
+            // If no stored config, auto-discover
+            if defaults.string(forKey: hostDefaultsKey) == nil {
+                if let discovered = autoDiscover() {
+                    return discovered
+                }
+            }
+
             if useTailscale {
                 let host = defaults.string(forKey: hostDefaultsKey) ?? "100.109.117.124"
                 let port = defaults.object(forKey: portDefaultsKey) as? Int ?? 8081
                 return Endpoint(host: host, port: port, useTailscale: true)
             }
-            
+
             let host = defaults.string(forKey: hostDefaultsKey) ?? "192.168.12.253"
             let port = defaults.object(forKey: portDefaultsKey) as? Int ?? 8081
             return Endpoint(host: host, port: port, useTailscale: false)
+        }
+
+        static func autoDiscover() -> Endpoint? {
+            // Try to discover Node on local network
+            // Common Node ports: 8080 (gRPC), 8081 (HTTP gateway)
+            let ports = [8081, 8080]
+            let hosts = ["localhost", "127.0.0.1"]
+
+            // Try localhost first
+            for port in ports {
+                for host in hosts {
+                    if checkNodeAvailability(host: host, port: port) {
+                        return Endpoint(host: host, port: port, useTailscale: false)
+                    }
+                }
+            }
+
+            return nil
+        }
+
+        static func checkNodeAvailability(host: String, port: Int) -> Bool {
+            let url = URL(string: "http://\(host):\(port)/mock/v1/status")
+            guard let url = url else { return false }
+
+            var request = URLRequest(url: url)
+            request.timeoutInterval = 2.0
+
+            let semaphore = DispatchSemaphore(value: 0)
+            var isAvailable = false
+
+            URLSession.shared.dataTask(with: request) { _, response, _ in
+                if let httpResponse = response as? HTTPURLResponse {
+                    isAvailable = httpResponse.statusCode == 200
+                }
+                semaphore.signal()
+            }.resume()
+
+            _ = semaphore.wait(timeout: .now() + 3.0)
+            return isAvailable
         }
 
         static func persist(host: String, port: Int, useTailscale: Bool = false) {
