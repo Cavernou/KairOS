@@ -143,6 +143,24 @@ body.critical-error select {
     color: #FFE258;
 }
 
+body.critical-error label,
+body.critical-error span,
+body.critical-error p,
+body.critical-error div {
+    color: #FFE258 !important;
+}
+
+body.critical-error .nav-tab {
+    color: #FFE258;
+    border-color: #D30000;
+}
+
+body.critical-error .nav-tab.active,
+body.critical-error .nav-tab:hover {
+    background-color: #D30000;
+    color: #FFE258;
+}
+
 .login-screen {
     display: flex;
     justify-content: center;

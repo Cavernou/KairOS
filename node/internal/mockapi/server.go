@@ -173,6 +173,7 @@ func (s *Server) Handler() http.Handler {
 
 	// API endpoints
 	mux.HandleFunc("/mock/v1/status", s.handleStatus)
+	mux.HandleFunc("/mock/v1/version", s.handleVersion)
 	mux.HandleFunc("/mock/v1/debug/reachability", s.handleReachability)
 	mux.HandleFunc("/mock/v1/activate", s.handleActivate)
 	mux.HandleFunc("/mock/v1/messages", s.handleMessages)
@@ -248,6 +249,21 @@ func (s *Server) isTailscaleIP(ip net.IP) bool {
 	secondOctet, _ := strconv.Atoi(parts[1])
 
 	return firstOctet == 100 && secondOctet >= 64 && secondOctet <= 127
+}
+
+func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		logger.Error("Invalid method for version: %s", r.Method)
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// Return version based on timestamp for auto-reload detection
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"version": time.Now().Unix(),
+	})
 }
 
 func (s *Server) handleStatus(w http.ResponseWriter, r *http.Request) {

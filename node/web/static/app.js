@@ -360,6 +360,9 @@ function initializeDashboard() {
     updateSystemStats();
     checkTailscaleStatus();
     
+    // Start auto-reload mechanism
+    startAutoReload();
+    
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
@@ -414,6 +417,38 @@ function switchTab(tabName) {
     const selectedTabButton = document.querySelector(`.nav-tab[onclick="switchTab('${tabName}')"]`);
     if (selectedTabButton) {
         selectedTabButton.classList.add('active');
+    }
+}
+
+// Auto-reload mechanism
+let lastVersion = null;
+let autoReloadInterval = null;
+
+function checkForUpdates() {
+    fetch('/mock/v1/version')
+        .then(response => response.json())
+        .then(data => {
+            if (lastVersion === null) {
+                lastVersion = data.version;
+            } else if (data.version !== lastVersion) {
+                console.log('Update detected, reloading page...');
+                location.reload();
+            }
+        })
+        .catch(err => {
+            console.log('Failed to check for updates:', err);
+        });
+}
+
+function startAutoReload() {
+    // Check for updates every 30 seconds
+    autoReloadInterval = setInterval(checkForUpdates, 30000);
+}
+
+function stopAutoReload() {
+    if (autoReloadInterval) {
+        clearInterval(autoReloadInterval);
+        autoReloadInterval = null;
     }
 }
 
