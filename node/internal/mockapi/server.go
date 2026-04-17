@@ -194,6 +194,11 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/storage/cleanup", s.handleStorageCleanup)
 	mux.HandleFunc("/mock/v1/clock", s.handleClock)
 	mux.HandleFunc("/mock/v1/clock/settings", s.handleClockSettings)
+	mux.HandleFunc("/mock/v1/calendar", s.handleCalendar)
+	mux.HandleFunc("/mock/v1/calendar/", s.handleCalendarByID)
+	mux.HandleFunc("/mock/v1/calendar/export", s.handleCalendarExport)
+	mux.HandleFunc("/mock/v1/tasks", s.handleTasks)
+	mux.HandleFunc("/mock/v1/tasks/", s.handleTaskByID)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -1057,4 +1062,85 @@ func (s *Server) handleClockSettings(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("Clock settings update request")
 	writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+}
+
+func (s *Server) handleCalendar(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"events": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Add event request")
+		writeJSON(w, http.StatusOK, map[string]string{"event_id": "mock-event-id", "status": "added"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleCalendarByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	eventID := strings.TrimPrefix(r.URL.Path, "/mock/v1/calendar/")
+	if eventID == "" {
+		writeError(w, http.StatusBadRequest, "event ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete event request: %s", eventID)
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleCalendarExport(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Calendar export request")
+	w.Header().Set("Content-Type", "text/calendar")
+	w.Header().Set("Content-Disposition", "attachment; filename=calendar.ics")
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"events":      []interface{}{},
+		"exported_at": time.Now().Format(time.RFC3339),
+	})
+}
+
+func (s *Server) handleTasks(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"tasks": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Add task request")
+		writeJSON(w, http.StatusOK, map[string]string{"task_id": "mock-task-id", "status": "added"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleTaskByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	taskID := strings.TrimPrefix(r.URL.Path, "/mock/v1/tasks/")
+	if taskID == "" {
+		writeError(w, http.StatusBadRequest, "task ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete task request: %s", taskID)
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
 }

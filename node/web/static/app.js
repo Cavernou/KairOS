@@ -600,6 +600,8 @@ function initializeDashboard() {
     loadMedia();
     loadStorage();
     startClock();
+    loadCalendar();
+    loadTasks();
 
     // Set up periodic refresh for live data
     setInterval(() => {
@@ -607,7 +609,9 @@ function initializeDashboard() {
         checkTailscaleStatus();
         loadTelemetry();
         loadStorage();
-    }, 5000); // Refresh devices, Tailscale status, telemetry, and storage every 5 seconds
+        loadCalendar();
+        loadTasks();
+    }, 5000); // Refresh devices, Tailscale status, telemetry, storage, calendar, and tasks every 5 seconds
 }
 
 // Telemetry management
@@ -923,6 +927,195 @@ async function updateClockSettings() {
     } catch (error) {
         console.error('Failed to update clock settings:', error);
         alert('Failed to update clock settings');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Calendar management
+async function loadCalendar() {
+    try {
+        const response = await fetch('/mock/v1/calendar');
+        const data = await response.json();
+
+        const calendarList = document.getElementById('calendar-list');
+        if (data.events && data.events.length > 0) {
+            calendarList.innerHTML = data.events.map(event => `
+                <div class="calendar-item">
+                    <span class="calendar-name">${event.title} - ${event.start_time}</span>
+                    <div class="calendar-actions">
+                        <button onclick="deleteEvent('${event.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            calendarList.innerHTML = '<div class="calendar-item"><span class="calendar-name">No events found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load calendar:', error);
+        document.getElementById('calendar-list').innerHTML = '<div class="calendar-item"><span class="calendar-name">Failed to load calendar</span></div>';
+    }
+}
+
+async function addEvent() {
+    playClick();
+    const title = document.getElementById('event-title').value;
+    const startTime = document.getElementById('event-start').value;
+    const endTime = document.getElementById('event-end').value;
+
+    if (!title || !startTime) {
+        alert('Please enter title and start time');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/calendar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                start_time: startTime,
+                end_time: endTime,
+                created_by: 'control_center'
+            })
+        });
+
+        if (response.ok) {
+            alert('Event added successfully');
+            playSound('TadaSuccess');
+            document.getElementById('event-title').value = '';
+            document.getElementById('event-start').value = '';
+            document.getElementById('event-end').value = '';
+            loadCalendar();
+        } else {
+            alert('Failed to add event');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to add event:', error);
+        alert('Failed to add event');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteEvent(eventId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this event?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/calendar/${eventId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Event deleted successfully');
+            playSound('TadaSuccess');
+            loadCalendar();
+        } else {
+            alert('Failed to delete event');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete event:', error);
+        alert('Failed to delete event');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Tasks management
+async function loadTasks() {
+    try {
+        const response = await fetch('/mock/v1/tasks');
+        const data = await response.json();
+
+        const taskList = document.getElementById('task-list');
+        if (data.tasks && data.tasks.length > 0) {
+            taskList.innerHTML = data.tasks.map(task => `
+                <div class="task-item">
+                    <span class="task-name">${task.title} (${task.priority}) - ${task.due_date}</span>
+                    <div class="task-actions">
+                        <button onclick="deleteTask('${task.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            taskList.innerHTML = '<div class="task-item"><span class="task-name">No tasks found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load tasks:', error);
+        document.getElementById('task-list').innerHTML = '<div class="task-item"><span class="task-name">Failed to load tasks</span></div>';
+    }
+}
+
+async function addTask() {
+    playClick();
+    const title = document.getElementById('task-title').value;
+    const dueDate = document.getElementById('task-due').value;
+    const priority = document.getElementById('task-priority').value;
+
+    if (!title) {
+        alert('Please enter title');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/tasks', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                due_date: dueDate,
+                priority: priority,
+                created_by: 'control_center'
+            })
+        });
+
+        if (response.ok) {
+            alert('Task added successfully');
+            playSound('TadaSuccess');
+            document.getElementById('task-title').value = '';
+            document.getElementById('task-due').value = '';
+            loadTasks();
+        } else {
+            alert('Failed to add task');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to add task:', error);
+        alert('Failed to add task');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteTask(taskId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this task?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/tasks/${taskId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Task deleted successfully');
+            playSound('TadaSuccess');
+            loadTasks();
+        } else {
+            alert('Failed to delete task');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete task:', error);
+        alert('Failed to delete task');
         playSound('DISAPPOINTING_FAILURE');
     }
 }

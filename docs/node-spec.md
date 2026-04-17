@@ -218,6 +218,17 @@ Both adapters share the same underlying services and SQLite state.
 - **Timestamp Display:** Show timestamps for all events
 - **Timezone Support:** Display times in local timezone
 
+### Calendar & Tasks
+- **Calendar View:** View calendar with events
+- **Event Types:** Tasks, reminders, meetings, system events
+- **Event Details:** Title, description, start time, end time, location, attendees
+- **Event Actions:** Create, edit, delete events
+- **Task Management:** Create tasks with due dates, priorities, completion status
+- **Task Categories:** Organize tasks by tags or categories
+- **Task Reminders:** Automatic reminders for upcoming tasks
+- **Task Sync:** Tasks synced across devices via Node
+- **Calendar Export:** Export calendar as iCal format
+
 ### API Endpoints
 - `GET /` - Control center web UI
 - `GET /api/status` - Node status
@@ -254,3 +265,12 @@ Both adapters share the same underlying services and SQLite state.
 - `POST /api/conflicts/:id/resolve` - Resolve conflict
 - `GET /api/clock` - Get system time
 - `PUT /api/clock/settings` - Update clock settings
+- `GET /api/calendar` - Get calendar events
+- `POST /api/calendar` - Create event
+- `PUT /api/calendar/:id` - Update event
+- `DELETE /api/calendar/:id` - Delete event
+- `GET /api/calendar/export` - Export calendar as iCal
+- `GET /api/tasks` - List tasks
+- `POST /api/tasks` - Create task
+- `PUT /api/tasks/:id` - Update task
+- `DELETE /api/tasks/:id` - Delete task

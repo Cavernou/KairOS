@@ -369,6 +369,40 @@
                     <button onclick="updateClockSettings()">UPDATE CLOCK</button>
                 </div>
             </div>
+
+            <div class="panel">
+                <h2>CALENDAR <span class="help-icon" data-tooltip="Calendar and event management">?</span></h2>
+                <div class="calendar-list" id="calendar-list">
+                    <div class="calendar-item">
+                        <span class="calendar-name">Loading events...</span>
+                    </div>
+                </div>
+                <div class="calendar-add">
+                    <input type="text" id="event-title" placeholder="TITLE">
+                    <input type="datetime-local" id="event-start" placeholder="START TIME">
+                    <input type="datetime-local" id="event-end" placeholder="END TIME">
+                    <button onclick="addEvent()">ADD EVENT</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>TASKS <span class="help-icon" data-tooltip="Task management with due dates">?</span></h2>
+                <div class="task-list" id="task-list">
+                    <div class="task-item">
+                        <span class="task-name">Loading tasks...</span>
+                    </div>
+                </div>
+                <div class="task-add">
+                    <input type="text" id="task-title" placeholder="TITLE">
+                    <input type="date" id="task-due" placeholder="DUE DATE">
+                    <select id="task-priority">
+                        <option value="low">LOW</option>
+                        <option value="medium">MEDIUM</option>
+                        <option value="high">HIGH</option>
+                    </select>
+                    <button onclick="addTask()">ADD TASK</button>
+                </div>
+            </div>
         </div>
     </div>
 

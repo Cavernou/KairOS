@@ -724,3 +724,55 @@ button:hover {
     border: 2px solid #FFE258;
     margin-bottom: 15px;
 }
+
+.calendar-list,
+.task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.calendar-item,
+.task-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar-name,
+.task-name {
+    font-weight: bold;
+}
+
+.calendar-add,
+.task-add {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.calendar-add input,
+.task-add input,
+.task-add select {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+    flex: 1;
+    min-width: 150px;
+}
+
+.calendar-add button,
+.task-add button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 8px 16px;
+}
