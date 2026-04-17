@@ -689,6 +689,24 @@ button:hover {
     color: #FFE258;
 }
 
+.modal-body .help-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #332C0C;
+    border: 1px solid #FFE258;
+    border-radius: 4px;
+}
+
+.modal-body .help-section h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #FFE258;
+    font-family: 'HomeVideoBold', monospace;
+    font-size: 16px;
+    border-bottom: 1px solid #FFE258;
+    padding-bottom: 5px;
+}
+
 .sound-category {
     margin-bottom: 15px;
     border: 1px solid #FFE258;
@@ -713,7 +731,7 @@ button:hover {
 
 .sound-category-content {
     padding: 10px;
-    display: block;
+    display: none;
 }
 
 .nav-tabs {

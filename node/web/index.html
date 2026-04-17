@@ -390,41 +390,49 @@
                 <button onclick="closeHelp()" class="close-button">X</button>
             </div>
             <div class="modal-body">
-                <h3>SETTINGS</h3>
-                <p><strong>LISTEN ADDR:</strong> Network address and port for gRPC server (e.g., 0.0.0.0:8080)</p>
-                <p><strong>MOCK HTTP ADDR:</strong> Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)</p>
-                <p><strong>TAILNET:</strong> Tailscale tailnet name for your network (e.g., kairos.ts.net)</p>
-                <p><strong>TAILSCALE ENABLED:</strong> Enable Tailscale VPN for secure networking</p>
-                <p><strong>QUEUE RETRY LIMIT:</strong> Maximum number of retry attempts for failed messages</p>
-                <p><strong>QUEUE TTL (HOURS):</strong> Time-to-live for queued messages before expiring</p>
-                <p><strong>ADMIN CODE INTERVAL (SEC):</strong> How long admin codes remain valid before rotating</p>
+                <div class="help-section">
+                    <h3>DASHBOARD</h3>
+                    <p><strong>DEVICES:</strong> View connected KairOS devices and their status.</p>
+                    <p><strong>ADMIN CODE:</strong> Registration code for activating new devices. Click REFRESH CODE to generate a new code.</p>
+                    <p><strong>SYSTEM STATUS:</strong> Overview of system statistics including devices, contacts, messages, files, and admin codes.</p>
+                    <p><strong>NETWORK:</strong> Network configuration including tailnet name and listening ports.</p>
+                    <p><strong>CLOCK:</strong> System clock display with 12-hour, 24-hour, and UTC modes.</p>
+                </div>
 
-                <h3>STORAGE</h3>
-                <p><strong>CLEANUP OLD FILES:</strong> Deletes telemetry events older than 30 days and media files older than 90 days. This is safe and helps free up storage space.</p>
+                <div class="help-section">
+                    <h3>DEVICES</h3>
+                    <p><strong>DEVICES:</strong> View and manage connected KairOS devices.</p>
+                    <p><strong>CONTACTS:</strong> Manage contact list with K-numbers and display names.</p>
+                </div>
 
-                <h3>CALLING</h3>
-                <p><strong>Voice call management and history:</strong> Initiate and manage voice calls to other KairOS devices.</p>
+                <div class="help-section">
+                    <h3>COMMUNICATIONS</h3>
+                    <p><strong>CALLING:</strong> Initiate and manage voice calls to other KairOS devices.</p>
+                    <p><strong>FILTERING:</strong> Set up message filtering rules to block or allow content based on keywords.</p>
+                </div>
 
-                <h3>FILTERING</h3>
-                <p><strong>Message and content filtering rules:</strong> Block or allow messages based on keywords.</p>
+                <div class="help-section">
+                    <h3>FILES</h3>
+                    <p><strong>FILE TRANSFER:</strong> Send files to connected KairOS devices.</p>
+                    <p><strong>MEDIA:</strong> Upload and manage image, audio, and video files.</p>
+                    <p><strong>STORAGE:</strong> View disk usage statistics. CLEANUP OLD FILES deletes telemetry events older than 30 days and media files older than 90 days to free up storage space.</p>
+                    <p><strong>NOTES:</strong> Create, view, and delete text notes.</p>
+                    <p><strong>CALENDAR:</strong> Create, view, and delete calendar events.</p>
+                    <p><strong>TASKS:</strong> Create, view, and delete tasks with priorities and due dates.</p>
+                    <p><strong>TELEMETRY:</strong> View system activity logs and export them.</p>
+                </div>
 
-                <h3>TELEMETRY</h3>
-                <p><strong>Activity log and event timeline:</strong> View system activity logs and export them.</p>
-
-                <h3>NOTES</h3>
-                <p><strong>Structured text notes system:</strong> Create, view, and delete text notes with tags.</p>
-
-                <h3>MEDIA</h3>
-                <p><strong>Image, audio, video handling:</strong> Upload and manage media files.</p>
-
-                <h3>CLOCK</h3>
-                <p><strong>System clock display:</strong> View and configure system clock display mode.</p>
-
-                <h3>CALENDAR</h3>
-                <p><strong>Calendar and event management:</strong> Create, view, and delete calendar events.</p>
-
-                <h3>TASKS</h3>
-                <p><strong>Task management with due dates:</strong> Create, view, and delete tasks with priorities and due dates.</p>
+                <div class="help-section">
+                    <h3>SETTINGS</h3>
+                    <p><strong>LISTEN ADDR:</strong> Network address and port for gRPC server (e.g., 0.0.0.0:8080)</p>
+                    <p><strong>MOCK HTTP ADDR:</strong> Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)</p>
+                    <p><strong>TAILNET:</strong> Tailscale tailnet name for your network (e.g., kairos.ts.net)</p>
+                    <p><strong>TAILSCALE ENABLED:</strong> Enable Tailscale VPN for secure networking</p>
+                    <p><strong>QUEUE RETRY LIMIT:</strong> Maximum number of retry attempts for failed messages</p>
+                    <p><strong>QUEUE TTL (HOURS):</strong> Time-to-live for queued messages before expiring</p>
+                    <p><strong>ADMIN CODE INTERVAL (SEC):</strong> How long admin codes remain valid before rotating</p>
+                    <p><strong>SOUNDS:</strong> Browse and play available sound effects organized by category.</p>
+                </div>
             </div>
         </div>
     </div>

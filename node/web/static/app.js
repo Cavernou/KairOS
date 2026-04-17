@@ -554,15 +554,18 @@ async function loadSounds() {
 
         const soundList = document.getElementById('sound-list-settings');
         if (sounds && sounds.length > 0) {
+            // Filter out macOS ._ files
+            const filteredSounds = sounds.filter(s => !s.name.startsWith('._'));
+            
             // Group sounds by category
             const categories = {
-                'Click Sounds': sounds.filter(s => s.name.includes('click')),
-                'Alerts': sounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
-                'Success': sounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
-                'Ambient': sounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
-                'UI Sounds': sounds.filter(s => s.name.includes('UI') || s.name.includes('menu') || s.name.includes('hover')),
-                'Notifications': sounds.filter(s => s.name.includes('notification') || s.name.includes('alert') || s.name.includes('beep')),
-                'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
+                'Click Sounds': filteredSounds.filter(s => s.name.includes('click')),
+                'Alerts': filteredSounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
+                'Success': filteredSounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
+                'Ambient': filteredSounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
+                'UI Sounds': filteredSounds.filter(s => s.name.includes('UI') || s.name.includes('menu') || s.name.includes('hover')),
+                'Notifications': filteredSounds.filter(s => s.name.includes('notification') || s.name.includes('alert') || s.name.includes('beep')),
+                'Other': filteredSounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
             };
 
             let html = '';

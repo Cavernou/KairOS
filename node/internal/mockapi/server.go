@@ -829,6 +829,10 @@ func (s *Server) handleSounds(w http.ResponseWriter, r *http.Request) {
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			name := entry.Name()
+			// Filter out macOS ._ files
+			if strings.HasPrefix(name, "._") {
+				continue
+			}
 			if strings.HasSuffix(name, ".mp3") || strings.HasSuffix(name, ".wav") {
 				sounds = append(sounds, map[string]string{
 					"name": strings.TrimSuffix(name, filepath.Ext(name)),
