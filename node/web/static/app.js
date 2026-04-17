@@ -595,12 +595,336 @@ function initializeDashboard() {
     loadContacts();
     loadCalling();
     loadFilters();
+    loadTelemetry();
+    loadNotes();
+    loadMedia();
+    loadStorage();
+    startClock();
 
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
         checkTailscaleStatus();
-    }, 5000); // Refresh devices and Tailscale status every 5 seconds
+        loadTelemetry();
+        loadStorage();
+    }, 5000); // Refresh devices, Tailscale status, telemetry, and storage every 5 seconds
+}
+
+// Telemetry management
+async function loadTelemetry() {
+    try {
+        const response = await fetch('/mock/v1/telemetry');
+        const data = await response.json();
+
+        const telemetryList = document.getElementById('telemetry-list');
+        if (data.events && data.events.length > 0) {
+            telemetryList.innerHTML = data.events.slice(0, 20).map(event => `
+                <div class="telemetry-item">
+                    <span class="telemetry-name">${event.timestamp} - ${event.type} - ${event.details}</span>
+                </div>
+            `).join('');
+        } else {
+            telemetryList.innerHTML = '<div class="telemetry-item"><span class="telemetry-name">No events logged</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load telemetry:', error);
+        document.getElementById('telemetry-list').innerHTML = '<div class="telemetry-item"><span class="telemetry-name">Failed to load telemetry</span></div>';
+    }
+}
+
+async function exportTelemetry() {
+    playClick();
+    try {
+        const response = await fetch('/mock/v1/telemetry/export');
+        if (response.ok) {
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'telemetry-export.json';
+            a.click();
+            playSound('TadaSuccess');
+        } else {
+            alert('Failed to export telemetry');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to export telemetry:', error);
+        alert('Failed to export telemetry');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Notes management
+async function loadNotes() {
+    try {
+        const response = await fetch('/mock/v1/notes');
+        const data = await response.json();
+
+        const notesList = document.getElementById('notes-list');
+        if (data.notes && data.notes.length > 0) {
+            notesList.innerHTML = data.notes.map(note => `
+                <div class="note-item">
+                    <span class="note-name">${note.title}</span>
+                    <div class="note-actions">
+                        <button onclick="deleteNote('${note.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            notesList.innerHTML = '<div class="note-item"><span class="note-name">No notes found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load notes:', error);
+        document.getElementById('notes-list').innerHTML = '<div class="note-item"><span class="note-name">Failed to load notes</span></div>';
+    }
+}
+
+async function addNote() {
+    playClick();
+    const title = document.getElementById('note-title').value;
+    const content = document.getElementById('note-content').value;
+
+    if (!title || !content) {
+        alert('Please enter both title and content');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/notes', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: title,
+                content: content,
+                created_by: 'control_center'
+            })
+        });
+
+        if (response.ok) {
+            alert('Note added successfully');
+            playSound('TadaSuccess');
+            document.getElementById('note-title').value = '';
+            document.getElementById('note-content').value = '';
+            loadNotes();
+        } else {
+            alert('Failed to add note');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to add note:', error);
+        alert('Failed to add note');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteNote(noteId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this note?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/notes/${noteId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Note deleted successfully');
+            playSound('TadaSuccess');
+            loadNotes();
+        } else {
+            alert('Failed to delete note');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete note:', error);
+        alert('Failed to delete note');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Media management
+async function loadMedia() {
+    try {
+        const response = await fetch('/mock/v1/media');
+        const data = await response.json();
+
+        const mediaList = document.getElementById('media-list');
+        if (data.media && data.media.length > 0) {
+            mediaList.innerHTML = data.media.map(media => `
+                <div class="media-item">
+                    <span class="media-name">${media.name} (${media.type})</span>
+                    <div class="media-actions">
+                        <button onclick="deleteMedia('${media.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            mediaList.innerHTML = '<div class="media-item"><span class="media-name">No media files found</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load media:', error);
+        document.getElementById('media-list').innerHTML = '<div class="media-item"><span class="media-name">Failed to load media</span></div>';
+    }
+}
+
+async function uploadMedia() {
+    playClick();
+    const fileInput = document.getElementById('media-input');
+
+    if (!fileInput.files.length) {
+        alert('Please select a file');
+        playSound('WarningUI');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+        const response = await fetch('/mock/v1/media', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (response.ok) {
+            alert('Media uploaded successfully');
+            playSound('TadaSuccess');
+            fileInput.value = '';
+            loadMedia();
+        } else {
+            alert('Failed to upload media');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to upload media:', error);
+        alert('Failed to upload media');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteMedia(mediaId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this media file?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/media/${mediaId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Media deleted successfully');
+            playSound('TadaSuccess');
+            loadMedia();
+        } else {
+            alert('Failed to delete media');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete media:', error);
+        alert('Failed to delete media');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Storage management
+async function loadStorage() {
+    try {
+        const response = await fetch('/mock/v1/storage');
+        const data = await response.json();
+
+        document.getElementById('storage-total').textContent = data.total || '0 MB';
+        document.getElementById('storage-used').textContent = data.used || '0 MB';
+        document.getElementById('storage-free').textContent = data.free || '0 MB';
+        document.getElementById('storage-messages').textContent = data.messages || '0 MB';
+        document.getElementById('storage-files').textContent = data.files || '0 MB';
+        document.getElementById('storage-media').textContent = data.media || '0 MB';
+    } catch (error) {
+        console.error('Failed to load storage:', error);
+    }
+}
+
+async function cleanupStorage() {
+    playClick();
+    if (!confirm('Are you sure you want to clean up old files?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/storage/cleanup', {
+            method: 'POST'
+        });
+
+        if (response.ok) {
+            alert('Storage cleanup completed');
+            playSound('TadaSuccess');
+            loadStorage();
+        } else {
+            alert('Failed to cleanup storage');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to cleanup storage:', error);
+        alert('Failed to cleanup storage');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Clock system
+let clockInterval = null;
+let clockMode = '12h';
+
+function startClock() {
+    updateClock();
+    clockInterval = setInterval(updateClock, 1000);
+}
+
+function updateClock() {
+    const now = new Date();
+    let timeString = '';
+
+    if (clockMode === 'utc') {
+        timeString = now.toUTCString().split(' ')[4];
+    } else if (clockMode === '24h') {
+        timeString = now.toLocaleTimeString('en-US', { hour12: false });
+    } else {
+        timeString = now.toLocaleTimeString('en-US', { hour12: true });
+    }
+
+    document.getElementById('system-clock').textContent = timeString;
+}
+
+async function updateClockSettings() {
+    playClick();
+    clockMode = document.getElementById('clock-mode').value;
+
+    try {
+        const response = await fetch('/mock/v1/clock/settings', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ mode: clockMode })
+        });
+
+        if (response.ok) {
+            alert('Clock settings updated');
+            playSound('TadaSuccess');
+        } else {
+            alert('Failed to update clock settings');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to update clock settings:', error);
+        alert('Failed to update clock settings');
+        playSound('DISAPPOINTING_FAILURE');
+    }
 }
 
 // Calling management

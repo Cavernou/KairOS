@@ -282,6 +282,93 @@
                     <button onclick="addFilter()">ADD FILTER</button>
                 </div>
             </div>
+
+            <div class="panel">
+                <h2>TELEMETRY <span class="help-icon" data-tooltip="Activity log and event timeline">?</span></h2>
+                <div class="telemetry-list" id="telemetry-list">
+                    <div class="telemetry-item">
+                        <span class="telemetry-name">Loading activity log...</span>
+                    </div>
+                </div>
+                <div class="telemetry-actions">
+                    <button onclick="exportTelemetry()">EXPORT LOG</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>NOTES <span class="help-icon" data-tooltip="Structured text notes system">?</span></h2>
+                <div class="notes-list" id="notes-list">
+                    <div class="note-item">
+                        <span class="note-name">Loading notes...</span>
+                    </div>
+                </div>
+                <div class="note-add">
+                    <input type="text" id="note-title" placeholder="TITLE">
+                    <textarea id="note-content" placeholder="CONTENT"></textarea>
+                    <button onclick="addNote()">ADD NOTE</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>MEDIA <span class="help-icon" data-tooltip="Image, audio, video handling">?</span></h2>
+                <div class="media-list" id="media-list">
+                    <div class="media-item">
+                        <span class="media-name">Loading media...</span>
+                    </div>
+                </div>
+                <div class="media-add">
+                    <input type="file" id="media-input" />
+                    <button onclick="uploadMedia()">UPLOAD MEDIA</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>STORAGE <span class="help-icon" data-tooltip="Storage usage and management">?</span></h2>
+                <div class="storage-stats">
+                    <div class="stat-item">
+                        <span>TOTAL:</span>
+                        <span id="storage-total">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>USED:</span>
+                        <span id="storage-used">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>FREE:</span>
+                        <span id="storage-free">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>MESSAGES:</span>
+                        <span id="storage-messages">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>FILES:</span>
+                        <span id="storage-files">Checking...</span>
+                    </div>
+                    <div class="stat-item">
+                        <span>MEDIA:</span>
+                        <span id="storage-media">Checking...</span>
+                    </div>
+                </div>
+                <div class="storage-actions">
+                    <button onclick="cleanupStorage()">CLEANUP OLD FILES</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>CLOCK <span class="help-icon" data-tooltip="System clock display">?</span></h2>
+                <div class="clock-display">
+                    <span id="system-clock" style="font-size: 48px; font-family: 'Digital7', monospace;">Loading...</span>
+                </div>
+                <div class="clock-settings">
+                    <select id="clock-mode">
+                        <option value="12h">12-HOUR</option>
+                        <option value="24h">24-HOUR</option>
+                        <option value="utc">UTC</option>
+                    </select>
+                    <button onclick="updateClockSettings()">UPDATE CLOCK</button>
+                </div>
+            </div>
         </div>
     </div>
 

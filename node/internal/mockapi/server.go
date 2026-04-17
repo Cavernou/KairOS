@@ -184,6 +184,16 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/calls/", s.handleCallByID)
 	mux.HandleFunc("/mock/v1/filters", s.handleFilters)
 	mux.HandleFunc("/mock/v1/filters/", s.handleFilterByID)
+	mux.HandleFunc("/mock/v1/telemetry", s.handleTelemetry)
+	mux.HandleFunc("/mock/v1/telemetry/export", s.handleTelemetryExport)
+	mux.HandleFunc("/mock/v1/notes", s.handleNotes)
+	mux.HandleFunc("/mock/v1/notes/", s.handleNoteByID)
+	mux.HandleFunc("/mock/v1/media", s.handleMedia)
+	mux.HandleFunc("/mock/v1/media/", s.handleMediaByID)
+	mux.HandleFunc("/mock/v1/storage", s.handleStorage)
+	mux.HandleFunc("/mock/v1/storage/cleanup", s.handleStorageCleanup)
+	mux.HandleFunc("/mock/v1/clock", s.handleClock)
+	mux.HandleFunc("/mock/v1/clock/settings", s.handleClockSettings)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -893,4 +903,158 @@ func (s *Server) handleFilterByID(w http.ResponseWriter, r *http.Request) {
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
+}
+
+func (s *Server) handleTelemetry(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Telemetry request")
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"events": []interface{}{},
+	})
+}
+
+func (s *Server) handleTelemetryExport(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Telemetry export request")
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Content-Disposition", "attachment; filename=telemetry-export.json")
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"events":      []interface{}{},
+		"exported_at": time.Now().Format(time.RFC3339),
+	})
+}
+
+func (s *Server) handleNotes(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"notes": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Add note request")
+		writeJSON(w, http.StatusOK, map[string]string{"note_id": "mock-note-id", "status": "added"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleNoteByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	noteID := strings.TrimPrefix(r.URL.Path, "/mock/v1/notes/")
+	if noteID == "" {
+		writeError(w, http.StatusBadRequest, "note ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete note request: %s", noteID)
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleMedia(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"media": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Upload media request")
+		writeJSON(w, http.StatusOK, map[string]string{"media_id": "mock-media-id", "status": "uploaded"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleMediaByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	mediaID := strings.TrimPrefix(r.URL.Path, "/mock/v1/media/")
+	if mediaID == "" {
+		writeError(w, http.StatusBadRequest, "media ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete media request: %s", mediaID)
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleStorage(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Storage statistics request")
+	// Return storage statistics
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"total":    "100 GB",
+		"used":     "10 GB",
+		"free":     "90 GB",
+		"messages": "1 GB",
+		"files":    "5 GB",
+		"media":    "4 GB",
+	})
+}
+
+func (s *Server) handleStorageCleanup(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodPost {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Storage cleanup request")
+	writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+}
+
+func (s *Server) handleClock(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Clock status request")
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"time": time.Now().Format(time.RFC3339),
+		"mode": "12h",
+	})
+}
+
+func (s *Server) handleClockSettings(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodPut {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	logger.Info("Clock settings update request")
+	writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 }

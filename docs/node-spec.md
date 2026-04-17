@@ -36,7 +36,7 @@
 - HTTP gateway automatically binds to detected IP
 - iOS app auto-discovers Node endpoint on local network
 
-## Core Modules
+### Core Modules
 
 - `config`: YAML config loading and defaults
 - `db`: SQLite opening and migrations
@@ -44,9 +44,13 @@
 - `activation`: rotating admin code issuance and device activation
 - `crypto`: AES-256-GCM session encryption helpers
 - `queue`: durable queued delivery with exponential retry
+- `taskqueue`: separate task queue for system operations (sync, backup, maintenance)
 - `contacts`: trusted phonebook service
 - `trust`: delivery-derived trust score tracking
 - `memory`: long-term AI summary storage
+- `telemetry`: activity logging and event timeline
+- `notes`: structured text notes system
+- `media`: image, audio, video handling with safeguards
 - `transport`: request/response service surface to be bridged to gRPC
 - `mockapi`: macOS-first JSON gateway for app integration while Swift gRPC remains in progress
 - `apns`: optional push wake adapter
@@ -164,6 +168,56 @@ Both adapters share the same underlying services and SQLite state.
 - **Filter Types:** Keyword blocking, content filtering, spam detection
 - **Filter Statistics:** Filtered messages, blocked count, false positives
 
+### Telemetry & Activity Logging
+- **Activity Log:** Chronological feed of all system events
+- **Event Types:** Message sent/received, device connected/disconnected, file transfer, call started/ended
+- **Activity Analytics:** Time-of-day activity patterns, device usage statistics
+- **Event Timeline:** Visual timeline of system events
+- **Log Storage:** Activity logs stored in database with retention policy
+- **Log Export:** Export activity logs for analysis
+- **Real-time Updates:** Live activity feed in control center
+
+### Notes System
+- **Note List:** View all structured text notes
+- **Note Details:** Title, content, created/modified timestamps, tags
+- **Note Actions:** Create, edit, delete, search notes
+- **Note Sync:** Notes synced across devices via Node
+- **Note Search:** Search across notes by content or tags
+- **Note Categories:** Organize notes by tags or folders
+
+### Media Handling
+- **Image Support:** View and send images with size safeguards
+- **Audio Support:** Play and send audio messages
+- **Video Support:** Play and send videos (constrained controls)
+- **Media Safeguards:** File size limits, format validation, processing power checks
+- **Unknown File Handling:** Detect unsupported formats, display warnings, prevent crashes
+- **Media Storage:** Media files stored with encryption and deduplication
+- **Media Compression:** Automatic compression for large files
+- **Media Thumbnails:** Generate thumbnails for images/videos
+
+### File Conflict Resolution
+- **Conflict Detection:** Detect when same file modified on multiple devices
+- **Conflict Resolution Strategies:** Last write wins, manual resolution, keep both
+- **Conflict UI:** Display conflicts in control center for manual resolution
+- **Conflict History:** Track conflict resolution history
+- **Automatic Resolution:** Configurable automatic conflict resolution policy
+
+### Storage Management
+- **Storage Reserves:** Reserve space for critical operations (messages, queue)
+- **Storage Monitoring:** Monitor disk usage and warn when approaching limits
+- **Storage Full Handling:** Stop accepting new media when storage full, show warning
+- **Storage Cleanup:** Automatic cleanup of old/unused files
+- **Storage Quotas:** Per-device storage quotas
+- **Storage Statistics:** View storage usage by type (messages, files, media, notes)
+
+### Clock System
+- **System Clock:** Digital clock display in control center
+- **Clock Modes:** 12-hour, 24-hour, UTC
+- **Time Synchronization:** Sync with NTP servers
+- **Clock Drift Handling:** Prevent system freeze due to clock drift
+- **Timestamp Display:** Show timestamps for all events
+- **Timezone Support:** Display times in local timezone
+
 ### API Endpoints
 - `GET /` - Control center web UI
 - `GET /api/status` - Node status
@@ -185,3 +239,18 @@ Both adapters share the same underlying services and SQLite state.
 - `GET /api/filters` - List filters
 - `POST /api/filters` - Add filter
 - `DELETE /api/filters/:id` - Delete filter
+- `GET /api/telemetry` - Get activity log
+- `GET /api/telemetry/export` - Export activity log
+- `GET /api/notes` - List notes
+- `POST /api/notes` - Create note
+- `PUT /api/notes/:id` - Update note
+- `DELETE /api/notes/:id` - Delete note
+- `GET /api/notes/search` - Search notes
+- `GET /api/media` - List media files
+- `POST /api/media` - Upload media
+- `DELETE /api/media/:id` - Delete media
+- `GET /api/storage` - Get storage statistics
+- `GET /api/conflicts` - List file conflicts
+- `POST /api/conflicts/:id/resolve` - Resolve conflict
+- `GET /api/clock` - Get system time
+- `PUT /api/clock/settings` - Update clock settings

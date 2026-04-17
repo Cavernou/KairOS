@@ -643,3 +643,84 @@ button:hover {
     font-family: 'HomeVideoBold', monospace;
     padding: 8px 16px;
 }
+
+.telemetry-list,
+.notes-list,
+.media-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.telemetry-item,
+.note-item,
+.media-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.telemetry-name,
+.note-name,
+.media-name {
+    font-weight: bold;
+}
+
+.telemetry-actions,
+.note-add,
+.media-add,
+.storage-actions,
+.clock-settings {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.telemetry-actions button,
+.note-add button,
+.media-add button,
+.storage-actions button,
+.clock-settings button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 8px 16px;
+}
+
+.note-add input,
+.note-add textarea,
+.media-add input,
+.clock-settings select {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.note-add textarea {
+    flex: 1;
+    min-height: 60px;
+    resize: vertical;
+}
+
+.storage-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clock-display {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #332C0C;
+    border: 2px solid #FFE258;
+    margin-bottom: 15px;
+}
