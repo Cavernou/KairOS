@@ -809,6 +809,47 @@ button:hover {
     border-color: #D8BF4D;
 }
 
+.file-browser-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.file-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    font-family: 'HomeVideo', monospace;
+    font-size: 14px;
+}
+
+.breadcrumb {
+    cursor: pointer;
+    color: #FFE258;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.breadcrumb:hover {
+    background-color: #D8BF4D;
+    color: #332C0C;
+}
+
+.breadcrumb-separator {
+    color: #D8BF4D;
+}
+
+.file-browser-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
 .file-list {
     display: flex;
     flex-direction: column;
@@ -1265,4 +1306,77 @@ button:hover {
     .file-info {
         align-self: flex-end;
     }
+}
+
+.broadcast-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.broadcast-input {
+    width: 100%;
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #FFE258;
+    border-radius: 4px;
+    font-family: 'HomeVideo', monospace;
+    font-size: 14px;
+    box-sizing: border-box;
+    min-height: 80px;
+    resize: vertical;
+}
+
+.broadcast-input:focus {
+    outline: none;
+    border-color: #D8BF4D;
+}
+
+.broadcast-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.broadcast-item {
+    padding: 15px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.broadcast-item .broadcast-message {
+    font-family: 'HomeVideo', monospace;
+    font-size: 16px;
+}
+
+.broadcast-item .broadcast-meta {
+    font-family: 'HomeVideo', monospace;
+    font-size: 12px;
+    color: #D8BF4D;
+    display: flex;
+    gap: 15px;
+}
+
+.broadcast-item .broadcast-priority {
+    font-weight: bold;
+}
+
+.broadcast-item .broadcast-priority.high {
+    color: #FF0000;
+}
+
+.broadcast-item .broadcast-priority.medium {
+    color: #FFE258;
+}
+
+.broadcast-item .broadcast-priority.low {
+    color: #00FF00;
 }

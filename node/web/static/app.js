@@ -528,6 +528,10 @@ function switchTab(tabName) {
     if (tabName === 'files') {
         browseFiles('.');
     }
+    
+    if (tabName === 'broadcast') {
+        loadBroadcasts();
+    }
 }
 
 // Auto-reload mechanism
@@ -659,13 +663,32 @@ async function browseFiles(path) {
         currentBrowsePath = data.path;
         currentFiles = data.files;
         
-        document.getElementById('current-path').textContent = data.path;
-        
+        updateBreadcrumbs(data.path);
         renderFiles();
     } catch (error) {
         console.error('Failed to browse files:', error);
         document.getElementById('file-browser-list').innerHTML = '<div class="file-item"><span class="file-name">Failed to load files</span></div>';
     }
+}
+
+function updateBreadcrumbs(path) {
+    const breadcrumbs = document.getElementById('file-breadcrumbs');
+    const parts = path.split('/').filter(p => p !== '' && p !== '.');
+    
+    let html = '<span class="breadcrumb" onclick="browseFiles(\'.\')" style="cursor: pointer; color: #FFE258;">🏠 Root</span>';
+    
+    let currentPath = '';
+    for (let i = 0; i < parts.length; i++) {
+        currentPath += '/' + parts[i];
+        html += ' <span class="breadcrumb-separator">›</span>';
+        html += `<span class="breadcrumb" onclick="browseFiles('${currentPath}')" style="cursor: pointer; color: #FFE258;">${parts[i]}</span>`;
+    }
+    
+    breadcrumbs.innerHTML = html;
+}
+
+function refreshFiles() {
+    browseFiles(currentBrowsePath);
 }
 
 function renderFiles() {
@@ -711,6 +734,76 @@ function sortFiles() {
 
 function filterFiles() {
     renderFiles();
+}
+
+// Broadcast management
+async function sendBroadcast() {
+    const message = document.getElementById('broadcast-message').value;
+    const priority = document.getElementById('broadcast-priority').value;
+    const expiryHours = parseInt(document.getElementById('broadcast-expiry').value);
+    
+    if (!message || message.trim() === '') {
+        alert('Please enter a broadcast message');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/mock/v1/news', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                priority: priority,
+                expires_at: Math.floor(Date.now() / 1000) + (expiryHours * 3600)
+            })
+        });
+        
+        if (response.ok) {
+            document.getElementById('broadcast-message').value = '';
+            loadBroadcasts();
+            playSound('Success');
+            alert('Broadcast sent successfully');
+        } else {
+            playSound('DISAPPOINTING_FAILURE');
+            alert('Failed to send broadcast');
+        }
+    } catch (error) {
+        console.error('Failed to send broadcast:', error);
+        playSound('DISAPPOINTING_FAILURE');
+        alert('Failed to send broadcast');
+    }
+}
+
+async function loadBroadcasts() {
+    try {
+        const response = await fetch('/mock/v1/news');
+        const data = await response.json();
+        
+        const broadcastList = document.getElementById('broadcast-list');
+        
+        if (data.message && data.message !== '') {
+            const expiryDate = new Date(data.expires_at * 1000);
+            const isExpired = expiryDate < new Date();
+            
+            broadcastList.innerHTML = `
+                <div class="broadcast-item">
+                    <span class="broadcast-message">${data.message}</span>
+                    <div class="broadcast-meta">
+                        <span class="broadcast-priority ${data.priority}">${data.priority.toUpperCase()}</span>
+                        <span>Expires: ${expiryDate.toLocaleString()}</span>
+                        ${isExpired ? '<span style="color: #FF0000;">EXPIRED</span>' : '<span style="color: #00FF00;">ACTIVE</span>'}
+                    </div>
+                </div>
+            `;
+        } else {
+            broadcastList.innerHTML = '<div class="broadcast-item"><span class="broadcast-message">No active broadcasts</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load broadcasts:', error);
+        document.getElementById('broadcast-list').innerHTML = '<div class="broadcast-item"><span class="broadcast-message">Failed to load broadcasts</span></div>';
+    }
 }
 
 async function viewFile(filePath) {
@@ -763,18 +856,17 @@ async function loadSounds() {
 
         const soundList = document.getElementById('sound-list-settings');
         if (sounds && sounds.length > 0) {
-            // Filter out macOS ._ files
-            const filteredSounds = sounds.filter(s => !s.name.startsWith('._'));
+            // Backend already filters out macOS ._ files, no need to filter here
             
             // Group sounds by category
             const categories = {
-                'Click Sounds': filteredSounds.filter(s => s.name.includes('click')),
-                'Alerts': filteredSounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
-                'Success': filteredSounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
-                'Ambient': filteredSounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
-                'UI Sounds': filteredSounds.filter(s => s.name.includes('UI') || s.name.includes('menu') || s.name.includes('hover')),
-                'Notifications': filteredSounds.filter(s => s.name.includes('notification') || s.name.includes('alert') || s.name.includes('beep')),
-                'Other': filteredSounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
+                'Click Sounds': sounds.filter(s => s.name.includes('click')),
+                'Alerts': sounds.filter(s => s.name.includes('Warning') || s.name.includes('Error') || s.name.includes('Failure')),
+                'Success': sounds.filter(s => s.name.includes('Success') || s.name.includes('Access') || s.name.includes('Tada')),
+                'Ambient': sounds.filter(s => s.name.includes('ambient') || s.name.includes('background')),
+                'UI Sounds': sounds.filter(s => s.name.includes('UI') || s.name.includes('menu') || s.name.includes('hover')),
+                'Notifications': sounds.filter(s => s.name.includes('notification') || s.name.includes('alert') || s.name.includes('beep')),
+                'Other': sounds.filter(s => !s.name.includes('click') && !s.name.includes('Warning') && !s.name.includes('Error') && !s.name.includes('Failure') && !s.name.includes('Success') && !s.name.includes('Access') && !s.name.includes('Tada') && !s.name.includes('ambient') && !s.name.includes('background') && !s.name.includes('UI') && !s.name.includes('menu') && !s.name.includes('hover') && !s.name.includes('notification') && !s.name.includes('alert') && !s.name.includes('beep'))
             };
 
             let html = '';
@@ -1093,9 +1185,8 @@ async function loadMedia() {
 
         const mediaList = document.getElementById('media-list-files');
         if (data.media && data.media.length > 0) {
-            // Filter out macOS ._ files
-            const filteredMedia = data.media.filter(media => !media.name.startsWith('._'));
-            mediaList.innerHTML = filteredMedia.map(media => `
+            // Backend already filters out macOS ._ files, no need to filter here
+            mediaList.innerHTML = data.media.map(media => `
                 <div class="media-item">
                     <span class="media-name">${media.name} (${media.type})</span>
                     <div class="media-actions">

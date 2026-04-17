@@ -42,6 +42,7 @@
             <button class="nav-tab active" onclick="switchTab('dashboard'); playClick();">DASHBOARD</button>
             <button class="nav-tab" onclick="switchTab('devices'); playClick();">DEVICES</button>
             <button class="nav-tab" onclick="switchTab('communications'); playClick();">COMMUNICATIONS</button>
+            <button class="nav-tab" onclick="switchTab('broadcast'); playClick();">BROADCAST</button>
             <button class="nav-tab" onclick="switchTab('files'); playClick();">FILES</button>
             <button class="nav-tab" onclick="switchTab('settings'); playClick();">SETTINGS</button>
         </div>
@@ -250,17 +251,17 @@
                 <div class="panel">
                     <h2>FILE BROWSER</h2>
                     <div class="file-browser">
-                        <div class="file-browser-controls">
-                            <button onclick="browseFiles('.')" class="nav-button">ROOT</button>
-                            <button onclick="browseUp()" class="nav-button">UP</button>
-                            <span id="current-path" style="margin-left: 10px;">/</span>
-                            <select id="file-sort" onchange="sortFiles()" class="nav-button" style="margin-left: auto;">
-                                <option value="name">Sort: Name</option>
-                                <option value="size">Sort: Size</option>
-                                <option value="modified">Sort: Modified</option>
-                            </select>
+                        <div class="file-browser-header">
+                            <div class="file-breadcrumbs" id="file-breadcrumbs">
+                                <span class="breadcrumb" onclick="browseFiles('.')" style="cursor: pointer; color: #FFE258;">🏠 Root</span>
+                            </div>
+                            <div class="file-browser-actions">
+                                <button onclick="browseUp()" class="nav-button" title="Go up one directory">↑ UP</button>
+                                <button onclick="browseFiles('.')" class="nav-button" title="Go to root">🏠 ROOT</button>
+                                <button onclick="refreshFiles()" class="nav-button" title="Refresh">🔄 REFRESH</button>
+                            </div>
                         </div>
-                        <input type="text" id="file-filter" placeholder="Filter files..." onkeyup="filterFiles()" class="file-filter">
+                        <input type="text" id="file-filter" placeholder="🔍 Search files..." onkeyup="filterFiles()" class="file-filter">
                         <div class="file-list" id="file-browser-list">
                             <div class="file-item">
                                 <span class="file-name">Loading...</span>
@@ -272,7 +273,7 @@
                 <div class="panel" id="file-viewer-panel" style="display: none;">
                     <h2>FILE VIEWER</h2>
                     <div class="file-viewer-controls">
-                        <button onclick="closeFileViewer()" class="nav-button">CLOSE</button>
+                        <button onclick="closeFileViewer()" class="nav-button">✕ CLOSE</button>
                         <span id="file-viewer-name" style="margin-left: 10px;"></span>
                     </div>
                     <div class="file-viewer-content" id="file-viewer-content">
@@ -287,7 +288,7 @@
                         <select id="target-device">
                             <option value="">Select Device</option>
                         </select>
-                        <button onclick="uploadFile()">SEND FILE</button>
+                        <button onclick="uploadFile()">📤 SEND FILE</button>
                     </div>
                 </div>
 
@@ -394,6 +395,47 @@
                     </div>
                     <div class="telemetry-actions">
                         <button onclick="exportTelemetry()">EXPORT LOG</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Broadcast Tab -->
+            <div id="tab-broadcast" class="tab-content" style="display: none;">
+                <div class="panel">
+                    <h2>BROADCAST NEWS</h2>
+                    <div class="broadcast-form">
+                        <div class="setting-item">
+                            <label>MESSAGE:</label>
+                            <textarea id="broadcast-message" placeholder="Enter broadcast message..." class="broadcast-input"></textarea>
+                        </div>
+                        <div class="setting-item">
+                            <label>PRIORITY:</label>
+                            <select id="broadcast-priority" class="setting-input">
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label>EXPIRES IN:</label>
+                            <select id="broadcast-expiry" class="setting-input">
+                                <option value="1">1 Hour</option>
+                                <option value="6">6 Hours</option>
+                                <option value="12">12 Hours</option>
+                                <option value="24">24 Hours</option>
+                                <option value="48">48 Hours</option>
+                                <option value="168">7 Days</option>
+                            </select>
+                        </div>
+                        <button onclick="sendBroadcast()" class="nav-button">📡 SEND BROADCAST</button>
+                    </div>
+                </div>
+                <div class="panel">
+                    <h2>ACTIVE BROADCASTS</h2>
+                    <div class="broadcast-list" id="broadcast-list">
+                        <div class="broadcast-item">
+                            <span class="broadcast-message">Loading broadcasts...</span>
+                        </div>
                     </div>
                 </div>
             </div>
