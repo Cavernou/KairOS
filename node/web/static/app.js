@@ -593,10 +593,192 @@ function initializeDashboard() {
     loadSettings();
     loadSounds();
     loadContacts();
+    loadCalling();
+    loadFilters();
 
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
         checkTailscaleStatus();
     }, 5000); // Refresh devices and Tailscale status every 5 seconds
+}
+
+// Calling management
+async function loadCalling() {
+    try {
+        const response = await fetch('/mock/v1/calls');
+        const data = await response.json();
+
+        const callingList = document.getElementById('calling-list');
+        if (data.calls && data.calls.length > 0) {
+            callingList.innerHTML = data.calls.map(call => `
+                <div class="calling-item">
+                    <span class="calling-name">${call.kair_number} - ${call.status}</span>
+                    <div class="call-actions">
+                        <button onclick="endCall('${call.id}')">END</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            callingList.innerHTML = '<div class="calling-item"><span class="calling-name">No active calls</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load calls:', error);
+        document.getElementById('calling-list').innerHTML = '<div class="calling-item"><span class="calling-name">Failed to load calls</span></div>';
+    }
+}
+
+async function initiateCall() {
+    playClick();
+    const kairNumber = document.getElementById('call-kair').value;
+
+    if (!kairNumber) {
+        alert('Please enter a K-number to call');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/calls', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                target_kair: kairNumber,
+                initiated_by: 'control_center'
+            })
+        });
+
+        if (response.ok) {
+            alert('Call initiated');
+            playSound('command_line_click#1');
+            document.getElementById('call-kair').value = '';
+            loadCalling();
+        } else {
+            alert('Failed to initiate call');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to initiate call:', error);
+        alert('Failed to initiate call');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function endCall(callId) {
+    playClick();
+    if (!confirm('Are you sure you want to end this call?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/calls/${callId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Call ended');
+            playSound('TadaSuccess');
+            loadCalling();
+        } else {
+            alert('Failed to end call');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to end call:', error);
+        alert('Failed to end call');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+// Filtering management
+async function loadFilters() {
+    try {
+        const response = await fetch('/mock/v1/filters');
+        const data = await response.json();
+
+        const filterList = document.getElementById('filter-list');
+        if (data.filters && data.filters.length > 0) {
+            filterList.innerHTML = data.filters.map(filter => `
+                <div class="filter-item">
+                    <span class="filter-name">${filter.keyword} (${filter.type})</span>
+                    <div class="filter-actions">
+                        <button onclick="deleteFilter('${filter.id}')">DELETE</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            filterList.innerHTML = '<div class="filter-item"><span class="filter-name">No filters configured</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load filters:', error);
+        document.getElementById('filter-list').innerHTML = '<div class="filter-item"><span class="filter-name">Failed to load filters</span></div>';
+    }
+}
+
+async function addFilter() {
+    playClick();
+    const keyword = document.getElementById('filter-keyword').value;
+    const filterType = document.getElementById('filter-type').value;
+
+    if (!keyword) {
+        alert('Please enter a keyword');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/filters', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                keyword: keyword,
+                type: filterType,
+                created_by: 'control_center'
+            })
+        });
+
+        if (response.ok) {
+            alert('Filter added successfully');
+            playSound('TadaSuccess');
+            document.getElementById('filter-keyword').value = '';
+            loadFilters();
+        } else {
+            alert('Failed to add filter');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to add filter:', error);
+        alert('Failed to add filter');
+        playSound('DISAPPOINTING_FAILURE');
+    }
+}
+
+async function deleteFilter(filterId) {
+    playClick();
+    if (!confirm('Are you sure you want to delete this filter?')) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/mock/v1/filters/${filterId}`, {
+            method: 'DELETE'
+        });
+
+        if (response.ok) {
+            alert('Filter deleted successfully');
+            playSound('TadaSuccess');
+            loadFilters();
+        } else {
+            alert('Failed to delete filter');
+            playSound('DISAPPOINTING_FAILURE');
+        }
+    } catch (error) {
+        console.error('Failed to delete filter:', error);
+        alert('Failed to delete filter');
+        playSound('DISAPPOINTING_FAILURE');
+    }
 }

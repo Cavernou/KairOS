@@ -150,6 +150,20 @@ Both adapters share the same underlying services and SQLite state.
 - **Trust Management:** Adjust trust scores for contacts
 - **Contact History:** View interaction history with contact
 
+### Calling Management
+- **Call List:** View all active calls
+- **Call Details:** K-number, status, duration, audio quality
+- **Call Actions:** Initiate call, end call, mute/unmute
+- **Call History:** View past calls with timestamps
+- **Call Statistics:** Success rate, average duration, error rate
+
+### Filtering Management
+- **Filter List:** View all content filters
+- **Filter Details:** Keyword, type (block/allow), scope
+- **Filter Actions:** Add filter, remove filter, enable/disable
+- **Filter Types:** Keyword blocking, content filtering, spam detection
+- **Filter Statistics:** Filtered messages, blocked count, false positives
+
 ### API Endpoints
 - `GET /` - Control center web UI
 - `GET /api/status` - Node status
@@ -161,6 +175,13 @@ Both adapters share the same underlying services and SQLite state.
 - `POST /api/queue/:id/retry` - Retry message
 - `GET /api/contacts` - List contacts
 - `POST /api/contacts` - Add contact
+- `DELETE /api/contacts/:id` - Delete contact
 - `GET /api/sounds` - List sounds
 - `POST /api/sounds/:id/play` - Play sound
 - `GET /api/admin-code` - Get current admin code
+- `GET /api/calls` - List active calls
+- `POST /api/calls` - Initiate call
+- `DELETE /api/calls/:id` - End call
+- `GET /api/filters` - List filters
+- `POST /api/filters` - Add filter
+- `DELETE /api/filters/:id` - Delete filter

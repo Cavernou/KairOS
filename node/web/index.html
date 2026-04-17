@@ -199,31 +199,31 @@
                 <h2>SETTINGS</h2>
                 <div class="settings-form">
                     <div class="setting-item">
-                        <label>LISTEN ADDR:</label>
+                        <label>LISTEN ADDR: <span class="help-icon" data-tooltip="Network address and port for gRPC server (e.g., 0.0.0.0:8080)">?</span></label>
                         <input type="text" id="setting-listen-addr" value="0.0.0.0:8080">
                     </div>
                     <div class="setting-item">
-                        <label>MOCK HTTP ADDR:</label>
+                        <label>MOCK HTTP ADDR: <span class="help-icon" data-tooltip="Network address and port for HTTP gateway (e.g., 0.0.0.0:8081)">?</span></label>
                         <input type="text" id="setting-mock-http-addr" value="0.0.0.0:8081">
                     </div>
                     <div class="setting-item">
-                        <label>TAILNET:</label>
+                        <label>TAILNET: <span class="help-icon" data-tooltip="Tailscale tailnet name for your network (e.g., kairos.ts.net)">?</span></label>
                         <input type="text" id="setting-tailnet" value="kairos.ts.net">
                     </div>
                     <div class="setting-item">
-                        <label>TAILSCALE ENABLED:</label>
+                        <label>TAILSCALE ENABLED: <span class="help-icon" data-tooltip="Enable Tailscale VPN for secure networking">?</span></label>
                         <input type="checkbox" id="setting-tailscale-enabled">
                     </div>
                     <div class="setting-item">
-                        <label>QUEUE RETRY LIMIT:</label>
+                        <label>QUEUE RETRY LIMIT: <span class="help-icon" data-tooltip="Maximum number of retry attempts for failed messages">?</span></label>
                         <input type="number" id="setting-retry-limit" value="100">
                     </div>
                     <div class="setting-item">
-                        <label>QUEUE TTL (HOURS):</label>
+                        <label>QUEUE TTL (HOURS): <span class="help-icon" data-tooltip="Time-to-live for queued messages before expiring">?</span></label>
                         <input type="number" id="setting-ttl" value="168">
                     </div>
                     <div class="setting-item">
-                        <label>ADMIN CODE INTERVAL (SEC):</label>
+                        <label>ADMIN CODE INTERVAL (SEC): <span class="help-icon" data-tooltip="How long admin codes remain valid before rotating">?</span></label>
                         <input type="number" id="setting-admin-interval" value="3600">
                     </div>
                     <button onclick="saveSettings()">SAVE SETTINGS</button>
@@ -250,6 +250,36 @@
                     <input type="text" id="new-contact-kair" placeholder="K-NUMBER">
                     <input type="text" id="new-contact-name" placeholder="DISPLAY NAME">
                     <button onclick="addContact()">ADD CONTACT</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>CALLING <span class="help-icon" data-tooltip="Voice call management and history">?</span></h2>
+                <div class="calling-list" id="calling-list">
+                    <div class="calling-item">
+                        <span class="calling-name">No active calls</span>
+                    </div>
+                </div>
+                <div class="call-actions">
+                    <input type="text" id="call-kair" placeholder="K-NUMBER TO CALL">
+                    <button onclick="initiateCall()">CALL</button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>FILTERING <span class="help-icon" data-tooltip="Message and content filtering rules">?</span></h2>
+                <div class="filter-list" id="filter-list">
+                    <div class="filter-item">
+                        <span class="filter-name">Loading filters...</span>
+                    </div>
+                </div>
+                <div class="filter-add">
+                    <input type="text" id="filter-keyword" placeholder="KEYWORD">
+                    <select id="filter-type">
+                        <option value="block">BLOCK</option>
+                        <option value="allow">ALLOW</option>
+                    </select>
+                    <button onclick="addFilter()">ADD FILTER</button>
                 </div>
             </div>
         </div>

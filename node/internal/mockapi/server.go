@@ -180,6 +180,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/files/", s.handleFileDownload)
 	mux.HandleFunc("/mock/v1/settings", s.handleSettings)
 	mux.HandleFunc("/mock/v1/sounds", s.handleSounds)
+	mux.HandleFunc("/mock/v1/calls", s.handleCalls)
+	mux.HandleFunc("/mock/v1/calls/", s.handleCallByID)
+	mux.HandleFunc("/mock/v1/filters", s.handleFilters)
+	mux.HandleFunc("/mock/v1/filters/", s.handleFilterByID)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -816,6 +820,76 @@ func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
 		logger.Info("Get contact request: %s", contactID)
 		// Get contact logic would go here
 		writeJSON(w, http.StatusOK, map[string]string{"id": contactID, "display_name": "Contact"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleCalls(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		// Return list of active calls
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"calls": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Initiate call request")
+		// Initiate call logic would go here
+		writeJSON(w, http.StatusOK, map[string]string{"call_id": "mock-call-id", "status": "initiated"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleCallByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	callID := strings.TrimPrefix(r.URL.Path, "/mock/v1/calls/")
+	if callID == "" {
+		writeError(w, http.StatusBadRequest, "call ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("End call request: %s", callID)
+		// End call logic would go here
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleFilters(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method == http.MethodGet {
+		// Return list of filters
+		writeJSON(w, http.StatusOK, map[string]interface{}{
+			"filters": []interface{}{},
+		})
+	} else if r.Method == http.MethodPost {
+		logger.Info("Add filter request")
+		// Add filter logic would go here
+		writeJSON(w, http.StatusOK, map[string]string{"filter_id": "mock-filter-id", "status": "added"})
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+	}
+}
+
+func (s *Server) handleFilterByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	filterID := strings.TrimPrefix(r.URL.Path, "/mock/v1/filters/")
+	if filterID == "" {
+		writeError(w, http.StatusBadRequest, "filter ID is required")
+		return
+	}
+
+	if r.Method == http.MethodDelete {
+		logger.Info("Delete filter request: %s", filterID)
+		// Delete filter logic would go here
+		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}

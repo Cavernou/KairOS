@@ -550,3 +550,96 @@ button:hover {
     font-family: 'HomeVideoBold', monospace;
     padding: 8px 16px;
 }
+
+.help-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 16px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: help;
+    margin-left: 5px;
+    position: relative;
+}
+
+.help-icon:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #332C0C;
+    color: #FFE258;
+    padding: 8px 12px;
+    border: 1px solid #FFE258;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    width: max-content;
+    max-width: 300px;
+}
+
+.calling-list,
+.filter-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.calling-item,
+.filter-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calling-name,
+.filter-name {
+    font-weight: bold;
+}
+
+.call-actions,
+.filter-add {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.call-actions input,
+.filter-add input {
+    flex: 1;
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.call-actions select,
+.filter-add select {
+    font-family: 'HomeVideo', monospace;
+    padding: 8px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 2px solid #332C0C;
+    font-size: 14px;
+}
+
+.call-actions button,
+.filter-add button {
+    font-family: 'HomeVideoBold', monospace;
+    padding: 8px 16px;
+}
