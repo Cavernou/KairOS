@@ -17,19 +17,12 @@ function playSound(soundName, volume = 1.0) {
     console.log('Attempting to play sound:', soundName);
     const audio = new Audio(`/sounds/${soundName}.mp3`);
     audio.volume = volume;
-    audio.play().then(() => {
-        console.log('Sound played successfully:', soundName);
-    }).catch(e => {
-        console.error('Sound play failed:', e);
-        console.error('Sound path:', `/sounds/${soundName}.mp3`);
-    });
+    audio.play().catch(err => console.log('Sound play failed:', err));
 }
 
-// Play subtle click sound for background interactions
+// Play subtle click sound
 function playSubtleClick() {
-    const clickSounds = ['command_line_click#1', 'command_line_click#2', 'command_line_click#3', 'command_line_click#4', 'command_line_click#5'];
-    const randomSound = clickSounds[Math.floor(Math.random() * clickSounds.length)];
-    playSound(randomSound, 0.4); // 40% volume for subtle clicks
+    // Disabled to reduce sound clutter
 }
 
 // Register a temp sound (user can add these later)
@@ -124,9 +117,7 @@ function logout() {
 
 // Button click sound wrapper
 function playClick() {
-    const clickSounds = ['command_line_click#1', 'command_line_click#2', 'command_line_click#3', 'command_line_click#4', 'command_line_click#5'];
-    const randomIndex = Math.floor(Math.random() * clickSounds.length);
-    playSound(clickSounds[randomIndex]);
+    // Disabled to reduce sound clutter
 }
 
 // Fetch current admin code
@@ -369,11 +360,27 @@ function initializeDashboard() {
     updateSystemStats();
     checkTailscaleStatus();
     
+    // Set up tooltip functionality
+    setupTooltips();
+    
     // Set up periodic refresh for live data
     setInterval(() => {
         fetchDevices();
         checkTailscaleStatus();
     }, 5000); // Refresh devices and Tailscale status every 5 seconds
+}
+
+// Setup tooltip functionality
+function setupTooltips() {
+    const helpIcons = document.querySelectorAll('.help-icon');
+    helpIcons.forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+            const tooltip = this.getAttribute('data-tooltip');
+            if (tooltip) {
+                this.setAttribute('title', tooltip);
+            }
+        });
+    });
 }
 
 // Trigger critical error state
@@ -759,7 +766,9 @@ async function loadMedia() {
 
         const mediaList = document.getElementById('media-list');
         if (data.media && data.media.length > 0) {
-            mediaList.innerHTML = data.media.map(media => `
+            // Filter out macOS ._ files
+            const filteredMedia = data.media.filter(media => !media.name.startsWith('._'));
+            mediaList.innerHTML = filteredMedia.map(media => `
                 <div class="media-item">
                     <span class="media-name">${media.name} (${media.type})</span>
                     <div class="media-actions">

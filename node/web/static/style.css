@@ -563,16 +563,17 @@ button:hover {
     font-size: 12px;
     font-weight: bold;
     cursor: help;
-    margin-left: 5px;
+    margin-left: 8px;
     position: relative;
+    vertical-align: middle;
 }
 
 .help-icon:hover::after {
     content: attr(data-tooltip);
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
     background-color: #332C0C;
     color: #FFE258;
     padding: 8px 12px;
