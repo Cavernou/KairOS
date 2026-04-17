@@ -2,6 +2,7 @@ package identity
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"regexp"
 	"time"
@@ -90,6 +91,6 @@ type Device struct {
 	KairNumber          string
 	PublicKey           []byte
 	Status              string
-	ActivationTimestamp int64
+	ActivationTimestamp sql.NullInt64
 	LastSeen            int64
 }
