@@ -199,11 +199,45 @@ Returns list of available sound files.
   {
     "name": "DISAPPOINTING_FAILURE",
     "path": "DISAPPOINTING_FAILURE.mp3"
+  },
+  {
+    "name": "ringtone",
+    "path": "ringtone.mp3"
+  },
+  {
+    "name": "hangup_normal",
+    "path": "hangup_normal.mp3"
+  },
+  {
+    "name": "hangup_lostconnection",
+    "path": "hangup_lostconnection.mp3"
+  },
+  {
+    "name": "callfailtone",
+    "path": "callfailtone.mp3"
+  },
+  {
+    "name": "callfailmessage",
+    "path": "callfailmessage.mp3"
+  },
+  {
+    "name": "Dial_0",
+    "path": "Dial_0.mp3"
+  },
+  {
+    "name": "Dial_1",
+    "path": "Dial_1.mp3"
   }
 ]
 ```
 
 **Filtering:** macOS ._ files automatically filtered from results.
+
+**Calling Sounds:** Specialized sound effects for the calling system:
+- Ringtone: Loops until pickup, timeout, or hangup
+- Hangup sounds: hangup_normal for normal hangup, hangup_lostconnection for connection loss
+- Call fail sequence: callfailtone plays first, then callfailmessage automatically
+- Dial tones: Dial_0 through Dial_9 for dial pad functionality
 
 ### GET /mock/v1/media
 Returns list of media files.
