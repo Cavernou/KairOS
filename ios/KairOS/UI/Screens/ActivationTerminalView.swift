@@ -109,6 +109,14 @@ struct ActivationTerminalView: View {
                 }
 
                 HStack {
+                    TextField("DISPLAY NAME", text: $viewModel.displayName)
+                        .textFieldStyle(IndustrialTextFieldStyle())
+                        .onTapGesture {
+                            appState.soundManager.playSubtleClick()
+                        }
+                }
+
+                HStack {
                     SecureField("PASSCODE", text: $passcode)
                         .textFieldStyle(IndustrialTextFieldStyle())
                         .onTapGesture {

@@ -4,6 +4,7 @@ import Foundation
 @MainActor
 final class ActivationViewModel: ObservableObject {
     @Published var kairNumber: String = ""
+    @Published var displayName: String = ""
     @Published var adminCode: String = ""
     @Published var activationState: String = "unconfigured"
     @Published var debugAdminCode: String?
@@ -38,6 +39,16 @@ final class ActivationViewModel: ObservableObject {
         let pattern = "^K-\\d{4}$"
         guard kairNumber.range(of: pattern, options: .regularExpression) != nil else {
             errorMessage = "K-NUMBER must be in format K-XXXX (4 digits)"
+            throw ActivationError.invalidInput
+        }
+
+        guard !displayName.isEmpty else {
+            errorMessage = "DISPLAY NAME is required"
+            throw ActivationError.invalidInput
+        }
+
+        guard displayName.count >= 2 && displayName.count <= 32 else {
+            errorMessage = "DISPLAY NAME must be 2-32 characters"
             throw ActivationError.invalidInput
         }
 
