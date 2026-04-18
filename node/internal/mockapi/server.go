@@ -928,9 +928,18 @@ func (s *Server) handleSounds(w http.ResponseWriter, r *http.Request) {
 				continue
 			}
 
-			// Accept both .mp3 and .wav files
+			// Accept all audio file types
 			ext := filepath.Ext(name)
-			if ext == ".mp3" || ext == ".wav" {
+			audioExtensions := []string{".mp3", ".wav", ".ogg", ".flac", ".aac", ".m4a", ".wma", ".aiff", ".au"}
+			isAudio := false
+			for _, audioExt := range audioExtensions {
+				if strings.EqualFold(ext, audioExt) {
+					isAudio = true
+					break
+				}
+			}
+
+			if isAudio {
 				soundName := strings.TrimSuffix(name, ext)
 				sounds = append(sounds, map[string]string{
 					"name": soundName,

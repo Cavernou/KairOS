@@ -742,7 +742,9 @@ button:hover {
     margin-bottom: 15px;
     border: 1px solid #FFE258;
     border-radius: 4px;
-    overflow: hidden;
+    overflow: visible;
+    position: relative;
+    z-index: 1;
 }
 
 .sound-category h3 {
@@ -754,6 +756,8 @@ button:hover {
     font-size: 18px;
     cursor: pointer;
     user-select: none;
+    position: relative;
+    z-index: 2;
 }
 
 .sound-category h3:hover {
@@ -764,6 +768,9 @@ button:hover {
 .sound-category-content {
     padding: 10px;
     display: none;
+    position: relative;
+    z-index: 2;
+    background-color: #FFE258;
 }
 
 .nav-tabs {
