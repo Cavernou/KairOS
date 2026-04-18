@@ -1799,6 +1799,23 @@ function playDialTone(digit) {
     dialTonePlayer.play().catch(err => console.log('Dial tone play failed:', err));
 }
 
+function addDialDigit(digit) {
+    const input = document.getElementById('call-kair');
+    let value = input.value;
+    if (!value.startsWith('K')) {
+        value = 'K' + value;
+    }
+    // Add digit and reformat
+    const digits = value.replace(/[^0-9]/g, '');
+    const newDigits = digits + digit;
+    const chunk = newDigits.substring(0, 4);
+    let result = 'K';
+    if (chunk.length > 0) {
+        result += '-' + chunk;
+    }
+    input.value = result;
+}
+
 function stopDialTone() {
     if (dialTonePlayer) {
         dialTonePlayer.pause();
