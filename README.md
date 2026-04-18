@@ -29,6 +29,11 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 - ✅ Avatar image limitations (max 5MB, 2048x2048)
 - ✅ Colors updated to exact hex codes from blueprint
 - ✅ Non-functional tooltips removed
+- ✅ iPhone notification system with UserNotifications
+- ✅ Notification permission request on app launch
+- ✅ Polling mechanism for registration approval status
+- ✅ Pending approval message display in activation screen
+- ✅ Notification sent when registration is approved
 
 ### Node Service
 - ✅ Go tests passing
@@ -44,6 +49,11 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 - ✅ K-XXXX format for calling input field
 - ✅ Manual account creator to bypass activation flow
 - ✅ API endpoint for manual account creation (/mock/v1/manual-account)
+- ✅ Node confirmation flow for registration approval
+- ✅ Pending registrations panel in web UI
+- ✅ API endpoints for pending registration management
+- ✅ Database migration for K-Number format conversion
+- ✅ Dial pad buttons add digits to calling number
 
 ### Testing
 - **Go Tests**: Run with `cd node && go test ./...`
@@ -52,6 +62,24 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 Note: iOS tests currently fail due to missing mock server infrastructure. The build succeeds and tests execute, but network calls fail since no actual node is running during tests.
 
 ## Recent Updates
+
+### v1.0.3 (April 2026)
+- Fixed node dialtone buttons to add digits to calling number instead of just playing sound
+- Added addDialDigit() function to format digits as K-XXXX when added
+- Added database migration to convert old K-XXXX-XXXX-XXXX-XXXX format to K-XXXX
+- Implemented node confirmation flow for registration approval
+- Added GET /mock/v1/pending-registrations endpoint to list pending registrations
+- Added POST /mock/v1/pending-registrations/:id endpoint to approve/deny registrations
+- Added PENDING REGISTRATIONS panel to node web UI with approve/deny buttons
+- Modified activation endpoint to return "pending_confirmation" state instead of immediately activating
+- Added iOS polling mechanism to check for registration approval every 5 seconds
+- Implemented iPhone notification system with UserNotifications
+- Added NotificationManager for registration approval/denial notifications
+- Added notification permission request on app launch
+- iOS app automatically sends notification when registration is approved
+- Added pending approval message display in iOS ActivationTerminalView
+- Updated API documentation with pending registration endpoints
+- iOS app UI already matches node style (fonts, colors, layout)
 
 ### v1.0.2 (April 2026)
 - Added login page for already registered users
