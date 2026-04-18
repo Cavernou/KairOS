@@ -9,6 +9,7 @@ struct ActivationTerminalView: View {
     @State private var showingImagePicker = false
     @State private var avatarImage: UIImage?
     @State private var avatarData: Data?
+    @State private var avatarError: String?
 
     init(identityManager: IdentityManager, nodeClient: NodeClient) {
         _viewModel = StateObject(wrappedValue: ActivationViewModel(identityManager: identityManager, nodeClient: nodeClient))
@@ -45,7 +46,26 @@ struct ActivationTerminalView: View {
         }
         .onChange(of: avatarImage) { _, newImage in
             if let newImage = newImage {
-                avatarData = newImage.jpegData(compressionQuality: 0.8)
+                // Validate image size (max 5MB)
+                let imageData = newImage.jpegData(compressionQuality: 0.8)
+                if let data = imageData, data.count > 5 * 1024 * 1024 {
+                    avatarError = "Image too large. Maximum size is 5MB."
+                    avatarImage = nil
+                    avatarData = nil
+                    return
+                }
+
+                // Validate image dimensions (max 2048x2048)
+                let size = newImage.size
+                if size.width > 2048 || size.height > 2048 {
+                    avatarError = "Image too large. Maximum dimensions are 2048x2048."
+                    avatarImage = nil
+                    avatarData = nil
+                    return
+                }
+
+                avatarData = imageData
+                avatarError = nil
             }
         }
     }
@@ -111,6 +131,9 @@ struct ActivationTerminalView: View {
                     Text("Upload an image to represent your device")
                         .font(KairOSTypography.mono)
                         .foregroundStyle(KairOSColors.chrome.opacity(0.7))
+                    Text("Max size: 5MB, Max dimensions: 2048x2048")
+                        .font(KairOSTypography.mono)
+                        .foregroundStyle(KairOSColors.chrome.opacity(0.5))
 
                     Button(action: {
                         appState.soundManager.playClick()
@@ -136,6 +159,12 @@ struct ActivationTerminalView: View {
                         }
                     }
                     .buttonStyle(PlainButtonStyle())
+
+                    if let avatarError = avatarError {
+                        Text(avatarError)
+                            .font(KairOSTypography.mono)
+                            .foregroundStyle(KairOSColors.alert)
+                    }
                 }
 
                 if let debugAdminCode = viewModel.debugAdminCode, viewModel.activationState == "pending_admin_code" {
