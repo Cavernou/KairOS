@@ -1227,21 +1227,21 @@ func (s *Server) handleManualAccount(w http.ResponseWriter, r *http.Request) {
 	matched, _ := regexp.MatchString(pattern, req.KairNumber)
 	if !matched {
 		logger.Error("Invalid K-Number format: %s", req.KairNumber)
-		writeError(w, http.StatusBadRequest, "K-NUMBER must be in format K-XXXX")
+		writeError(w, http.StatusBadRequest, "K-NUMBER must be in format K-XXXX (e.g., K-1234)")
 		return
 	}
 
 	// Validate display name (2-32 characters)
 	if len(req.DisplayName) < 2 || len(req.DisplayName) > 32 {
 		logger.Error("Invalid display name length: %d", len(req.DisplayName))
-		writeError(w, http.StatusBadRequest, "DISPLAY NAME must be 2-32 characters")
+		writeError(w, http.StatusBadRequest, "DISPLAY NAME must be 2-32 characters (current: "+fmt.Sprintf("%d", len(req.DisplayName))+")")
 		return
 	}
 
 	// Validate passcode
 	if len(req.Passcode) == 0 {
 		logger.Error("Empty passcode")
-		writeError(w, http.StatusBadRequest, "PASSCODE is required")
+		writeError(w, http.StatusBadRequest, "PASSCODE is required (minimum 1 character)")
 		return
 	}
 
@@ -1416,7 +1416,12 @@ func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete contact request: %s", contactID)
-		// Delete contact logic would go here
+		_, err := s.db.DB.Exec(`DELETE FROM contacts WHERE knumber = ?`, contactID)
+		if err != nil {
+			logger.Error("Failed to delete contact: %v", err)
+			writeError(w, http.StatusInternalServerError, "failed to delete contact")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else if r.Method == http.MethodGet {
 		logger.Info("Get contact request: %s", contactID)
@@ -1436,9 +1441,42 @@ func (s *Server) handleCalls(w http.ResponseWriter, r *http.Request) {
 			"calls": []interface{}{},
 		})
 	} else if r.Method == http.MethodPost {
-		logger.Info("Initiate call request")
-		// Initiate call logic would go here
-		writeJSON(w, http.StatusOK, map[string]string{"call_id": "mock-call-id", "status": "initiated"})
+		var req struct {
+			TargetKair  string `json:"target_kair"`
+			InitiatedBy string `json:"initiated_by"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			logger.Error("Failed to decode call request: %v", err)
+			writeError(w, http.StatusBadRequest, "invalid request body")
+			return
+		}
+
+		// Validate target K-Number
+		if req.TargetKair == "" {
+			writeError(w, http.StatusBadRequest, "target_kair is required")
+			return
+		}
+
+		// Check if target device exists
+		var deviceCount int
+		err := s.db.DB.QueryRow("SELECT COUNT(*) FROM devices WHERE kair_number = ?", req.TargetKair).Scan(&deviceCount)
+		if err != nil {
+			logger.Error("Failed to check target device: %v", err)
+			writeError(w, http.StatusInternalServerError, "database error")
+			return
+		}
+
+		if deviceCount == 0 {
+			logger.Error("Target device not found: %s", req.TargetKair)
+			writeError(w, http.StatusNotFound, "target device not found")
+			return
+		}
+
+		// Generate call ID
+		callID := fmt.Sprintf("call-%d", time.Now().UnixNano())
+
+		logger.Info("Call initiated to %s, call ID: %s", req.TargetKair, callID)
+		writeJSON(w, http.StatusOK, map[string]string{"call_id": callID, "status": "initiated"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
