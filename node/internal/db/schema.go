@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS devices (
     status TEXT NOT NULL CHECK(status IN ('pending','active','revoked')),
     activated_by_node TEXT,
     activation_timestamp INTEGER,
-    last_seen INTEGER
+    last_seen INTEGER,
+    display_name TEXT,
+    created_at INTEGER
 );
 
 CREATE TABLE IF NOT EXISTS contacts (
@@ -132,5 +134,12 @@ CREATE TABLE IF NOT EXISTS file_conflicts (
     resolution TEXT,
     detected_at INTEGER NOT NULL,
     resolved_at INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS passcodes (
+    device_id TEXT PRIMARY KEY,
+    passcode TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    FOREIGN KEY (device_id) REFERENCES devices(device_id)
 );
 `

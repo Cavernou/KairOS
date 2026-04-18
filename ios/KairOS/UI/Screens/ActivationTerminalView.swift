@@ -98,7 +98,7 @@ struct ActivationTerminalView: View {
                 HStack {
                     TextField("K-NUMBER", text: $viewModel.kairNumber)
                         .textFieldStyle(IndustrialTextFieldStyle())
-                        .onChange(of: viewModel.kairNumber) { newValue in
+                        .onChange(of: viewModel.kairNumber) { oldValue, newValue in
                             // Ensure K prefix
                             var formatted = newValue
                             if !formatted.hasPrefix("K") {

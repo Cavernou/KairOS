@@ -10,14 +10,15 @@ struct KairOSApp: App {
             if appState.isLoggedIn {
                 HomeView()
                     .environmentObject(appState)
+                    .task {
+                        await appState.notificationManager.requestPermission()
+                    }
             } else {
                 ActivationTerminalView(identityManager: appState.identityManager, nodeClient: appState.nodeClient)
                     .environmentObject(appState)
-            }
-        }
-        .onAppear {
-            Task {
-                await appState.notificationManager.requestPermission()
+                    .task {
+                        await appState.notificationManager.requestPermission()
+                    }
             }
         }
     }
