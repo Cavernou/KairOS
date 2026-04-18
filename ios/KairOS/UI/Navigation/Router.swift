@@ -4,6 +4,7 @@ enum AppTab: CaseIterable {
     case messages
     case files
     case contacts
+    case calling
     case nodes
     case apps
     case settings
@@ -14,6 +15,7 @@ enum AppTab: CaseIterable {
         case .messages: "MESSAGES"
         case .files: "FILES"
         case .contacts: "CONTACTS"
+        case .calling: "CALLING"
         case .nodes: "NODES"
         case .apps: "APPS"
         case .settings: "SETTINGS"

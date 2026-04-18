@@ -262,6 +262,8 @@ struct HomeView: View {
             FilesView()
         case .contacts:
             ContactsView(cache: appState.cache)
+        case .calling:
+            CallingView()
         case .nodes:
             NodesView()
         case .apps:

@@ -27,6 +27,22 @@ enum KairOSSound: String, CaseIterable {
     case commandLineClick3 = "command_line_click#3.wav"
     case commandLineClick4 = "command_line_click#4.wav"
     case commandLineClick5 = "command_line_click#5.wav"
+    // Calling sounds
+    case ringtone = "ringtone.mp3"
+    case hangupNormal = "hangup_normal.mp3"
+    case hangupLostConnection = "hangup_lostconnection.mp3"
+    case callFailTone = "callfailtone.mp3"
+    case callFailMessage = "callfailmessage.mp3"
+    case dial0 = "Dial_0.mp3"
+    case dial1 = "Dial_1.mp3"
+    case dial2 = "Dial_2.mp3"
+    case dial3 = "Dial_3.mp3"
+    case dial4 = "Dial_4.mp3"
+    case dial5 = "Dial_5.mp3"
+    case dial6 = "Dial_6.mp3"
+    case dial7 = "Dial_7.mp3"
+    case dial8 = "Dial_8.mp3"
+    case dial9 = "Dial_9.mp3"
 
     var resourceName: String {
         (rawValue as NSString).deletingPathExtension
@@ -73,6 +89,27 @@ enum KairOSSoundCatalog {
         "read": .fileRead,
         "back": .fileBack,
         "close": .archivistFileWindowClose
+    ]
+
+    static let callingSounds: [String: KairOSSound] = [
+        "ringtone": .ringtone,
+        "hangup_normal": .hangupNormal,
+        "hangup_lost_connection": .hangupLostConnection,
+        "call_fail_tone": .callFailTone,
+        "call_fail_message": .callFailMessage
+    ]
+
+    static let dialTones: [Int: KairOSSound] = [
+        0: .dial0,
+        1: .dial1,
+        2: .dial2,
+        3: .dial3,
+        4: .dial4,
+        5: .dial5,
+        6: .dial6,
+        7: .dial7,
+        8: .dial8,
+        9: .dial9
     ]
 
     static let allBundled = KairOSSound.allCases

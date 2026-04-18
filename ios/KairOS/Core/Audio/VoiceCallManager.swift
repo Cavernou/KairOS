@@ -15,6 +15,8 @@ final class VoiceCallManager: NSObject, ObservableObject {
     private let provider = CXProvider(configuration: .init())
     private var audioEngine: AVAudioEngine?
     private var currentCallUUID: UUID?
+    private var ringtonePlayer: AVAudioPlayer?
+    private var dialTonePlayer: AVAudioPlayer?
     
     enum CallState {
         case ringing
@@ -22,7 +24,7 @@ final class VoiceCallManager: NSObject, ObservableObject {
         case connected
         case ended
         case failed
-        
+
         var description: String {
             switch self {
             case .ringing: return "RINGING"
@@ -32,6 +34,11 @@ final class VoiceCallManager: NSObject, ObservableObject {
             case .failed: return "FAILED"
             }
         }
+    }
+
+    enum HangupType {
+        case normal
+        case lostConnection
     }
     
     override init() {
@@ -69,11 +76,14 @@ final class VoiceCallManager: NSObject, ObservableObject {
         // Initialize audio
         try await setupAudioForCall()
         
+        // Start ringtone
+        playRingtone()
+        
         // Simulate connection (in real implementation, this would connect via node)
         try await simulateCallConnection(kairNumber: kairNumber)
     }
     
-    func endCall() async throws {
+    func endCall(hangupType: HangupType = .normal) async throws {
         guard let call = currentCall else {
             throw VoiceCallError.noActiveCall
         }
@@ -82,6 +92,12 @@ final class VoiceCallManager: NSObject, ObservableObject {
         let transaction = CXTransaction(action: endCallAction)
         
         try await callController.request(transaction)
+        
+        // Stop ringtone
+        stopRingtone()
+        
+        // Play appropriate hangup sound
+        playHangupSound(type: hangupType)
         
         await cleanupCall(call)
     }
@@ -227,16 +243,130 @@ final class VoiceCallManager: NSObject, ObservableObject {
     }
     
     // MARK: - Audio Controls
-    
+
     func toggleMicrophone() async throws {
         guard currentCall != nil else {
             throw VoiceCallError.noActiveCall
         }
-        
+
         isMicrophoneMuted.toggle()
-        
+
         // Apply mute state to audio engine
         audioEngine?.inputNode.volume = isMicrophoneMuted ? 0.0 : 1.0
+    }
+
+    // MARK: - Calling Sound Effects
+
+    private func playRingtone() {
+        guard let sound = KairOSSoundCatalog.callingSounds["ringtone"] else { return }
+
+        do {
+            guard let url = Bundle.main.url(
+                forResource: sound.resourceName,
+                withExtension: sound.fileExtension,
+                subdirectory: "Sounds/SystemSounds"
+            ) else { return }
+
+            ringtonePlayer = try AVAudioPlayer(contentsOf: url)
+            ringtonePlayer?.numberOfLoops = -1 // Loop indefinitely
+            ringtonePlayer?.volume = 1.0
+            ringtonePlayer?.play()
+        } catch {
+            print("Failed to play ringtone: \(error)")
+        }
+    }
+
+    private func stopRingtone() {
+        ringtonePlayer?.stop()
+        ringtonePlayer = nil
+    }
+
+    private func playHangupSound(type: HangupType) {
+        let soundKey: String
+        switch type {
+        case .normal:
+            soundKey = "hangup_normal"
+        case .lostConnection:
+            soundKey = "hangup_lost_connection"
+        }
+
+        guard let sound = KairOSSoundCatalog.callingSounds[soundKey] else { return }
+
+        do {
+            guard let url = Bundle.main.url(
+                forResource: sound.resourceName,
+                withExtension: sound.fileExtension,
+                subdirectory: "Sounds/SystemSounds"
+            ) else { return }
+
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.volume = 1.0
+            player.play()
+        } catch {
+            print("Failed to play hangup sound: \(error)")
+        }
+    }
+
+    func playCallFailSequence() {
+        // Play call fail tone first
+        guard let toneSound = KairOSSoundCatalog.callingSounds["call_fail_tone"] else { return }
+
+        do {
+            guard let toneUrl = Bundle.main.url(
+                forResource: toneSound.resourceName,
+                withExtension: toneSound.fileExtension,
+                subdirectory: "Sounds/SystemSounds"
+            ) else { return }
+
+            let tonePlayer = try AVAudioPlayer(contentsOf: toneUrl)
+            tonePlayer.volume = 1.0
+            tonePlayer.play()
+
+            // Play call fail message after tone finishes
+            DispatchQueue.main.asyncAfter(deadline: .now() + tonePlayer.duration) {
+                guard let messageSound = KairOSSoundCatalog.callingSounds["call_fail_message"] else { return }
+
+                do {
+                    guard let messageUrl = Bundle.main.url(
+                        forResource: messageSound.resourceName,
+                        withExtension: messageSound.fileExtension,
+                        subdirectory: "Sounds/SystemSounds"
+                    ) else { return }
+
+                    let messagePlayer = try AVAudioPlayer(contentsOf: messageUrl)
+                    messagePlayer.volume = 1.0
+                    messagePlayer.play()
+                } catch {
+                    print("Failed to play call fail message: \(error)")
+                }
+            }
+        } catch {
+            print("Failed to play call fail tone: \(error)")
+        }
+    }
+
+    func playDialTone(digit: Int) {
+        guard let sound = KairOSSoundCatalog.dialTones[digit] else { return }
+
+        do {
+            guard let url = Bundle.main.url(
+                forResource: sound.resourceName,
+                withExtension: sound.fileExtension,
+                subdirectory: "Sounds/SystemSounds"
+            ) else { return }
+
+            dialTonePlayer = try AVAudioPlayer(contentsOf: url)
+            dialTonePlayer?.numberOfLoops = -1 // Loop while held
+            dialTonePlayer?.volume = 1.0
+            dialTonePlayer?.play()
+        } catch {
+            print("Failed to play dial tone: \(error)")
+        }
+    }
+
+    func stopDialTone() {
+        dialTonePlayer?.stop()
+        dialTonePlayer = nil
     }
     
     func toggleSpeaker() async throws {
