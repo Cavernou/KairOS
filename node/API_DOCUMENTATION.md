@@ -227,17 +227,50 @@ Returns list of available sound files.
   {
     "name": "Dial_1",
     "path": "Dial_1.mp3"
+  },
+  {
+    "name": "Dial_2",
+    "path": "Dial_2.mp3"
+  },
+  {
+    "name": "Dial_3",
+    "path": "Dial_3.mp3"
+  },
+  {
+    "name": "Dial_4",
+    "path": "Dial_4.mp3"
+  },
+  {
+    "name": "Dial_5",
+    "path": "Dial_5.mp3"
+  },
+  {
+    "name": "Dial_6",
+    "path": "Dial_6.mp3"
+  },
+  {
+    "name": "Dial_7",
+    "path": "Dial_7.mp3"
+  },
+  {
+    "name": "Dial_8",
+    "path": "Dial_8.mp3"
+  },
+  {
+    "name": "Dial_9",
+    "path": "Dial_9.mp3"
   }
 ]
 ```
 
-**Filtering:** macOS ._ files automatically filtered from results.
+**Calling Sound Effects:**
+- Ringtone: Loops until pickup, timeout, or hangup (ringtone.mp3)
+- Hangup sounds: Two types - hangup_normal.mp3 for normal hangup, hangup_lostconnection.mp3 for connection loss
+- Call fail sequence: Plays callfailtone.mp3 first, then callfailmessage.mp3 automatically
+- Dial tones: Dial_0.mp3 through Dial_9.mp3 play while button held, stop on release
+- Connection failure: Plays hangup_lostconnection.mp3 when node fails or phone cannot connect
 
-**Calling Sounds:** Specialized sound effects for the calling system:
-- Ringtone: Loops until pickup, timeout, or hangup
-- Hangup sounds: hangup_normal for normal hangup, hangup_lostconnection for connection loss
-- Call fail sequence: callfailtone plays first, then callfailmessage automatically
-- Dial tones: Dial_0 through Dial_9 for dial pad functionality
+**Filtering:** macOS ._ files automatically filtered from results.
 
 ### GET /mock/v1/media
 Returns list of media files.

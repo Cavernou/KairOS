@@ -19,15 +19,38 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 - ✅ Activation page UI fixed with avatar upload
 - ✅ Industrial theme with yellow/black design
 - ✅ HTTP-based NodeClient (gRPC removed due to dependency issues)
+- ✅ Calling system with sound effects (ringtone, hangup sounds, call fail sequence, dial tones)
+- ✅ Dial pad UI with hold/release logic for dial tones
+- ✅ Automatic K prefix for calling input field
+- ✅ Registration flow improved with Quick Start Guide and validation
 
 ### Node Service
 - ✅ Go tests passing
 - ✅ SQLite database with complete schemas
 - ✅ gRPC server implementation
 - ✅ Queue management with exponential backoff
+- ✅ Calling sound effects (ringtone, hangup sounds, call fail sequence, dial tones)
+- ✅ File transfer functionality with database tracking
+- ✅ Auto-reload mechanism to only trigger on node restart/rebuild
+- ✅ Sound viewer with category state preservation
+- ✅ File viewer with proper content clearing
+- ✅ File browser with improved path handling
 
 ### Testing
 - **Go Tests**: Run with `cd node && go test ./...`
 - **iOS Tests**: Run with `cd ios/KairOS && xcodebuild test -scheme KairOS -destination 'platform=iOS Simulator,name=iPhone 16 Pro,OS=18.2' -only-testing:KairOSTests`
 
 Note: iOS tests currently fail due to missing mock server infrastructure. The build succeeds and tests execute, but network calls fail since no actual node is running during tests.
+
+## Recent Updates
+
+### v1.0.1 (April 2026)
+- Added calling sound effects to both node and iOS app
+- Implemented dial pad UI with hold/release logic
+- Added automatic K prefix to calling input fields
+- Improved registration flow with Quick Start Guide and validation
+- Fixed auto-reload to only trigger on node restart/rebuild
+- Fixed sound viewer category state preservation
+- Fixed file viewer content clearing
+- Fixed file browser path handling
+- Removed all TODO comments from backend code
