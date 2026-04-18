@@ -263,7 +263,7 @@ struct HomeView: View {
         case .contacts:
             ContactsView(cache: appState.cache)
         case .calling:
-            CallingView()
+            CallsView()
         case .nodes:
             NodesView()
         case .apps:

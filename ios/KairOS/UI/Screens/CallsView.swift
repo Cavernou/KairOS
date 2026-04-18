@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct CallingView: View {
+struct CallsView: View {
     @State private var callingNumber: String = "K"
     @State private var isCalling = false
     @StateObject private var callManager = VoiceCallManager()
@@ -91,7 +91,7 @@ struct CallingView: View {
         Button("\(digit)") {
             appState.soundManager.playClick()
         }
-        .font(KairOSTypography.header)
+        .font(KairOSTypography.lcd)
         .frame(width: 60, height: 60)
         .background(KairOSColors.background)
         .foregroundColor(KairOSColors.chrome)
@@ -149,7 +149,7 @@ struct CallingView: View {
             .cornerRadius(8)
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(KairOSColors.chrome, lineWidth: 2)
+                    .stroke(KairOSColors.chrome, linewidth: 2)
             )
             .disabled(!isCalling)
         }
