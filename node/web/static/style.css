@@ -324,6 +324,37 @@ body.critical-error .nav-tab:hover {
     border: 1px solid #D8BF4D;
 }
 
+.pending-item {
+    padding: 10px;
+    background-color: #332C0C;
+    color: #FFE258;
+    border: 1px solid #D8BF4D;
+    margin-bottom: 10px;
+}
+
+.pending-name {
+    font-family: 'HomeVideoBold', monospace;
+    font-size: 14px;
+    color: #FFE258;
+}
+
+.pending-id {
+    font-family: 'MIB', monospace;
+    font-size: 10px;
+    color: #746421;
+}
+
+.pending-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.pending-actions button {
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
 .device-name {
     font-weight: bold;
 }

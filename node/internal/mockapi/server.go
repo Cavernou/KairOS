@@ -227,6 +227,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/news", s.handleNews)
 	mux.HandleFunc("/mock/v1/metrics", s.handleMetrics)
 	mux.HandleFunc("/mock/v1/manual-account", s.handleManualAccount)
+	mux.HandleFunc("/mock/v1/pending-registrations", s.handlePendingRegistrations)
+	mux.HandleFunc("/mock/v1/pending-registrations/", s.handlePendingRegistrationByID)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -438,12 +440,20 @@ func (s *Server) handleActivate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Register device as pending
+	// Register device as pending confirmation
 	if err := s.identity.RegisterPendingDevice(r.Context(), req.DeviceID, req.KairNumber, req.PublicKey); err != nil {
 		logger.Error("Failed to register pending device: %v", err)
 		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	// Set activation state to pending_confirmation
+	writeJSON(w, http.StatusOK, activateResponse{
+		Activated:       false,
+		ActivationState: "pending_confirmation",
+		DeviceID:        req.DeviceID,
+		KairNumber:      req.KairNumber,
+	})
 
 	// Store avatar data if provided
 	if len(req.AvatarData) > 0 {
@@ -1272,6 +1282,101 @@ func (s *Server) handleManualAccount(w http.ResponseWriter, r *http.Request) {
 		"device_id":   deviceID,
 		"kair_number": req.KairNumber,
 	})
+}
+
+func (s *Server) handlePendingRegistrations(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodGet {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	// Query pending registrations
+	rows, err := s.db.DB.Query(`
+		SELECT device_id, kair_number, public_key, created_at
+		FROM devices
+		WHERE status = 'pending'
+		ORDER BY created_at DESC
+	`)
+	if err != nil {
+		logger.Error("Failed to query pending registrations: %v", err)
+		writeError(w, http.StatusInternalServerError, "database error")
+		return
+	}
+	defer rows.Close()
+
+	var registrations []map[string]interface{}
+	for rows.Next() {
+		var deviceID, kairNumber string
+		var publicKey []byte
+		var createdAt int64
+		if err := rows.Scan(&deviceID, &kairNumber, &publicKey, &createdAt); err != nil {
+			logger.Error("Failed to scan pending registration: %v", err)
+			continue
+		}
+
+		registrations = append(registrations, map[string]interface{}{
+			"device_id":   deviceID,
+			"kair_number": kairNumber,
+			"public_key":  string(publicKey),
+			"created_at":  createdAt,
+		})
+	}
+
+	writeJSON(w, http.StatusOK, map[string]interface{}{
+		"registrations": registrations,
+	})
+}
+
+func (s *Server) handlePendingRegistrationByID(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	// Extract device ID from URL
+	deviceID := strings.TrimPrefix(r.URL.Path, "/mock/v1/pending-registrations/")
+
+	if r.Method == http.MethodPost {
+		// Approve registration
+		var req struct {
+			Action string `json:"action"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request body")
+			return
+		}
+
+		if req.Action == "approve" {
+			// Update device status to active
+			_, err := s.db.DB.Exec(`
+				UPDATE devices
+				SET status = 'active', activation_timestamp = ?
+				WHERE device_id = ?
+			`, time.Now().Unix(), deviceID)
+			if err != nil {
+				logger.Error("Failed to approve registration: %v", err)
+				writeError(w, http.StatusInternalServerError, "failed to approve")
+				return
+			}
+			logger.Info("Approved registration: %s", deviceID)
+			writeJSON(w, http.StatusOK, map[string]string{"message": "Registration approved"})
+		} else if req.Action == "deny" {
+			// Delete the pending device
+			_, err := s.db.DB.Exec(`DELETE FROM devices WHERE device_id = ?`, deviceID)
+			if err != nil {
+				logger.Error("Failed to deny registration: %v", err)
+				writeError(w, http.StatusInternalServerError, "failed to deny")
+				return
+			}
+			logger.Info("Denied registration: %s", deviceID)
+			writeJSON(w, http.StatusOK, map[string]string{"message": "Registration denied"})
+		} else {
+			writeError(w, http.StatusBadRequest, "invalid action")
+			return
+		}
+	} else {
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
 }
 
 func getLoadAverage() []float64 {

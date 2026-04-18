@@ -11,6 +11,7 @@ final class ActivationViewModel: ObservableObject {
     @Published var avatarData: Data?
     @Published var errorMessage: String?
     @Published var isActivating = false
+    @Published var isPendingConfirmation = false
 
     private let identityManager: IdentityManager
     private let nodeClient: NodeClient
@@ -89,6 +90,9 @@ final class ActivationViewModel: ObservableObject {
             if result.state == "active" {
                 debugAdminCode = nil
                 identityManager.markActivated()
+            } else if result.state == "pending_confirmation" {
+                isPendingConfirmation = true
+                errorMessage = "Registration is pending approval from node administrator."
             } else if result.state == "failed" {
                 errorMessage = "Activation failed. Check your admin code and try again."
             }

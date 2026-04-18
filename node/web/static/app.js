@@ -1049,6 +1049,7 @@ function initializeDashboard() {
     startClock();
     loadCalendar();
     loadTasks();
+    loadPendingRegistrations();
 
     // Start auto-reload mechanism
     startAutoReload();
@@ -1676,6 +1677,59 @@ async function createManualAccount() {
     } catch (error) {
         console.error('Failed to create manual account:', error);
         alert('Failed to create account');
+        playSound('WarningUI');
+    }
+}
+
+async function loadPendingRegistrations() {
+    try {
+        const response = await fetch('/mock/v1/pending-registrations');
+        const data = await response.json();
+
+        const pendingList = document.getElementById('pending-list');
+        if (data.registrations && data.registrations.length > 0) {
+            pendingList.innerHTML = data.registrations.map(reg => `
+                <div class="pending-item">
+                    <span class="pending-name">${reg.kair_number}</span>
+                    <span class="pending-id">${reg.device_id}</span>
+                    <div class="pending-actions">
+                        <button onclick="handlePendingRegistration('${reg.device_id}', 'approve')">APPROVE</button>
+                        <button onclick="handlePendingRegistration('${reg.device_id}', 'deny')">DENY</button>
+                    </div>
+                </div>
+            `).join('');
+        } else {
+            pendingList.innerHTML = '<div class="pending-item"><span class="pending-name">No pending registrations</span></div>';
+        }
+    } catch (error) {
+        console.error('Failed to load pending registrations:', error);
+        document.getElementById('pending-list').innerHTML = '<div class="pending-item"><span class="pending-name">Failed to load</span></div>';
+    }
+}
+
+async function handlePendingRegistration(deviceID, action) {
+    playClick();
+    try {
+        const response = await fetch(`/mock/v1/pending-registrations/${deviceID}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ action: action })
+        });
+
+        if (response.ok) {
+            alert(`Registration ${action}d`);
+            playSound('AccessGranted');
+            loadPendingRegistrations();
+            fetchDevices();
+        } else {
+            alert(`Failed to ${action} registration`);
+            playSound('WarningUI');
+        }
+    } catch (error) {
+        console.error(`Failed to ${action} registration:`, error);
+        alert(`Failed to ${action} registration`);
         playSound('WarningUI');
     }
 }

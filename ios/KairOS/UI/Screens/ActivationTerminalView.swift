@@ -193,6 +193,20 @@ struct ActivationTerminalView: View {
                         .font(KairOSTypography.mono)
                         .foregroundStyle(KairOSColors.led)
                 }
+
+                if viewModel.isPendingConfirmation {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("PENDING APPROVAL")
+                            .font(KairOSTypography.header)
+                            .foregroundStyle(KairOSColors.led)
+                        Text("Your registration is awaiting approval from the node administrator.")
+                            .font(KairOSTypography.mono)
+                            .foregroundStyle(KairOSColors.chrome)
+                    }
+                    .padding()
+                    .background(KairOSColors.chrome.opacity(0.1))
+                    .cornerRadius(8)
+                }
             }
             .font(KairOSTypography.mono)
         }
