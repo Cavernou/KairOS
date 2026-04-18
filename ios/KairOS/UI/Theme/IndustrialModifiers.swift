@@ -25,23 +25,21 @@ struct PanelChrome: ViewModifier {
 }
 
 struct HeaderButtonChrome: ButtonStyle {
-    @EnvironmentObject private var soundManager: SoundManager
-    
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(KairOSTypography.microTab)
             .foregroundStyle(KairOSColors.background)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 8)
-            .background(KairOSColors.chrome)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(configuration.isPressed ? KairOSColors.background : KairOSColors.chrome)
             .overlay(
-                Rectangle()
+                RoundedRectangle(cornerRadius: 4)
                     .stroke(configuration.isPressed ? KairOSColors.led : KairOSColors.grid, lineWidth: 2)
             )
             .opacity(configuration.isPressed ? 0.8 : 1)
             .onChange(of: configuration.isPressed) { _, isPressed in
                 if isPressed {
-                    soundManager.playClick()
+                    SoundManager.shared.playClick()
                 }
             }
     }

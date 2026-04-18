@@ -223,7 +223,7 @@
                         </div>
                     </div>
                     <div class="call-actions">
-                        <input type="text" id="call-kair" placeholder="NUMBER TO CALL" value="K" onfocus="if(this.value === 'K') { this.value = 'K'; }" oninput="if(!this.value.startsWith('K')) { this.value = 'K' + this.value.replace('K', ''); }">
+                        <input type="text" id="call-kair" placeholder="NUMBER TO CALL" value="K" onfocus="if(this.value === 'K') { this.value = 'K'; }" oninput="formatKNumber(this)">
                         <button onclick="initiateCall()">CALL</button>
                     </div>
                 </div>

@@ -1598,6 +1598,25 @@ async function loadCalling() {
     }
 }
 
+function formatKNumber(input) {
+    let value = input.value;
+    if (!value.startsWith('K')) {
+        value = 'K' + value;
+    }
+    if (value === 'K') {
+        input.value = 'K';
+        return;
+    }
+    // Auto-format: K-XXXX (4 digits after K)
+    const digits = value.replace(/[^0-9]/g, '');
+    const chunk = digits.substring(0, 4);
+    let result = 'K';
+    if (chunk.length > 0) {
+        result += '-' + chunk;
+    }
+    input.value = result;
+}
+
 async function initiateCall() {
     playClick();
     const kairNumber = document.getElementById('call-kair').value;

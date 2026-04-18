@@ -61,54 +61,31 @@ struct ActivationTerminalView: View {
 
     private var formBlock: some View {
         VStack(alignment: .leading, spacing: 16) {
-            // Step-by-step guide
-            VStack(alignment: .leading, spacing: 8) {
-                Text("QUICK START GUIDE:")
-                    .font(KairOSTypography.header)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("1. Enter your K-NUMBER (auto-formatted with K prefix)")
-                        .font(KairOSTypography.mono)
-                    Text("2. Create a personal PASSCODE (keep it secret)")
-                        .font(KairOSTypography.mono)
-                    Text("3. Get ADMIN CODE from Node Control Center")
-                        .font(KairOSTypography.mono)
-                    Text("4. Upload optional AVATAR image")
-                        .font(KairOSTypography.mono)
-                    Text("5. Click ACTIVATE to complete registration")
-                        .font(KairOSTypography.mono)
-                }
-            }
-            .padding(12)
-            .background(KairOSColors.background.opacity(0.3))
-            .overlay(
-                RoundedRectangle(cornerRadius: 4)
-                    .stroke(KairOSColors.chrome, lineWidth: 1)
-            )
-
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     TextField("K-NUMBER", text: $viewModel.kairNumber)
                         .textFieldStyle(IndustrialTextFieldStyle())
                         .onChange(of: viewModel.kairNumber) { newValue in
                             // Ensure K prefix
-                            if !newValue.hasPrefix("K") {
-                                viewModel.kairNumber = "K" + newValue
+                            var formatted = newValue
+                            if !formatted.hasPrefix("K") {
+                                formatted = "K" + formatted
                             }
                             // Remove K if user tries to delete it
-                            if newValue.isEmpty {
-                                viewModel.kairNumber = "K"
+                            if formatted.isEmpty {
+                                formatted = "K"
                             }
+                            // Auto-format: K-XXXX (4 digits after K)
+                            let digits = formatted.filter { $0.isNumber }
+                            let prefix = String(digits.prefix(1))
+                            let chunk = String(digits.dropFirst().prefix(4))
+                            var result = "K"
+                            if !chunk.isEmpty { result += "-" + chunk }
+                            viewModel.kairNumber = result
                         }
                         .onTapGesture {
                             appState.soundManager.playSubtleClick()
                         }
-                    Button("?") {
-                        appState.soundManager.playSubtleClick()
-                        // Show tooltip for K-NUMBER
-                    }
-                    .font(KairOSTypography.mono)
-                    .foregroundStyle(KairOSColors.chrome)
-                    .help("Your unique KairOS identifier. Format: K-XXXX-XXXX-XXXX-XXXX. The K prefix is automatically added.")
                 }
 
                 HStack {
@@ -117,13 +94,6 @@ struct ActivationTerminalView: View {
                         .onTapGesture {
                             appState.soundManager.playSubtleClick()
                         }
-                    Button("?") {
-                        appState.soundManager.playSubtleClick()
-                        // Show tooltip for PASSCODE
-                    }
-                    .font(KairOSTypography.mono)
-                    .foregroundStyle(KairOSColors.chrome)
-                    .help("Your personal passcode for device unlock. Keep it secret and memorable. Minimum 4 characters recommended.")
                 }
 
                 HStack {
@@ -132,13 +102,6 @@ struct ActivationTerminalView: View {
                         .onTapGesture {
                             appState.soundManager.playSubtleClick()
                         }
-                    Button("?") {
-                        appState.soundManager.playSubtleClick()
-                        // Show tooltip for ADMIN CODE
-                    }
-                    .font(KairOSTypography.mono)
-                    .foregroundStyle(KairOSColors.chrome)
-                    .help("Admin code from your KairOS Node control center. Open http://localhost:8081 in a browser, click 'GENERATE CODE' button, and enter the code here. Code expires in 5 minutes.")
                 }
 
                 // Avatar upload
@@ -186,10 +149,11 @@ struct ActivationTerminalView: View {
         .panelChrome()
         .overlay(alignment: .bottomLeading) {
             HStack(spacing: 12) {
-                Button("ACTIVATE") {
+                Button(viewModel.isActivating ? "ACTIVATING..." : "ACTIVATE") {
                     Task { await activate() }
                 }
                 .buttonStyle(HeaderButtonChrome())
+                .disabled(viewModel.isActivating)
 
                 Text(viewModel.activationState.replacingOccurrences(of: "_", with: " ").uppercased())
                     .font(KairOSTypography.mono)

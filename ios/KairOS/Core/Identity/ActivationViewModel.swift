@@ -9,6 +9,7 @@ final class ActivationViewModel: ObservableObject {
     @Published var debugAdminCode: String?
     @Published var avatarData: Data?
     @Published var errorMessage: String?
+    @Published var isActivating = false
 
     private let identityManager: IdentityManager
     private let nodeClient: NodeClient
@@ -19,6 +20,9 @@ final class ActivationViewModel: ObservableObject {
     }
 
     func activate(avatarData: Data? = nil) async throws {
+        isActivating = true
+        defer { isActivating = false }
+
         // Validation
         guard !kairNumber.isEmpty else {
             errorMessage = "K-NUMBER is required"
@@ -27,6 +31,13 @@ final class ActivationViewModel: ObservableObject {
 
         guard kairNumber.hasPrefix("K") else {
             errorMessage = "K-NUMBER must start with K"
+            throw ActivationError.invalidInput
+        }
+
+        // Validate K-XXXX format (K followed by dash and 4 digits)
+        let pattern = "^K-\\d{4}$"
+        guard kairNumber.range(of: pattern, options: .regularExpression) != nil else {
+            errorMessage = "K-NUMBER must be in format K-XXXX (4 digits)"
             throw ActivationError.invalidInput
         }
 

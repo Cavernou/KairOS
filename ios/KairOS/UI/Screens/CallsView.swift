@@ -13,18 +13,25 @@ struct CallsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("DESTINATION K-NUMBER")
                         .font(KairOSTypography.mono)
-                    TextField("K-XXXX-XXXX-XXXX-XXXX", text: $callingNumber)
+                    TextField("K-XXXX", text: $callingNumber)
                         .font(KairOSTypography.mono)
                         .textFieldStyle(IndustrialTextFieldStyle())
                         .onChange(of: callingNumber) { newValue in
                             // Ensure K prefix
-                            if !newValue.hasPrefix("K") {
-                                callingNumber = "K" + newValue
+                            var formatted = newValue
+                            if !formatted.hasPrefix("K") {
+                                formatted = "K" + formatted
                             }
                             // Remove K if user tries to delete it
-                            if newValue.isEmpty {
-                                callingNumber = "K"
+                            if formatted.isEmpty {
+                                formatted = "K"
                             }
+                            // Auto-format: K-XXXX (4 digits after K)
+                            let digits = formatted.filter { $0.isNumber }
+                            let chunk = String(digits.prefix(4))
+                            var result = "K"
+                            if !chunk.isEmpty { result += "-" + chunk }
+                            callingNumber = result
                         }
                 }
 
@@ -83,6 +90,7 @@ struct CallsView: View {
             HStack(spacing: 8) {
                 dialButton(digit: 0)
                     .frame(maxWidth: .infinity)
+                    .frame(alignment: .center)
             }
         }
     }
