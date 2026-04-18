@@ -1437,12 +1437,29 @@ func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete contact request: %s", contactID)
-		_, err := s.db.DB.Exec(`DELETE FROM contacts WHERE knumber = ?`, contactID)
+
+		// Check if contact exists first
+		var exists bool
+		err := s.db.DB.QueryRow(`SELECT EXISTS(SELECT 1 FROM contacts WHERE knumber = ?)`, contactID).Scan(&exists)
+		if err != nil {
+			logger.Error("Failed to check contact existence: %v", err)
+			writeError(w, http.StatusInternalServerError, "database error")
+			return
+		}
+
+		if !exists {
+			logger.Error("Contact not found: %s", contactID)
+			writeError(w, http.StatusNotFound, "contact not found")
+			return
+		}
+
+		_, err = s.db.DB.Exec(`DELETE FROM contacts WHERE knumber = ?`, contactID)
 		if err != nil {
 			logger.Error("Failed to delete contact: %v", err)
 			writeError(w, http.StatusInternalServerError, "failed to delete contact")
 			return
 		}
+		logger.Info("Contact deleted successfully: %s", contactID)
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else if r.Method == http.MethodGet {
 		logger.Info("Get contact request: %s", contactID)

@@ -49,11 +49,21 @@ func (s *Store) migrateKairNumbers() error {
 		return err
 	}
 
-	// Update contacts table
+	// Update contacts table with K-XXXX-XXXX format (8 digits after K-)
 	_, err = s.DB.Exec(`
-		UPDATE contacts 
+		UPDATE contacts
 		SET knumber = 'K-' || SUBSTR(knumber, 3, 4)
-		WHERE knumber LIKE 'K-%-%-%-%'
+		WHERE knumber LIKE 'K-____-____' AND knumber NOT LIKE 'K-____'
+	`)
+	if err != nil {
+		return err
+	}
+
+	// Also update contacts with K-XXXX-XXXX-XXXX format (12 digits after K-)
+	_, err = s.DB.Exec(`
+		UPDATE contacts
+		SET knumber = 'K-' || SUBSTR(knumber, 3, 4)
+		WHERE knumber LIKE 'K-%-%-%-%' AND knumber NOT LIKE 'K-____'
 	`)
 	if err != nil {
 		return err
