@@ -13,6 +13,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -225,6 +226,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/mock/v1/files/view", s.handleFileView)
 	mux.HandleFunc("/mock/v1/news", s.handleNews)
 	mux.HandleFunc("/mock/v1/metrics", s.handleMetrics)
+	mux.HandleFunc("/mock/v1/manual-account", s.handleManualAccount)
 
 	// Add Tailscale IP validation middleware
 	return s.tailscaleMiddleware(mux)
@@ -1178,6 +1180,98 @@ func (s *Server) handleMetrics(w http.ResponseWriter, r *http.Request) {
 	}
 
 	writeJSON(w, http.StatusOK, metrics)
+}
+
+func (s *Server) handleManualAccount(w http.ResponseWriter, r *http.Request) {
+	logger := logging.GetLogger()
+
+	if r.Method != http.MethodPost {
+		logger.Error("Invalid method for manual account: %s", r.Method)
+		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
+		return
+	}
+
+	var req struct {
+		KairNumber  string `json:"kairNumber"`
+		DisplayName string `json:"displayName"`
+		Passcode    string `json:"passcode"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		logger.Error("Failed to decode manual account request: %v", err)
+		writeError(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+
+	// Validate K-Number format (K-XXXX)
+	pattern := `^K-\d{4}$`
+	matched, _ := regexp.MatchString(pattern, req.KairNumber)
+	if !matched {
+		logger.Error("Invalid K-Number format: %s", req.KairNumber)
+		writeError(w, http.StatusBadRequest, "K-NUMBER must be in format K-XXXX")
+		return
+	}
+
+	// Validate display name (2-32 characters)
+	if len(req.DisplayName) < 2 || len(req.DisplayName) > 32 {
+		logger.Error("Invalid display name length: %d", len(req.DisplayName))
+		writeError(w, http.StatusBadRequest, "DISPLAY NAME must be 2-32 characters")
+		return
+	}
+
+	// Validate passcode
+	if len(req.Passcode) == 0 {
+		logger.Error("Empty passcode")
+		writeError(w, http.StatusBadRequest, "PASSCODE is required")
+		return
+	}
+
+	// Check if account already exists
+	var existingCount int
+	err := s.db.DB.QueryRow("SELECT COUNT(*) FROM devices WHERE kair_number = ?", req.KairNumber).Scan(&existingCount)
+	if err != nil {
+		logger.Error("Failed to check existing account: %v", err)
+		writeError(w, http.StatusInternalServerError, "database error")
+		return
+	}
+
+	if existingCount > 0 {
+		logger.Error("Account already exists: %s", req.KairNumber)
+		writeError(w, http.StatusConflict, "Account with this K-NUMBER already exists")
+		return
+	}
+
+	// Create device ID
+	deviceID := uuid.New().String()
+
+	// Insert into devices table
+	_, err = s.db.DB.Exec(`
+		INSERT INTO devices (device_id, kair_number, display_name, status, created_at, last_seen)
+		VALUES (?, ?, ?, 'active', ?, ?)
+	`, deviceID, req.KairNumber, req.DisplayName, time.Now().Unix(), time.Now().Unix())
+	if err != nil {
+		logger.Error("Failed to create manual account: %v", err)
+		writeError(w, http.StatusInternalServerError, "failed to create account")
+		return
+	}
+
+	// Insert passcode (in production, this should be hashed)
+	_, err = s.db.DB.Exec(`
+		INSERT INTO passcodes (device_id, passcode, created_at)
+		VALUES (?, ?, ?)
+	`, deviceID, req.Passcode, time.Now().Unix())
+	if err != nil {
+		logger.Error("Failed to save passcode: %v", err)
+		writeError(w, http.StatusInternalServerError, "failed to save passcode")
+		return
+	}
+
+	logger.Info("Manual account created: %s (%s)", req.KairNumber, req.DisplayName)
+	writeJSON(w, http.StatusCreated, map[string]string{
+		"message":     "Account created successfully",
+		"device_id":   deviceID,
+		"kair_number": req.KairNumber,
+	})
 }
 
 func getLoadAverage() []float64 {

@@ -1617,6 +1617,69 @@ function formatKNumber(input) {
     input.value = result;
 }
 
+function formatManualKNumber(input) {
+    formatKNumber(input);
+}
+
+async function createManualAccount() {
+    playClick();
+    const kairNumber = document.getElementById('manual-kair').value;
+    const displayName = document.getElementById('manual-display-name').value;
+    const passcode = document.getElementById('manual-passcode').value;
+
+    // Validate inputs
+    if (!kairNumber || kairNumber === 'K') {
+        alert('Please enter a K-NUMBER');
+        playSound('WarningUI');
+        return;
+    }
+
+    if (!displayName || displayName.length < 2 || displayName.length > 32) {
+        alert('DISPLAY NAME must be 2-32 characters');
+        playSound('WarningUI');
+        return;
+    }
+
+    if (!passcode) {
+        alert('Please enter a PASSCODE');
+        playSound('WarningUI');
+        return;
+    }
+
+    try {
+        const response = await fetch('/mock/v1/manual-account', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                kairNumber: kairNumber,
+                displayName: displayName,
+                passcode: passcode
+            })
+        });
+
+        if (response.ok) {
+            alert('Account created successfully');
+            playSound('AccessGranted');
+            // Clear form
+            document.getElementById('manual-kair').value = 'K';
+            document.getElementById('manual-display-name').value = '';
+            document.getElementById('manual-passcode').value = '';
+            // Refresh devices list
+            fetchDevices();
+        } else {
+            const error = await response.json();
+            alert('Failed to create account: ' + (error.error || 'Unknown error'));
+            playSound('WarningUI');
+        }
+    } catch (error) {
+        console.error('Failed to create manual account:', error);
+        alert('Failed to create account');
+        playSound('WarningUI');
+    }
+}
+
 async function initiateCall() {
     playClick();
     const kairNumber = document.getElementById('call-kair').value;

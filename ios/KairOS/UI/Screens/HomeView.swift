@@ -9,6 +9,7 @@ final class AppState: ObservableObject {
     @Published var blackboxStatus = "NO SNAPSHOT"
     @Published var lastBackupLocation: String?
     @Published var isShowingSaveConsole = false
+    @Published var isLoggedIn = false
 
     let cache = LocalCache()
     let identityManager = IdentityManager()
@@ -16,6 +17,8 @@ final class AppState: ObservableObject {
     let soundManager = SoundManager.shared
 
     init() {
+        identityManager.loadIdentity()
+        isLoggedIn = identityManager.isRegistered
         cache.seedPreviewData()
         soundManager.playAmbient()
         Task { await refreshNodeStatus() }

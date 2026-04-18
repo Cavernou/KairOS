@@ -333,6 +333,46 @@ Returns the current admin code.
 }
 ```
 
+## Manual Account Creation
+
+### POST /mock/v1/manual-account
+Bypasses the activation flow and directly creates an account. This is an admin-only feature for creating accounts without requiring the confirmation flow.
+
+**Request:**
+```json
+{
+  "kairNumber": "K-1234",
+  "displayName": "John Doe",
+  "passcode": "secret123"
+}
+```
+
+**Parameters:**
+- `kairNumber` (string, required): K-NUMBER in format K-XXXX (4 digits after K)
+- `displayName` (string, required): Display name for the account (2-32 characters)
+- `passcode` (string, required): Passcode for the account
+
+**Response (Success):**
+```json
+{
+  "message": "Account created successfully",
+  "device_id": "uuid-string",
+  "kair_number": "K-1234"
+}
+```
+
+**Response (Error):**
+```json
+{
+  "error": "Error message"
+}
+```
+
+**Error Codes:**
+- `400`: Invalid K-NUMBER format, invalid display name length, or missing passcode
+- `409`: Account with this K-NUMBER already exists
+- `500`: Database error or failed to create account
+
 ## Calendar Endpoints
 
 ### GET /mock/v1/calendar

@@ -8,6 +8,10 @@ final class IdentityManager: ObservableObject {
 
     private let privateKeyAccount = "kairos.device.privateKey"
 
+    var isRegistered: Bool {
+        return identity?.status == "active"
+    }
+
     func bootstrapIdentity(kairNumber: String) throws {
         let privateKey = Curve25519.Signing.PrivateKey()
         try KeychainWrapper.save(privateKey.rawRepresentation, account: privateKeyAccount)
@@ -37,5 +41,18 @@ final class IdentityManager: ObservableObject {
             status: "active",
             activationTimestamp: .now
         )
+    }
+
+    func loadIdentity() {
+        // Try to load existing identity from keychain
+        guard
+            let data = KeychainWrapper.load(account: privateKeyAccount),
+            let _ = try? Curve25519.Signing.PrivateKey(rawRepresentation: data)
+        else {
+            identity = nil
+            return
+        }
+        // TODO: Load full identity data from keychain including status
+        // For now, just check if we have a key
     }
 }

@@ -7,8 +7,13 @@ struct KairOSApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .environmentObject(appState)
+            if appState.isLoggedIn {
+                HomeView()
+                    .environmentObject(appState)
+            } else {
+                ActivationTerminalView(identityManager: appState.identityManager, nodeClient: appState.nodeClient)
+                    .environmentObject(appState)
+            }
         }
     }
 }

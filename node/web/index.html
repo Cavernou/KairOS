@@ -92,6 +92,24 @@
                 </div>
 
                 <div class="panel">
+                    <h2>MANUAL ACCOUNT CREATION</h2>
+                    <p style="font-size: 12px; margin-bottom: 15px;">Bypass activation flow and directly create accounts</p>
+                    <div class="setting-item">
+                        <label>K-NUMBER (K-XXXX):</label>
+                        <input type="text" id="manual-kair" placeholder="K-XXXX" oninput="formatManualKNumber(this)">
+                    </div>
+                    <div class="setting-item">
+                        <label>DISPLAY NAME:</label>
+                        <input type="text" id="manual-display-name" placeholder="Display name (2-32 characters)">
+                    </div>
+                    <div class="setting-item">
+                        <label>PASSCODE:</label>
+                        <input type="password" id="manual-passcode" placeholder="Passcode">
+                    </div>
+                    <button onclick="createManualAccount()">CREATE ACCOUNT</button>
+                </div>
+
+                <div class="panel">
                     <h2>SYSTEM STATUS</h2>
                     <div class="system-stats">
                         <div class="stat-item">
