@@ -15,5 +15,10 @@ struct KairOSApp: App {
                     .environmentObject(appState)
             }
         }
+        .onAppear {
+            Task {
+                await appState.notificationManager.requestPermission()
+            }
+        }
     }
 }

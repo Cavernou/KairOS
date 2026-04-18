@@ -15,6 +15,7 @@ final class AppState: ObservableObject {
     let identityManager = IdentityManager()
     let nodeClient = NodeClient()
     let soundManager = SoundManager.shared
+    let notificationManager = NotificationManager.shared
 
     init() {
         identityManager.loadIdentity()

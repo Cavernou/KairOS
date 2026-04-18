@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import UserNotifications
 
 @MainActor
 final class ActivationViewModel: ObservableObject {
@@ -15,6 +16,7 @@ final class ActivationViewModel: ObservableObject {
 
     private let identityManager: IdentityManager
     private let nodeClient: NodeClient
+    private var pollingTask: Task<Void, Never>?
 
     init(identityManager: IdentityManager, nodeClient: NodeClient) {
         self.identityManager = identityManager
@@ -93,6 +95,7 @@ final class ActivationViewModel: ObservableObject {
             } else if result.state == "pending_confirmation" {
                 isPendingConfirmation = true
                 errorMessage = "Registration is pending approval from node administrator."
+                startPollingForApproval()
             } else if result.state == "failed" {
                 errorMessage = "Activation failed. Check your admin code and try again."
             }
@@ -100,6 +103,29 @@ final class ActivationViewModel: ObservableObject {
             errorMessage = error.localizedDescription
             throw error
         }
+    }
+
+    private func startPollingForApproval() {
+        pollingTask?.cancel()
+        pollingTask = Task {
+            while !Task.isCancelled && isPendingConfirmation {
+                try? await Task.sleep(nanoseconds: UInt64(5 * 1_000_000_000)) // Poll every 5 seconds
+                
+                // Check if device has been activated
+                if let identity = identityManager.identity, identity.status == "active" {
+                    isPendingConfirmation = false
+                    activationState = "active"
+                    errorMessage = nil
+                    NotificationManager.shared.sendRegistrationApprovedNotification(kairNumber: identity.kairNumber)
+                    break
+                }
+            }
+        }
+    }
+
+    func stopPolling() {
+        pollingTask?.cancel()
+        pollingTask = nil
     }
 
     enum ActivationError: LocalizedError {
