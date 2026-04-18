@@ -723,12 +723,16 @@ function renderFiles() {
     });
     
     if (filteredFiles.length > 0) {
-        fileList.innerHTML = filteredFiles.map(file => `
-            <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${file.is_dir ? `browseFiles('${currentBrowsePath}/${file.name}')` : `viewFile('${currentBrowsePath}/${file.name}')`}">
+        fileList.innerHTML = filteredFiles.map(file => {
+            const filePath = currentBrowsePath === '.' ? file.name : `${currentBrowsePath}/${file.name}`;
+            const clickAction = file.is_dir ? `browseFiles('${filePath}')` : `viewFile('${filePath}')`;
+            return `
+            <div class="file-item ${file.is_dir ? 'directory' : ''}" onclick="${clickAction}">
                 <span class="file-name">${file.is_dir ? '[DIR] ' : ''}${file.name}</span>
                 <span class="file-info">${formatFileSize(file.size)}</span>
             </div>
-        `).join('');
+            `;
+        }).join('');
     } else {
         fileList.innerHTML = '<div class="file-item"><span class="file-name">No files found</span></div>';
     }
@@ -818,7 +822,9 @@ async function viewFile(filePath) {
         if (response.ok) {
             const text = await response.text();
             document.getElementById('file-viewer-name').textContent = filePath;
-            document.getElementById('file-viewer-content').querySelector('pre').textContent = text;
+            const contentElement = document.getElementById('file-viewer-content').querySelector('pre');
+            contentElement.textContent = '';
+            contentElement.textContent = text;
             document.getElementById('file-viewer-panel').style.display = 'block';
             playClick();
         } else {
@@ -855,6 +861,8 @@ function formatFileSize(bytes) {
 }
 
 // Sound management
+let soundCategoryState = {}; // Preserve category state across reloads
+
 async function loadSounds() {
     try {
         const response = await fetch('/mock/v1/sounds');
@@ -884,10 +892,12 @@ async function loadSounds() {
             for (const [category, categorySounds] of Object.entries(categories)) {
                 if (categorySounds.length > 0) {
                     console.log(`Category ${category}: ${categorySounds.length} sounds`);
+                    const categoryId = category.replace(/\s/g, '-');
+                    const displayState = soundCategoryState[categoryId] !== undefined ? soundCategoryState[categoryId] : 'block';
                     html += `
                         <div class="sound-category">
                             <h3 onclick="toggleSoundCategory('${category}')">${category} ▼</h3>
-                            <div class="sound-category-content" id="category-${category.replace(/\s/g, '-')}" style="display: block;">
+                            <div class="sound-category-content" id="category-${categoryId}" style="display: ${displayState};">
                                 ${categorySounds.map(sound => `
                                     <div class="sound-item">
                                         <span class="sound-name">${sound.name}</span>
@@ -916,8 +926,10 @@ function toggleSoundCategory(category) {
     const content = document.getElementById(`category-${categoryId}`);
     if (content.style.display === 'none') {
         content.style.display = 'block';
+        soundCategoryState[categoryId] = 'block';
     } else {
         content.style.display = 'none';
+        soundCategoryState[categoryId] = 'none';
     }
 }
 

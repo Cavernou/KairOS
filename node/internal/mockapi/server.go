@@ -445,7 +445,17 @@ func (s *Server) handleActivate(w http.ResponseWriter, r *http.Request) {
 	// Store avatar data if provided
 	if len(req.AvatarData) > 0 {
 		logger.Info("Avatar data received for device %s, size: %d bytes", req.DeviceID, len(req.AvatarData))
-		// TODO: Store avatar data in database or file system
+		// Store avatar data in database
+		avatarPath := fmt.Sprintf("/avatars/%s.png", req.DeviceID)
+		if err := os.MkdirAll("/avatars", 0755); err != nil {
+			logger.Error("Failed to create avatars directory: %v", err)
+		} else {
+			if err := os.WriteFile(avatarPath, req.AvatarData, 0644); err != nil {
+				logger.Error("Failed to write avatar file: %v", err)
+			} else {
+				logger.Info("Avatar stored at %s", avatarPath)
+			}
+		}
 	}
 
 	// If admin code provided, verify and activate
@@ -730,12 +740,43 @@ func (s *Server) handleFileUpload(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("File upload request: %s to device %s", handler.Filename, targetDevice)
 
-	// TODO: Implement actual file storage and transfer to target device
-	// For now, just acknowledge receipt
+	// Create transfer directory if it doesn't exist
+	transferDir := "/transfers"
+	if err := os.MkdirAll(transferDir, 0755); err != nil {
+		logger.Error("Failed to create transfers directory: %v", err)
+		writeError(w, http.StatusInternalServerError, "Failed to create transfer directory")
+		return
+	}
+
+	// Store file in transfers directory
+	transferPath := fmt.Sprintf("%s/%s_%s", transferDir, targetDevice, handler.Filename)
+	destFile, err := os.Create(transferPath)
+	if err != nil {
+		logger.Error("Failed to create transfer file: %v", err)
+		writeError(w, http.StatusInternalServerError, "Failed to create transfer file")
+		return
+	}
+	defer destFile.Close()
+
+	// Copy uploaded file to transfer location
+	if _, err := io.Copy(destFile, file); err != nil {
+		logger.Error("Failed to copy transfer file: %v", err)
+		writeError(w, http.StatusInternalServerError, "Failed to copy transfer file")
+		return
+	}
+
+	// Create database entry for transfer
+	transferID := uuid.New().String()
+	if err := s.db.CreateFileTransfer(r.Context(), transferID, "node", targetDevice, 1, 0, ""); err != nil {
+		logger.Error("Failed to create file transfer record: %v", err)
+	}
+
 	writeJSON(w, http.StatusOK, map[string]string{
 		"status":        "queued",
+		"transfer_id":   transferID,
 		"file_name":     handler.Filename,
 		"target_device": targetDevice,
+		"transfer_path": transferPath,
 	})
 
 	go s.sound.Play("FileFolderOpen.mp3")
@@ -760,7 +801,24 @@ func (s *Server) handleFileDownload(w http.ResponseWriter, r *http.Request) {
 
 	logger.Info("File download request: %s", fileID)
 
-	// TODO: Implement actual file retrieval
+	// Check if file is in transfers directory
+	transferPath := fmt.Sprintf("/transfers/%s", fileID)
+	if _, err := os.Stat(transferPath); err == nil {
+		// File exists in transfers directory
+		http.ServeFile(w, r, transferPath)
+		return
+	}
+
+	// Check if file is in media directory
+	mediaPath := fmt.Sprintf("/media/%s", fileID)
+	if _, err := os.Stat(mediaPath); err == nil {
+		// File exists in media directory
+		http.ServeFile(w, r, mediaPath)
+		return
+	}
+
+	// File not found
+	logger.Error("File not found: %s", fileID)
 	writeError(w, http.StatusNotFound, "File not found")
 }
 
