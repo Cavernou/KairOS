@@ -8,7 +8,17 @@ actor QueueManager {
     init() {
         let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0]
         self.dbPath = (documentsPath as NSString).appendingPathComponent("queue.db")
-        setupDatabase()
+        // Defer isolated work until after initialization completes.
+        Task { [weak self] in
+            await self?.setupDatabase()
+        }
+    }
+    
+    deinit {
+        if db != nil {
+            sqlite3_close(db)
+            db = nil
+        }
     }
     
     private func setupDatabase() {
@@ -57,8 +67,11 @@ actor QueueManager {
             sqlite3_bind_text(stmt, 2, (packet.type as NSString).utf8String, -1, nil)
             sqlite3_bind_text(stmt, 3, (packet.senderKair as NSString).utf8String, -1, nil)
             sqlite3_bind_text(stmt, 4, (packet.receiverKair as NSString).utf8String, -1, nil)
-            sqlite3_bind_int64(stmt, 5, Int64(packet.timestamp))
-            sqlite3_bind_blob(stmt, 6, [UInt8](packet.encryptedPayload), Int32(packet.encryptedPayload.count), nil)
+            sqlite3_bind_int64(stmt, 5, packet.timestamp)
+            packet.encryptedPayload.withUnsafeBytes { rawBuf in
+                let ptr = rawBuf.baseAddress
+                sqlite3_bind_blob(stmt, 6, ptr, Int32(packet.encryptedPayload.count), nil)
+            }
             let route = packet.nodeRoute.joined(separator: ",")
             sqlite3_bind_text(stmt, 7, (route as NSString).utf8String, -1, nil)
             sqlite3_bind_int64(stmt, 8, Int64(packet.hasAttachments ? 1 : 0))
@@ -92,7 +105,11 @@ actor QueueManager {
                 let senderKair = String(cString: sqlite3_column_text(stmt, 2))
                 let receiverKair = String(cString: sqlite3_column_text(stmt, 3))
                 let timestamp = sqlite3_column_int64(stmt, 4)
-                let encryptedPayload = Data(bytes: sqlite3_column_blob(stmt, 5), count: Int(sqlite3_column_bytes(stmt, 5)))
+                
+                let blobPtr = sqlite3_column_blob(stmt, 5)
+                let blobLen = Int(sqlite3_column_bytes(stmt, 5))
+                let encryptedPayload = blobPtr != nil ? Data(bytes: blobPtr!, count: blobLen) : Data()
+                
                 let routeStr = String(cString: sqlite3_column_text(stmt, 6))
                 let hasAttachments = sqlite3_column_int(stmt, 7) != 0
                 

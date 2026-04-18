@@ -489,7 +489,7 @@ extension VoiceCallManager: CXProviderDelegate {
         }
     }
     
-    func provider(_ provider: CXProvider, perform action: CXStartCallAction) async {
+    private func provider(_ provider: CXProvider, perform action: CXStartCallAction) async {
         // Handle outgoing call initiated by system
         let kairNumber = action.handle.value
         do {
@@ -500,7 +500,7 @@ extension VoiceCallManager: CXProviderDelegate {
         }
     }
     
-    func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) async {
+    private func provider(_ provider: CXProvider, perform action: CXAnswerCallAction) async {
         // Handle incoming call answered by user
         guard currentCall != nil else {
             action.fail()
@@ -512,7 +512,7 @@ extension VoiceCallManager: CXProviderDelegate {
         action.fulfill()
     }
     
-    func provider(_ provider: CXProvider, perform action: CXEndCallAction) async {
+    private func provider(_ provider: CXProvider, perform action: CXEndCallAction) async {
         // Handle call ended by user
         do {
             try await endCall()
@@ -522,7 +522,7 @@ extension VoiceCallManager: CXProviderDelegate {
         }
     }
     
-    func provider(_ provider: CXProvider, perform action: CXSetMutedCallAction) async {
+    private func provider(_ provider: CXProvider, perform action: CXSetMutedCallAction) async {
         // Handle mute state change
         isMicrophoneMuted = action.isMuted
         action.fulfill()

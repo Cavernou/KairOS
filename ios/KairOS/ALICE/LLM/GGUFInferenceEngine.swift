@@ -73,7 +73,7 @@ final class GGUFInferenceEngine {
             // Prepare input for Core ML model
             // Note: Actual implementation depends on model input format
             // This is a placeholder for the proper Core ML inference
-            let maxTokens = min(tokens.count, 512)
+            _ = min(tokens.count, 512)
             var inputArray = Array(repeating: Int64(0), count: 512)
             for (i, token) in tokens.enumerated() {
                 if i < 512 {

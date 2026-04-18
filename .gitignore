@@ -19,6 +19,9 @@ node/kairos-node
 .gocache/
 .gomodcache/
 
+# macOS .app bundles (generated)
+*.app
+
 # iOS
 ios/KairOS/Pods/
 ios/KairOS/Podfile.lock

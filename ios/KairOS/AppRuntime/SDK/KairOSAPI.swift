@@ -1,5 +1,6 @@
 import Foundation
 
+@MainActor
 protocol KairOSAPI {
     func readFile(named: String) -> Data?
     func writeFile(named: String, data: Data) throws

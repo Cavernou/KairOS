@@ -51,7 +51,7 @@ final class TailscaleManager: ObservableObject {
                     self?.isConnected = false
                     self?.status = .error(error.localizedDescription)
                 }
-            case .waiting(let error):
+            case .waiting(_):
                 DispatchQueue.main.async {
                     self?.isConnected = false
                     self?.status = .connecting

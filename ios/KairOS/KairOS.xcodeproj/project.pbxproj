@@ -52,6 +52,7 @@
 		6698DDE52316EED0377353F6 /* IndustrialModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B792206FBF59E749E7FC73 /* IndustrialModifiers.swift */; };
 		69FF3E2498B1C42A7F7207B2 /* europa-grotesk-sh-bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = B031EDD06415CC294D9F5503 /* europa-grotesk-sh-bold.otf */; };
 		6A97EC0E65AEED3E6BD46864 /* ActivationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222231B523C80AAC32CA4AC3 /* ActivationViewModel.swift */; };
+		6B16D4952F930CAA00D08A18 /* CallsView 2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B16D4942F930CAA00D08A18 /* CallsView 2.swift */; };
 		6B543AE23ABD25AB4862CBB9 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B18DCF7C49AF1434C60CC9E /* Typography.swift */; };
 		7041B5F584BF81AC0929B425 /* notes.manifest.json in Resources */ = {isa = PBXBuildFile; fileRef = E3208E3D933626CA462FB6FF /* notes.manifest.json */; };
 		7653CCB4EE7BD09CF6B6C933 /* ContactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D3F73ADF54B8FF9C42BD29D /* ContactsView.swift */; };
@@ -145,7 +146,7 @@
 		29F89E4CA6027EDA62904FFE /* AppToolAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppToolAdapter.swift; sourceTree = "<group>"; };
 		2A18F54E28F234BDA6857263 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2AFE932A03C4FA5585079600 /* MessagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesView.swift; sourceTree = "<group>"; };
-		2E155439F93A6F9AE41D2CEF /* TailscaleSDK.swift.bak */ = {isa = PBXFileReference; path = TailscaleSDK.swift.bak; sourceTree = "<group>"; };
+		2E155439F93A6F9AE41D2CEF /* TailscaleSDK.swift.bak */ = {isa = PBXFileReference; lastKnownFileType = text; path = TailscaleSDK.swift.bak; sourceTree = "<group>"; };
 		2E5CE68F0C3E0E2A54B94E44 /* MIB.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MIB.ttf; sourceTree = "<group>"; };
 		2F9E83B91DF2ECBE1CB1F3B3 /* PanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelView.swift; sourceTree = "<group>"; };
 		312AD4FE506BC9717143ACB7 /* YesSound.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = YesSound.mp3; sourceTree = "<group>"; };
@@ -174,13 +175,14 @@
 		619B86458586EB75D963B0F5 /* Colors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		61A56104EC3FA051AD73F3AD /* KeyType4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = KeyType4.mp3; sourceTree = "<group>"; };
 		649A9635BED8E739971B45DB /* KairOSAPIImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairOSAPIImpl.swift; sourceTree = "<group>"; };
+		6B16D4942F930CAA00D08A18 /* CallsView 2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CallsView 2.swift"; sourceTree = "<group>"; };
 		705C10F9ABACE997BF949229 /* WarningUI.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = WarningUI.mp3; sourceTree = "<group>"; };
 		710B0D6006E8DCB00E036249 /* FileFolderOpen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileFolderOpen.mp3; sourceTree = "<group>"; };
 		74959B19DEA1997528C2110F /* FileDirectoryOpen.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileDirectoryOpen.mp3; sourceTree = "<group>"; };
 		77F5A87466D0743158AD5E2E /* KairModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KairModels.swift; sourceTree = "<group>"; };
 		797DF0BCF72E95819005C5D9 /* FilesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesView.swift; sourceTree = "<group>"; };
 		7BEEE04EAE16A2825F4F2790 /* CryptoServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoServiceTests.swift; sourceTree = "<group>"; };
-		7CF89D9E68E97E2AF5BBC9BD /* KairOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = KairOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CF89D9E68E97E2AF5BBC9BD /* KairOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KairOS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8204B0B59B194BFE4718FEF5 /* files.manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = files.manifest.json; sourceTree = "<group>"; };
 		82F9B1ABF84B23418B665EC0 /* GGUFInferenceEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GGUFInferenceEngine.swift; sourceTree = "<group>"; };
 		8C5A6261AC219A285263D8F3 /* TelemetryDecor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TelemetryDecor.swift; sourceTree = "<group>"; };
@@ -232,7 +234,7 @@
 		F245E1038CF641CDD7E3F625 /* CryptoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoService.swift; sourceTree = "<group>"; };
 		F60E2FABF1E34DA58F9796FE /* WeatherAppView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherAppView.swift; sourceTree = "<group>"; };
 		F77693BEBBD5041ED78F07C2 /* FileBack.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = FileBack.mp3; sourceTree = "<group>"; };
-		F7CBEE7C0A239393817E277D /* chatwaifu_v1.0-q4_k_m.gguf */ = {isa = PBXFileReference; path = "chatwaifu_v1.0-q4_k_m.gguf"; sourceTree = "<group>"; };
+		F7CBEE7C0A239393817E277D /* chatwaifu_v1.0-q4_k_m.gguf */ = {isa = PBXFileReference; lastKnownFileType = text; path = "chatwaifu_v1.0-q4_k_m.gguf"; sourceTree = "<group>"; };
 		F8ADE5537659359ADF552A05 /* UserSendMessage.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = UserSendMessage.mp3; sourceTree = "<group>"; };
 		F8C299BE8EED30C6E83A9A6B /* IdentityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentityManager.swift; sourceTree = "<group>"; };
 		FE784792F7D42B3792486D04 /* ScanlineOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanlineOverlay.swift; sourceTree = "<group>"; };
@@ -497,6 +499,7 @@
 				C0B08425539BEC8C72F41DE0 /* NodesView.swift */,
 				D1FA58E2DD25B01087825B10 /* SaveConsoleOverlay.swift */,
 				A983D312B5E3C97925601FF4 /* SettingsView.swift */,
+				6B16D4942F930CAA00D08A18 /* CallsView 2.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -845,6 +848,7 @@
 				A14ECBE106BB340678EB3FF6 /* TelemetryDecor.swift in Sources */,
 				49D0A9CBFD42028A26B86EBE /* Tokenizer.swift in Sources */,
 				574EB9512ADCCECECF4CBCE9 /* ToolRegistry.swift in Sources */,
+				6B16D4952F930CAA00D08A18 /* CallsView 2.swift in Sources */,
 				6B543AE23ABD25AB4862CBB9 /* Typography.swift in Sources */,
 				206C018AB5126CAC54A3365B /* VoiceCallManager.swift in Sources */,
 				FD23B69055FEE3647D0AD3FC /* WeatherAppView.swift in Sources */,
@@ -884,13 +888,14 @@
 				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4269WPK84X;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kairos.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dylan-kairOS.app";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -925,13 +930,14 @@
 				CODE_SIGNING_REQUIRED = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4269WPK84X;
 				INFOPLIST_FILE = App/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.kairos.app;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.dylan-kairOS.app";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.1;
 				TARGETED_DEVICE_FAMILY = "1,2";
