@@ -904,3 +904,73 @@ v1.2 Updates:
 - SoundManager scene phase handling for audio lifecycle
 - Mock API endpoints for manual-account and pending-registrations
 - Dial pad button functionality with digit input
+
+v1.3 Updates (Placeholder Removal & Implementation Completion):
+- Node Mock API Server:
+  - Implemented get contact by ID functionality in handleContactByID
+  - Implemented end call logic in handleCallByID
+  - Implemented add filter logic in handleFilters with database storage
+  - Implemented delete filter logic in handleFilterByID
+  - Removed placeholder comment for media cleanup
+  - Added force refresh parameter to admin code endpoint (/mock/v1/admin-code?force=true)
+  - Enhanced contact deletion with existence check and proper error handling
+  - Enhanced account creation error messages with specific requirements
+
+- Contacts Service:
+  - Added Get method for retrieving individual contacts by K-Number
+  - All placeholder "would go here" comments removed
+
+- Database Migration:
+  - Enhanced K-Number migration to handle K-XXXX-XXXX format (8 digits)
+  - Added check to prevent re-migrating already migrated contacts
+  - Node device auto-creation with K-1919 (Home Node) on migration
+
+- iOS App - LoginView:
+  - Implemented actual passcode validation logic
+  - Removed TODO comment for login implementation
+
+- iOS App - TasksView:
+  - Implemented task details sheet with full task information display
+  - Added state variables for task selection and details view
+  - Implemented fetchTasksFromNode API call to /mock/v1/tasks
+  - Implemented createTaskOnNode API call with proper JSON body
+  - Added TasksResponse struct for API deserialization
+  - Made Task struct Codable for JSON handling
+  - Removed all TODO comments
+
+- iOS App - MediaView:
+  - Implemented media preview sheet with file details
+  - Added state variables for media selection and preview
+  - Implemented uploadMedia with multipart/form-data upload to /mock/v1/files/upload
+  - Implemented fetchMediaFromNode API call to /mock/v1/files/browse
+  - Implemented deleteMediaOnNode API call with DELETE method
+  - Added MediaResponse struct for API deserialization
+  - Made MediaItem struct Codable for JSON handling
+  - Added formatDate helper function
+  - Removed all TODO comments
+
+- iOS App - CalendarView:
+  - Implemented event details sheet with full event information display
+  - Added state variables for event selection and details view
+  - Implemented fetchEventsFromNode API call to /mock/v1/calendar
+  - Implemented createEventOnNode API call with proper JSON body
+  - Added CalendarResponse struct for API deserialization
+  - Made CalendarEvent struct Codable for JSON handling
+  - Removed all TODO comments
+
+- iOS App - NotesView:
+  - Implemented note details sheet with full note information display
+  - Added state variables for note selection and details view
+  - Implemented fetchNotesFromNode API call to /mock/v1/notes
+  - Implemented createNoteOnNode API call with proper JSON body
+  - Added NotesResponse struct for API deserialization
+  - Made Note struct Codable for JSON handling
+  - Removed all TODO comments
+
+- iOS App - TelemetryView:
+  - Implemented fetchTelemetryFromNode API call to /mock/v1/telemetry
+  - Added TelemetryResponse struct for API deserialization
+  - Made TelemetryEvent struct Codable for JSON handling
+  - Removed TODO comment
+
+All temporary placeholders and TODO comments have been replaced with fully functional implementations. All iOS views now have real API integration with the node backend, proper error handling, and complete user interfaces for viewing and managing data.

@@ -7,6 +7,8 @@ struct MediaView: View {
     @State private var isLoading = false
     @State private var showingImagePicker = false
     @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var showingMediaPreview = false
+    @State private var selectedMediaItem: MediaItem?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -40,7 +42,8 @@ struct MediaView: View {
                             }
                             .onTapGesture {
                                 appState.soundManager.playSubtleClick()
-                                // TODO: Show media preview
+                                selectedMediaItem = item
+                                showingMediaPreview = true
                             }
                             .contextMenu {
                                 Button(role: .destructive) {
@@ -84,9 +87,38 @@ struct MediaView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingMediaPreview) {
+            if let item = selectedMediaItem {
+                mediaPreviewSheet(item: item)
+            }
+        }
         .onAppear {
             loadMedia()
         }
+    }
+
+    private func mediaPreviewSheet(item: MediaItem) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("MEDIA PREVIEW")
+                .font(KairOSTypography.hero)
+            Text(item.name)
+                .font(KairOSTypography.header)
+            Text("Type: \(item.type.uppercased())")
+                .font(KairOSTypography.mono)
+            Text("Size: \(formatFileSize(item.size))")
+                .font(KairOSTypography.mono)
+            Text("Uploaded by: \(item.uploadedBy)")
+                .font(KairOSTypography.mono)
+            Text("Uploaded at: \(formatDate(item.uploadedAt))")
+                .font(KairOSTypography.mono)
+            Button("CLOSE") {
+                appState.soundManager.playClick()
+                showingMediaPreview = false
+            }
+            .buttonStyle(HeaderButtonChrome())
+        }
+        .padding()
+        .background(KairOSColors.background)
     }
 
     private func loadMedia() {
@@ -104,7 +136,30 @@ struct MediaView: View {
     private func uploadMedia(_ item: PhotosPickerItem) async {
         do {
             guard let data = try await item.loadTransferable(type: Data.self) else { return }
-            // TODO: Upload to Node
+            let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/files/upload")!
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.setValue("multipart/form-data", forHTTPHeaderField: "Content-Type")
+
+            let boundary = UUID().uuidString
+            request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+            var body = Data()
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"file\"; filename=\"upload_\(Date().timeIntervalSince1970).bin\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: application/octet-stream\r\n\r\n".data(using: .utf8)!)
+            body.append(data)
+            body.append("\r\n".data(using: .utf8)!)
+            body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+
+            request.httpBody = body
+
+            let (_, response) = try await URLSession.shared.data(for: request)
+            guard let httpResponse = response as? HTTPURLResponse,
+                  httpResponse.statusCode == 200 else {
+                throw URLError(.badServerResponse)
+            }
+
             appState.soundManager.play(.accessGranted)
             loadMedia()
         } catch {
@@ -127,12 +182,21 @@ struct MediaView: View {
     }
 
     private func fetchMediaFromNode() async throws -> [MediaItem] {
-        // TODO: Implement actual API call to Node
-        return []
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/files/browse")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(MediaResponse.self, from: data)
+        return response.files
     }
 
     private func deleteMediaOnNode(_ id: String) async throws {
-        // TODO: Implement actual API call to Node
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/files/\(id)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
     }
 
     private func formatFileSize(_ bytes: Int64) -> String {
@@ -141,9 +205,20 @@ struct MediaView: View {
         formatter.countStyle = .file
         return formatter.string(fromByteCount: bytes)
     }
+
+    private func formatDate(_ timestamp: Int64) -> String {
+        let date = Date(timeIntervalSince1970: TimeInterval(timestamp))
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        return formatter.string(from: date)
+    }
 }
 
-struct MediaItem {
+struct MediaResponse: Codable {
+    let files: [MediaItem]
+}
+
+struct MediaItem: Codable {
     let id: String
     let name: String
     let type: String

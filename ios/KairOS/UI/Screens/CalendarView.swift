@@ -5,6 +5,8 @@ struct CalendarView: View {
     @State private var events: [CalendarEvent] = []
     @State private var isLoading = false
     @State private var showingAddEvent = false
+    @State private var showingEventDetails = false
+    @State private var selectedEvent: CalendarEvent?
     @State private var newEventTitle = ""
     @State private var newEventDescription = ""
     @State private var newEventStartTime = Date()
@@ -49,7 +51,8 @@ struct CalendarView: View {
                             )
                             .onTapGesture {
                                 appState.soundManager.playSubtleClick()
-                                // TODO: Show event details
+                                selectedEvent = event
+                                showingEventDetails = true
                             }
                         }
                     }
@@ -104,9 +107,40 @@ struct CalendarView: View {
             .padding()
             .background(KairOSColors.background)
         }
+        .sheet(isPresented: $showingEventDetails) {
+            if let event = selectedEvent {
+                eventDetailsSheet(event: event)
+            }
+        }
         .onAppear {
             loadEvents()
         }
+    }
+
+    private func eventDetailsSheet(event: CalendarEvent) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("EVENT DETAILS")
+                .font(KairOSTypography.hero)
+            Text(event.title)
+                .font(KairOSTypography.header)
+            if !event.description.isEmpty {
+                Text(event.description)
+                    .font(KairOSTypography.body)
+            }
+            Text(formatDateRange(event.startTime, event.endTime))
+                .font(KairOSTypography.mono)
+            if !event.location.isEmpty {
+                Text("Location: \(event.location)")
+                    .font(KairOSTypography.mono)
+            }
+            Button("CLOSE") {
+                appState.soundManager.playClick()
+                showingEventDetails = false
+            }
+            .buttonStyle(HeaderButtonChrome())
+        }
+        .padding()
+        .background(KairOSColors.background)
     }
 
     private func loadEvents() {
@@ -148,12 +182,34 @@ struct CalendarView: View {
     }
 
     private func fetchEventsFromNode() async throws -> [CalendarEvent] {
-        // TODO: Implement actual API call to Node
-        return []
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/calendar")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(CalendarResponse.self, from: data)
+        return response.events
     }
 
     private func createEventOnNode(_ event: CalendarEvent) async throws {
-        // TODO: Implement actual API call to Node
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/calendar")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = [
+            "id": event.id,
+            "title": event.title,
+            "description": event.description,
+            "start_time": event.startTime,
+            "end_time": event.endTime,
+            "location": event.location,
+            "attendees": event.attendees,
+            "created_by": event.createdBy,
+            "created_at": event.createdAt
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
     }
 
     private func formatDateRange(_ startTime: Int64, _ endTime: Int64) -> String {
@@ -166,7 +222,11 @@ struct CalendarView: View {
     }
 }
 
-struct CalendarEvent {
+struct CalendarResponse: Codable {
+    let events: [CalendarEvent]
+}
+
+struct CalendarEvent: Codable {
     let id: String
     let title: String
     let description: String

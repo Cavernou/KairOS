@@ -5,6 +5,8 @@ struct NotesView: View {
     @State private var notes: [Note] = []
     @State private var isLoading = false
     @State private var showingAddNote = false
+    @State private var showingNoteDetails = false
+    @State private var selectedNote: Note?
     @State private var newNoteTitle = ""
     @State private var newNoteContent = ""
     @State private var newNoteTags = ""
@@ -43,7 +45,8 @@ struct NotesView: View {
                             )
                             .onTapGesture {
                                 appState.soundManager.playSubtleClick()
-                                // TODO: Show note details
+                                selectedNote = note
+                                showingNoteDetails = true
                             }
                         }
                     }
@@ -94,9 +97,38 @@ struct NotesView: View {
             .padding()
             .background(KairOSColors.background)
         }
+        .sheet(isPresented: $showingNoteDetails) {
+            if let note = selectedNote {
+                noteDetailsSheet(note: note)
+            }
+        }
         .onAppear {
             loadNotes()
         }
+    }
+
+    private func noteDetailsSheet(note: Note) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("NOTE DETAILS")
+                .font(KairOSTypography.hero)
+            Text(note.title)
+                .font(KairOSTypography.header)
+            Text(note.content)
+                .font(KairOSTypography.body)
+            if !note.tags.isEmpty {
+                Text("Tags: \(note.tags)")
+                    .font(KairOSTypography.mono)
+            }
+            Text("Created by: \(note.createdBy)")
+                .font(KairOSTypography.mono)
+            Button("CLOSE") {
+                appState.soundManager.playClick()
+                showingNoteDetails = false
+            }
+            .buttonStyle(HeaderButtonChrome())
+        }
+        .padding()
+        .background(KairOSColors.background)
     }
 
     private func loadNotes() {
@@ -136,16 +168,40 @@ struct NotesView: View {
     }
 
     private func fetchNotesFromNode() async throws -> [Note] {
-        // TODO: Implement actual API call to Node
-        return []
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/notes")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(NotesResponse.self, from: data)
+        return response.notes
     }
 
     private func createNoteOnNode(_ note: Note) async throws {
-        // TODO: Implement actual API call to Node
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/notes")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = [
+            "id": note.id,
+            "title": note.title,
+            "content": note.content,
+            "tags": note.tags,
+            "created_by": note.createdBy,
+            "created_at": note.createdAt,
+            "updated_at": note.updatedAt
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            throw URLError(.badServerResponse)
+        }
     }
 }
 
-struct Note {
+struct NotesResponse: Codable {
+    let notes: [Note]
+}
+
+struct Note: Codable {
     let id: String
     let title: String
     let content: String

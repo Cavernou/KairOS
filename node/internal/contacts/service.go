@@ -66,6 +66,18 @@ func (s *Service) List(ctx context.Context) ([]Contact, error) {
 	return contacts, rows.Err()
 }
 
+func (s *Service) Get(ctx context.Context, kNumber string) (Contact, error) {
+	var contact Contact
+	err := s.store.DB.QueryRowContext(ctx,
+		`SELECT knumber, display_name, real_phone, notes, trust_status, last_interaction, avatar_ascii FROM contacts WHERE knumber = ?`,
+		kNumber,
+	).Scan(&contact.KNumber, &contact.DisplayName, &contact.RealPhone, &contact.Notes, &contact.TrustStatus, &contact.LastInteraction, &contact.AvatarASCII)
+	if err != nil {
+		return Contact{}, err
+	}
+	return contact, nil
+}
+
 func (s *Service) SeedDefaults(ctx context.Context) error {
 	now := time.Now().Unix()
 	defaults := []Contact{

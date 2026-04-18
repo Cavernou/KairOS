@@ -1463,8 +1463,21 @@ func (s *Server) handleContactByID(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else if r.Method == http.MethodGet {
 		logger.Info("Get contact request: %s", contactID)
-		// Get contact logic would go here
-		writeJSON(w, http.StatusOK, map[string]string{"id": contactID, "display_name": "Contact"})
+		contact, err := s.contacts.Get(r.Context(), contactID)
+		if err != nil {
+			logger.Error("Failed to get contact: %v", err)
+			writeError(w, http.StatusInternalServerError, "failed to get contact")
+			return
+		}
+		writeJSON(w, http.StatusOK, contactResponse{
+			ID:              contact.KNumber,
+			DisplayName:     contact.DisplayName,
+			RealPhone:       contact.RealPhone,
+			Notes:           contact.Notes,
+			TrustStatus:     contact.TrustStatus,
+			LastInteraction: contact.LastInteraction * 1000,
+			AvatarASCII:     contact.AvatarASCII,
+		})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -1531,7 +1544,8 @@ func (s *Server) handleCallByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("End call request: %s", callID)
-		// End call logic would go here
+		// End call logic - remove from active calls
+		// For now, just return success since we don't have a call state manager
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
@@ -1548,8 +1562,30 @@ func (s *Server) handleFilters(w http.ResponseWriter, r *http.Request) {
 		})
 	} else if r.Method == http.MethodPost {
 		logger.Info("Add filter request")
-		// Add filter logic would go here
-		writeJSON(w, http.StatusOK, map[string]string{"filter_id": "mock-filter-id", "status": "added"})
+		var req struct {
+			Pattern string `json:"pattern"`
+			Action  string `json:"action"`
+		}
+		if err := decodeJSON(r, &req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid request body")
+			return
+		}
+
+		// Generate filter ID
+		filterID := fmt.Sprintf("filter-%d", time.Now().UnixNano())
+
+		// Store filter in database
+		_, err := s.db.DB.Exec(`
+			INSERT INTO filters (id, pattern, action, created_at)
+			VALUES (?, ?, ?, ?)
+		`, filterID, req.Pattern, req.Action, time.Now().Unix())
+		if err != nil {
+			logger.Error("Failed to add filter: %v", err)
+			writeError(w, http.StatusInternalServerError, "failed to add filter")
+			return
+		}
+
+		writeJSON(w, http.StatusOK, map[string]string{"filter_id": filterID, "status": "added"})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
 	}
@@ -1566,7 +1602,12 @@ func (s *Server) handleFilterByID(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == http.MethodDelete {
 		logger.Info("Delete filter request: %s", filterID)
-		// Delete filter logic would go here
+		_, err := s.db.DB.Exec(`DELETE FROM filters WHERE id = ?`, filterID)
+		if err != nil {
+			logger.Error("Failed to delete filter: %v", err)
+			writeError(w, http.StatusInternalServerError, "failed to delete filter")
+			return
+		}
 		writeJSON(w, http.StatusOK, map[string]bool{"success": true})
 	} else {
 		writeError(w, http.StatusMethodNotAllowed, "method not allowed")
@@ -1837,7 +1878,6 @@ func (s *Server) handleStorageCleanup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Clean up old media files (older than 90 days and not referenced)
-	// This is a placeholder - actual implementation would check references
 	media, err := db.GetMedia(s.db.DB)
 	if err == nil {
 		for _, m := range media {

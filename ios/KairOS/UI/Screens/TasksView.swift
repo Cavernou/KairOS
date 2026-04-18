@@ -4,6 +4,8 @@ struct TasksView: View {
     @EnvironmentObject private var appState: AppState
     @State private var tasks: [Task] = []
     @State private var isLoading = false
+    @State private var selectedTask: Task?
+    @State private var showingTaskDetails = false
     @State private var showingAddTask = false
     @State private var newTaskTitle = ""
     @State private var newTaskDescription = ""
@@ -49,7 +51,8 @@ struct TasksView: View {
                             )
                             .onTapGesture {
                                 appState.soundManager.playSubtleClick()
-                                // TODO: Show task details
+                                selectedTask = task
+                                showingTaskDetails = true
                             }
                         }
                     }
@@ -106,9 +109,40 @@ struct TasksView: View {
             .padding()
             .background(KairOSColors.background)
         }
+        .sheet(isPresented: $showingTaskDetails) {
+            if let task = selectedTask {
+                taskDetailsSheet(task: task)
+            }
+        }
         .onAppear {
             loadTasks()
         }
+    }
+
+    private func taskDetailsSheet(task: Task) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("TASK DETAILS")
+                .font(KairOSTypography.hero)
+            Text(task.title)
+                .font(KairOSTypography.header)
+            if !task.description.isEmpty {
+                Text(task.description)
+                    .font(KairOSTypography.body)
+            }
+            Text("Due: \(formatDate(task.dueDate))")
+                .font(KairOSTypography.mono)
+            Text("Priority: \(task.priority.uppercased())")
+                .font(KairOSTypography.mono)
+            Text("Status: \(task.status.uppercased())")
+                .font(KairOSTypography.mono)
+            Button("CLOSE") {
+                appState.soundManager.playClick()
+                showingTaskDetails = false
+            }
+            .buttonStyle(HeaderButtonChrome())
+        }
+        .padding()
+        .background(KairOSColors.background)
     }
 
     private func loadTasks() {
@@ -149,12 +183,33 @@ struct TasksView: View {
     }
 
     private func fetchTasksFromNode() async throws -> [Task] {
-        // TODO: Implement actual API call to Node
-        return []
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/tasks")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(TasksResponse.self, from: data)
+        return response.tasks
     }
 
     private func createTaskOnNode(_ task: Task) async throws {
-        // TODO: Implement actual API call to Node
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/tasks")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        let body: [String: Any] = [
+            "id": task.id,
+            "title": task.title,
+            "description": task.description,
+            "due_date": task.dueDate,
+            "priority": task.priority,
+            "status": task.status,
+            "created_by": task.createdBy,
+            "created_at": task.createdAt
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (_, response) = try await URLSession.shared.data(for: request)
+        guard let httpResponse = response as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+                throw URLError(.badServerResponse)
+        }
     }
 
     private func formatDate(_ timestamp: Int64) -> String {
@@ -176,7 +231,11 @@ struct TasksView: View {
     }
 }
 
-struct Task {
+struct TasksResponse: Codable {
+    let tasks: [Task]
+}
+
+struct Task: Codable {
     let id: String
     let title: String
     let description: String

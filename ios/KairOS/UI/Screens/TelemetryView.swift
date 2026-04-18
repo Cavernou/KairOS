@@ -59,8 +59,10 @@ struct TelemetryView: View {
     }
 
     private func fetchTelemetryFromNode() async throws -> [TelemetryEvent] {
-        // TODO: Implement actual API call to Node
-        return []
+        let url = URL(string: "http://\(appState.nodeHost):\(appState.nodePort)/mock/v1/telemetry")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(TelemetryResponse.self, from: data)
+        return response.events
     }
 
     private func formatTimestamp(_ timestamp: Int64) -> String {
@@ -72,7 +74,11 @@ struct TelemetryView: View {
     }
 }
 
-struct TelemetryEvent {
+struct TelemetryResponse: Codable {
+    let events: [TelemetryEvent]
+}
+
+struct TelemetryEvent: Codable {
     let id: Int64
     let eventType: String
     let details: String?
