@@ -128,11 +128,11 @@ final class SoundManager: ObservableObject {
     // Play subtle click sound for background interactions
     func playSubtleClick() {
         guard isEnabled else { return }
-        
+
         // Use a softer version of click sounds
         let sound = KairOSSoundCatalog.buttonClickCycle[nextClickIndex % KairOSSoundCatalog.buttonClickCycle.count]
         nextClickIndex += 1
-        
+
         do {
             let player = try player(for: sound)
             player.volume = volume * 0.4 // 40% volume for subtle clicks
@@ -140,6 +140,22 @@ final class SoundManager: ObservableObject {
             player.play()
         } catch {
             // Silent fallback
+        }
+    }
+
+    // Handle app scene phase changes
+    func handleScenePhase(_ phase: ScenePhase) {
+        switch phase {
+        case .active:
+            // Resume ambient if it was playing before
+            if ambientEnabled && ambientPlayer != nil {
+                ambientPlayer?.play()
+            }
+        case .background, .inactive:
+            // Pause ambient when app goes to background
+            stopAmbient()
+        @unknown default:
+            break
         }
     }
 }

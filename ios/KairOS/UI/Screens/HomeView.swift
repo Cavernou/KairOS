@@ -235,6 +235,7 @@ struct HomeView: View {
         HStack(spacing: 8) {
             Text("+")
                 .font(KairOSTypography.header)
+                .accessibilityHidden(true)
             Text("KairOS")
                 .font(KairOSTypography.title)
             BarcodeStrip()
@@ -254,6 +255,7 @@ struct HomeView: View {
                 .font(KairOSTypography.lcd)
             Text("+")
                 .font(KairOSTypography.header)
+                .accessibilityHidden(true)
         }
     }
 

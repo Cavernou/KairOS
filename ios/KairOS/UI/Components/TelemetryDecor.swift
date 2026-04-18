@@ -13,6 +13,7 @@ struct TelemetryGrid: View {
                             Text("+")
                                 .font(.system(size: 11, weight: .bold, design: .monospaced))
                                 .foregroundStyle(KairOSColors.grid.opacity(0.55))
+                                .accessibilityHidden(true)
                         }
                     }
                 }

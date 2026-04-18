@@ -14,12 +14,14 @@ struct PanelChrome: ViewModifier {
                     .font(KairOSTypography.header)
                     .foregroundStyle(KairOSColors.chrome)
                     .offset(x: -8, y: -10)
+                    .accessibilityHidden(true)
             }
             .overlay(alignment: .topTrailing) {
                 Text("+")
                     .font(KairOSTypography.header)
                     .foregroundStyle(KairOSColors.chrome)
                     .offset(x: 8, y: -10)
+                    .accessibilityHidden(true)
             }
     }
 }
@@ -49,4 +51,26 @@ extension View {
     func panelChrome() -> some View {
         modifier(PanelChrome())
     }
+}
+
+#Preview("PanelChrome") {
+    VStack(spacing: 20) {
+        Text("Content with PanelChrome")
+            .panelChrome()
+        Text("Another panel")
+            .panelChrome()
+    }
+    .padding()
+    .background(KairOSColors.background)
+}
+
+#Preview("HeaderButtonChrome") {
+    VStack(spacing: 20) {
+        Button("Enabled Button") {}
+            .buttonStyle(HeaderButtonChrome())
+        Button("Another Button") {}
+            .buttonStyle(HeaderButtonChrome())
+    }
+    .padding()
+    .background(KairOSColors.background)
 }

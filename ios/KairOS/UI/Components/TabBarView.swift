@@ -24,6 +24,7 @@ struct TabBarView: View {
         HStack(spacing: 8) {
             Text("+")
                 .font(KairOSTypography.header)
+                .accessibilityHidden(true)
             ForEach(tabs, id: \.self) { tab in
                 Button(tab.label) {
                     selection = tab
@@ -45,6 +46,7 @@ struct TabBarView: View {
             }
             Text("+")
                 .font(KairOSTypography.header)
+                .accessibilityHidden(true)
         }
     }
 }
