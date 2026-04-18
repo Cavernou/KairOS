@@ -21,8 +21,14 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 - ✅ HTTP-based NodeClient (gRPC removed due to dependency issues)
 - ✅ Calling system with sound effects (ringtone, hangup sounds, call fail sequence, dial tones)
 - ✅ Dial pad UI with hold/release logic for dial tones
-- ✅ Automatic K prefix for calling input field
-- ✅ Registration flow improved with Quick Start Guide and validation
+- ✅ Automatic K-XXXX format for calling input field
+- ✅ Registration flow with help page and validation
+- ✅ Login page for already registered users
+- ✅ K-Number format simplified to K-XXXX (4 digits)
+- ✅ Display name field added to registration
+- ✅ Avatar image limitations (max 5MB, 2048x2048)
+- ✅ Colors updated to exact hex codes from blueprint
+- ✅ Non-functional tooltips removed
 
 ### Node Service
 - ✅ Go tests passing
@@ -35,6 +41,9 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 - ✅ Sound viewer with category state preservation
 - ✅ File viewer with proper content clearing
 - ✅ File browser with improved path handling
+- ✅ K-XXXX format for calling input field
+- ✅ Manual account creator to bypass activation flow
+- ✅ API endpoint for manual account creation (/mock/v1/manual-account)
 
 ### Testing
 - **Go Tests**: Run with `cd node && go test ./...`
@@ -43,6 +52,22 @@ This workspace was initialized from the locked KairOS blueprint and is structure
 Note: iOS tests currently fail due to missing mock server infrastructure. The build succeeds and tests execute, but network calls fail since no actual node is running during tests.
 
 ## Recent Updates
+
+### v1.0.2 (April 2026)
+- Added login page for already registered users
+- Added manual account creator in node web UI to bypass activation flow
+- Simplified K-Number format to K-XXXX (4 digits) for easier memorability
+- Added display name field to registration (2-32 characters)
+- Added help page to replace Quick Start Guide
+- Added avatar image limitations (max 5MB, max 2048x2048 dimensions)
+- Updated iOS colors to exact hex codes from blueprint
+- Removed non-functional ? tooltips from UI
+- Fixed activation freeze issue with loading state
+- Fixed SoundManager ObservableObject error
+- Fixed dial pad 0 button centering
+- Updated node web UI K-Number format to K-XXXX
+- Added /mock/v1/manual-account API endpoint for manual account creation
+- Updated API documentation
 
 ### v1.0.1 (April 2026)
 - Added calling sound effects to both node and iOS app
