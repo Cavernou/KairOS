@@ -278,9 +278,10 @@ func (s *Server) handleVersion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return version based on timestamp for auto-reload detection
+	// Return version based on node start time - only changes when node is rebuilt/restarted
+	// This prevents auto-reload from triggering on file changes
 	writeJSON(w, http.StatusOK, map[string]interface{}{
-		"version": time.Now().Unix(),
+		"version": s.startTime.Unix(),
 	})
 }
 
