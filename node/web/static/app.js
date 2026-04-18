@@ -136,41 +136,43 @@ function playClick() {
 }
 
 // Fetch current admin code
-async function fetchAdminCode() {
+async function fetchAdminCode(force = false) {
     const now = Date.now();
     const timeSinceLastRefresh = now - lastRefreshTime;
-    
-    // Check cooldown
-    if (timeSinceLastRefresh < COOLDOWN_PERIOD) {
+
+    // Check cooldown (only if not forcing)
+    if (!force && timeSinceLastRefresh < COOLDOWN_PERIOD) {
         const remainingCooldown = COOLDOWN_PERIOD - timeSinceLastRefresh;
         const seconds = Math.ceil(remainingCooldown / 1000);
         document.getElementById('cooldown-timer').textContent = `${seconds}s`;
         playSound('WarningUI');
         return;
     }
-    
+
     try {
-        const response = await fetch('/mock/v1/admin-code');
+        const url = force ? '/mock/v1/admin-code?force=true' : '/mock/v1/admin-code';
+        const response = await fetch(url);
         const data = await response.json();
         document.getElementById('admin-code').textContent = data.code;
-        
+
         // Update last refresh time
         lastRefreshTime = now;
-        
+
         // Play sound on refresh
         playSound('command_line_click#1');
-        
+
         // Clear existing timer interval
         if (timerInterval) {
             clearInterval(timerInterval);
         }
-        
-        // Calculate expiration timer
-        const expiresAt = new Date(data.expires_at);
-        updateTimer(expiresAt);
-        
-        // Start cooldown timer
-        startCooldownTimer();
+
+        // Update timer display
+        const timerElement = document.getElementById('timer');
+        const expiresAt = data.expires_at;
+        timerElement.textContent = '60:00';
+
+        // Start timer
+        startTimer(expiresAt);
     } catch (error) {
         console.error('Failed to fetch admin code:', error);
         document.getElementById('admin-code').textContent = 'ERROR';
@@ -224,7 +226,7 @@ function updateTimer(expiresAt) {
 // Refresh admin code
 function refreshCode() {
     playClick();
-    fetchAdminCode();
+    fetchAdminCode(true); // Force refresh
 }
 
 // Fetch device list

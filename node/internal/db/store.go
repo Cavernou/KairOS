@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"time"
 
 	_ "modernc.org/sqlite"
 )
@@ -66,6 +67,23 @@ func (s *Store) migrateKairNumbers() error {
 	`)
 	if err != nil {
 		return err
+	}
+
+	// Ensure node device exists with K-1919
+	var nodeCount int
+	err = s.DB.QueryRow("SELECT COUNT(*) FROM devices WHERE kair_number = 'K-1919'").Scan(&nodeCount)
+	if err != nil {
+		return err
+	}
+
+	if nodeCount == 0 {
+		_, err = s.DB.Exec(`
+			INSERT INTO devices (device_id, kair_number, display_name, status, created_at, last_seen)
+			VALUES ('node-device-001', 'K-1919', 'Home Node', 'active', ?, ?)
+		`, time.Now().Unix(), time.Now().Unix())
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

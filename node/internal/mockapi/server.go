@@ -693,6 +693,27 @@ func (s *Server) handleAdminCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if force refresh is requested
+	forceRefresh := r.URL.Query().Get("force") == "true"
+
+	if forceRefresh {
+		// Force generate new code
+		logger.Info("Force refreshing admin code")
+		code, err := s.activation.IssueCode(r.Context())
+		if err != nil {
+			logger.Error("Failed to issue admin code: %v", err)
+			writeError(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+		go s.sound.Play("RadarPing.mp3")
+		logger.Info("New admin code issued: %s", code)
+		writeJSON(w, http.StatusOK, adminCodeResponse{
+			Code:      code,
+			ExpiresAt: time.Now().Add(time.Hour).Unix() * 1000,
+		})
+		return
+	}
+
 	// Get current code (returns existing if not expired)
 	code, err := s.activation.CurrentCode(r.Context(), time.Now())
 	if err != nil {
