@@ -1559,6 +1559,9 @@ async function deleteTask(taskId) {
 }
 
 // Calling management
+let ringtonePlayer = null;
+let dialTonePlayer = null;
+
 async function loadCalling() {
     try {
         const response = await fetch('/mock/v1/calling');
@@ -1570,7 +1573,7 @@ async function loadCalling() {
                 <div class="calling-item">
                     <span class="calling-name">${call.kair_number} - ${call.status}</span>
                     <div class="call-actions">
-                        <button onclick="endCall('${call.id}')">END</button>
+                        <button onclick="endCall('${call.id}', 'normal')">END</button>
                     </div>
                 </div>
             `).join('');
@@ -1587,13 +1590,16 @@ async function initiateCall() {
     playClick();
     const kairNumber = document.getElementById('call-kair').value;
 
-    if (!kairNumber) {
+    if (!kairNumber || kairNumber === 'K') {
         alert('Please enter a K-number to call');
         playSound('WarningUI');
         return;
     }
 
     try {
+        // Start playing ringtone with loop
+        playRingtone();
+
         const response = await fetch('/mock/v1/calls', {
             method: 'POST',
             headers: {
@@ -1607,25 +1613,30 @@ async function initiateCall() {
 
         if (response.ok) {
             alert('Call initiated');
-            playSound('command_line_click#1');
-            document.getElementById('call-kair').value = '';
+            document.getElementById('call-kair').value = 'K';
             loadCalling();
         } else {
+            // Call failed, play call fail sequence
+            stopRingtone();
+            playCallFailSequence();
             alert('Failed to initiate call');
-            playSound('DISAPPOINTING_FAILURE');
         }
     } catch (error) {
         console.error('Failed to initiate call:', error);
-        alert('Failed to initiate call');
-        playSound('DISAPPOINTING_FAILURE');
+        // Connection failed, play hangup lost connection
+        stopRingtone();
+        playSound('hangup_lostconnection');
+        alert('Failed to initiate call - connection lost');
     }
 }
 
-async function endCall(callId) {
+async function endCall(callId, hangupType = 'normal') {
     playClick();
     if (!confirm('Are you sure you want to end this call?')) {
         return;
     }
+
+    stopRingtone();
 
     try {
         const response = await fetch(`/mock/v1/calls/${callId}`, {
@@ -1633,17 +1644,71 @@ async function endCall(callId) {
         });
 
         if (response.ok) {
+            // Play appropriate hangup sound
+            if (hangupType === 'lost_connection') {
+                playSound('hangup_lostconnection');
+            } else {
+                playSound('hangup_normal');
+            }
             alert('Call ended');
-            playSound('TadaSuccess');
             loadCalling();
         } else {
+            playSound('hangup_lostconnection');
             alert('Failed to end call');
-            playSound('DISAPPOINTING_FAILURE');
         }
     } catch (error) {
         console.error('Failed to end call:', error);
-        alert('Failed to end call');
-        playSound('DISAPPOINTING_FAILURE');
+        playSound('hangup_lostconnection');
+        alert('Failed to end call - connection lost');
+    }
+}
+
+function playRingtone() {
+    if (ringtonePlayer) {
+        ringtonePlayer.pause();
+        ringtonePlayer = null;
+    }
+    ringtonePlayer = new Audio('/sounds/ringtone.mp3');
+    ringtonePlayer.loop = true;
+    ringtonePlayer.volume = 1.0;
+    ringtonePlayer.play().catch(err => console.log('Ringtone play failed:', err));
+}
+
+function stopRingtone() {
+    if (ringtonePlayer) {
+        ringtonePlayer.pause();
+        ringtonePlayer = null;
+    }
+}
+
+function playCallFailSequence() {
+    // Play call fail tone first
+    const failTone = new Audio('/sounds/callfailtone.mp3');
+    failTone.volume = 1.0;
+    failTone.play();
+    
+    // Then play call fail message after tone completes
+    failTone.onended = () => {
+        const failMessage = new Audio('/sounds/callfailmessage.mp3');
+        failMessage.volume = 1.0;
+        failMessage.play();
+    };
+}
+
+function playDialTone(digit) {
+    if (dialTonePlayer) {
+        dialTonePlayer.pause();
+        dialTonePlayer = null;
+    }
+    dialTonePlayer = new Audio(`/sounds/Dial_${digit}.mp3`);
+    dialTonePlayer.volume = 1.0;
+    dialTonePlayer.play().catch(err => console.log('Dial tone play failed:', err));
+}
+
+function stopDialTone() {
+    if (dialTonePlayer) {
+        dialTonePlayer.pause();
+        dialTonePlayer = null;
     }
 }
 
