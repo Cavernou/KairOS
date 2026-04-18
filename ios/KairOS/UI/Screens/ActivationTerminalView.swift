@@ -7,6 +7,7 @@ struct ActivationTerminalView: View {
     @State private var passcode = ""
     @State private var errorText: String?
     @State private var showingImagePicker = false
+    @State private var showingHelp = false
     @State private var avatarImage: UIImage?
     @State private var avatarData: Data?
     @State private var avatarError: String?
@@ -44,6 +45,9 @@ struct ActivationTerminalView: View {
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $avatarImage)
         }
+        .sheet(isPresented: $showingHelp) {
+            HelpView()
+        }
         .onChange(of: avatarImage) { _, newImage in
             if let newImage = newImage {
                 // Validate image size (max 5MB)
@@ -72,9 +76,18 @@ struct ActivationTerminalView: View {
 
     private var heroBlock: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("ACTIVATE TERMINAL")
-                .font(KairOSTypography.hero)
-                .fixedSize(horizontal: false, vertical: true)
+            HStack {
+                Text("ACTIVATE TERMINAL")
+                    .font(KairOSTypography.hero)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer()
+                Button("?") {
+                    appState.soundManager.playClick()
+                    showingHelp = true
+                }
+                .font(KairOSTypography.header)
+                .foregroundStyle(KairOSColors.chrome)
+            }
             Spacer(minLength: 0)
         }
     }
