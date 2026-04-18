@@ -61,10 +61,44 @@ struct ActivationTerminalView: View {
 
     private var formBlock: some View {
         VStack(alignment: .leading, spacing: 16) {
+            // Step-by-step guide
+            VStack(alignment: .leading, spacing: 8) {
+                Text("QUICK START GUIDE:")
+                    .font(KairOSTypography.header)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("1. Enter your K-NUMBER (auto-formatted with K prefix)")
+                        .font(KairOSTypography.mono)
+                    Text("2. Create a personal PASSCODE (keep it secret)")
+                        .font(KairOSTypography.mono)
+                    Text("3. Get ADMIN CODE from Node Control Center")
+                        .font(KairOSTypography.mono)
+                    Text("4. Upload optional AVATAR image")
+                        .font(KairOSTypography.mono)
+                    Text("5. Click ACTIVATE to complete registration")
+                        .font(KairOSTypography.mono)
+                }
+            }
+            .padding(12)
+            .background(KairOSColors.background.opacity(0.3))
+            .overlay(
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(KairOSColors.chrome, lineWidth: 1)
+            )
+
             VStack(alignment: .leading, spacing: 16) {
                 HStack {
                     TextField("K-NUMBER", text: $viewModel.kairNumber)
                         .textFieldStyle(IndustrialTextFieldStyle())
+                        .onChange(of: viewModel.kairNumber) { newValue in
+                            // Ensure K prefix
+                            if !newValue.hasPrefix("K") {
+                                viewModel.kairNumber = "K" + newValue
+                            }
+                            // Remove K if user tries to delete it
+                            if newValue.isEmpty {
+                                viewModel.kairNumber = "K"
+                            }
+                        }
                         .onTapGesture {
                             appState.soundManager.playSubtleClick()
                         }
@@ -74,7 +108,7 @@ struct ActivationTerminalView: View {
                     }
                     .font(KairOSTypography.mono)
                     .foregroundStyle(KairOSColors.chrome)
-                    .help("Your unique KairOS identifier. Format: K-XXXX-XXXX")
+                    .help("Your unique KairOS identifier. Format: K-XXXX-XXXX-XXXX-XXXX. The K prefix is automatically added.")
                 }
 
                 HStack {
@@ -89,7 +123,7 @@ struct ActivationTerminalView: View {
                     }
                     .font(KairOSTypography.mono)
                     .foregroundStyle(KairOSColors.chrome)
-                    .help("Your personal passcode. Keep it secret.")
+                    .help("Your personal passcode for device unlock. Keep it secret and memorable. Minimum 4 characters recommended.")
                 }
 
                 HStack {
@@ -104,14 +138,17 @@ struct ActivationTerminalView: View {
                     }
                     .font(KairOSTypography.mono)
                     .foregroundStyle(KairOSColors.chrome)
-                    .help("Admin code from your KairOS Node control center. Click 'GENERATE CODE' in the control center to get one.")
+                    .help("Admin code from your KairOS Node control center. Open http://localhost:8081 in a browser, click 'GENERATE CODE' button, and enter the code here. Code expires in 5 minutes.")
                 }
-                
+
                 // Avatar upload
                 VStack(alignment: .leading, spacing: 8) {
-                    Text("AVATAR")
+                    Text("AVATAR (OPTIONAL)")
                         .font(KairOSTypography.mono)
-                    
+                    Text("Upload an image to represent your device")
+                        .font(KairOSTypography.mono)
+                        .foregroundStyle(KairOSColors.chrome.opacity(0.7))
+
                     Button(action: {
                         appState.soundManager.playClick()
                         showingImagePicker = true
@@ -137,7 +174,7 @@ struct ActivationTerminalView: View {
                     }
                     .buttonStyle(PlainButtonStyle())
                 }
-                
+
                 if let debugAdminCode = viewModel.debugAdminCode, viewModel.activationState == "pending_admin_code" {
                     Text("TEST NODE CODE \(debugAdminCode)")
                         .font(KairOSTypography.mono)
@@ -171,14 +208,14 @@ struct ActivationTerminalView: View {
 
     private func activate() async {
         appState.soundManager.play(.keyType1)
-        
+
         do {
             try await viewModel.activate(avatarData: avatarData)
-            errorText = nil
+            errorText = viewModel.errorMessage
             appState.soundManager.play(viewModel.activationState == "active" ? .accessGranted : .reminder)
             await appState.refreshNodeStatus()
         } catch {
-            errorText = error.localizedDescription
+            errorText = viewModel.errorMessage ?? error.localizedDescription
             appState.soundManager.play(.warningUI)
         }
     }
